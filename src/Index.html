@@ -1,0 +1,2348 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <meta charset="utf-8">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <?!= include('CSS'); ?>
+</head>
+<body>
+
+  <!-- ===================== HEADER ===================== -->
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-icon">🌱</span>
+      <div>
+        <h1>ระบบติดตามโครงการสิ่งแวดล้อมโรงพยาบาล</h1>
+        <p id="subTitle">ภาพรวมความคืบหน้าโครงการรายเดือน</p>
+      </div>
+    </div>
+    <div class="auth-area" id="authArea">
+      <button class="btn btn-outline" id="btnLogin">เข้าสู่ระบบผู้ดูแล</button>
+    </div>
+  </header>
+
+  <!-- ===================== เมนูโครงการ (แถบซ้าย) ===================== -->
+  <div class="app-shell">
+  <nav class="main-tabs" id="mainTabs" aria-label="เมนูโครงการ">
+    <div class="tab-group-label">ภาพรวม</div>
+    <button class="tab-btn active" data-tab="projects" title="ภาพรวมโครงการ">
+      <span class="tab-ico" aria-hidden="true">📊</span>
+      <span class="tab-txt"><b>ภาพรวมโครงการ</b><small>ตารางงาน • ความคืบหน้า</small></span>
+    </button>
+    <div class="tab-group-label">โครงการสิ่งแวดล้อม</div>
+    <button class="tab-btn" data-tab="frytofly" title="ทอดไม่ทิ้ง">
+      <span class="tab-ico" aria-hidden="true">🛢️</span>
+      <span class="tab-txt"><b>ทอดไม่ทิ้ง</b><small>รับบริจาคน้ำมันใช้แล้ว</small></span>
+    </button>
+    <button class="tab-btn" data-tab="paperless" title="Paperless">
+      <span class="tab-ico" aria-hidden="true">📄</span>
+      <span class="tab-txt"><b>Paperless</b><small>ลดการใช้กระดาษ</small></span>
+    </button>
+    <button class="tab-btn" data-tab="cartridge" title="ตลับหมึกเก่าเราขอ">
+      <span class="tab-ico" aria-hidden="true">🖨️</span>
+      <span class="tab-txt"><b>ตลับหมึกเก่าเราขอ</b><small>รีไซเคิลตลับหมึก</small></span>
+    </button>
+    <button class="tab-btn" data-tab="kitchen" title="จากครัวสู่ท้องฟ้า">
+      <span class="tab-ico" aria-hidden="true">🍳</span>
+      <span class="tab-txt"><b>จากครัวสู่ท้องฟ้า</b><small>น้ำมันครัว • ฝ่ายโภชนาการ</small></span>
+    </button>
+    <button class="tab-btn" data-tab="calendar" title="ปฏิทินเก่าเราขอ">
+      <span class="tab-ico" aria-hidden="true">📅</span>
+      <span class="tab-txt"><b>ปฏิทินเก่าเราขอ</b><small>ทำอักษรเบรลล์</small></span>
+    </button>
+    <button class="tab-btn" data-tab="share" title="คัดแยก แบ่งปัน">
+      <span class="tab-ico" aria-hidden="true">♻️</span>
+      <span class="tab-txt"><b>คัดแยก แบ่งปัน</b><small>ใช้วัสดุซ้ำ ไม่ซื้อใหม่</small></span>
+    </button>
+    <button class="tab-btn" data-tab="em" title="น้ำยา EM จากเศษอาหาร">
+      <span class="tab-ico" aria-hidden="true">🧪</span>
+      <span class="tab-txt"><b>น้ำยา EM</b><small>หมักเศษอาหาร • 7/15/45 วัน</small></span>
+    </button>
+    <button class="tab-btn" data-tab="compost" title="ปุ๋ยหมักจากขยะใบไม้">
+      <span class="tab-ico" aria-hidden="true">🪴</span>
+      <span class="tab-txt"><b>ปุ๋ยหมักใบไม้</b><small>หมักขยะใบไม้ • 7/15/45 วัน</small></span>
+    </button>
+    <div class="tab-group-label">สรุปผล</div>
+    <button class="tab-btn" data-tab="archive" title="คลังโครงการ">
+      <span class="tab-ico" aria-hidden="true">🗄️</span>
+      <span class="tab-txt"><b>คลังโครงการ</b><small>โครงการที่แล้วเสร็จ <span class="tab-count" id="archiveTabCount"></span></small></span>
+    </button>
+    <button class="tab-btn" data-tab="envreport" title="รายงานสิ่งแวดล้อม">
+      <span class="tab-ico" aria-hidden="true">🌳</span>
+      <span class="tab-txt"><b>รายงานสิ่งแวดล้อม</b><small>ต้นไม้ • CO₂ รวมทุกโครงการ</small></span>
+    </button>
+  </nav>
+
+  <div class="app-main">
+
+
+  <div id="tabProjects">
+  <!-- ===================== OVERVIEW VIEW ===================== -->
+  <main id="viewOverview" class="view">
+
+    <div class="photo-mount" data-photo-key="overview"></div>
+
+    <section class="kpi-row" id="kpiRow"></section>
+
+    <section class="breakdown-row">
+      <div class="breakdown-card">
+        <div class="breakdown-header">
+          <span class="breakdown-header-icon">🥧</span>
+          <div>
+            <h4>สัดส่วนโครงการตามประเภท</h4>
+            <p class="muted" id="categorySubtitle"></p>
+          </div>
+        </div>
+        <div class="breakdown-body">
+          <div class="breakdown-pie" id="categoryPie"></div>
+          <div id="categoryCards" class="breakdown-list"></div>
+        </div>
+      </div>
+      <div class="breakdown-card">
+        <div class="breakdown-header">
+          <span class="breakdown-header-icon">🥧</span>
+          <div>
+            <h4>สัดส่วนโครงการตามสถานะ</h4>
+            <p class="muted" id="statusSubtitle"></p>
+          </div>
+        </div>
+        <div class="breakdown-body">
+          <div class="breakdown-pie" id="statusPie"></div>
+          <div id="statusCards" class="breakdown-list"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="gantt-wrap year-timeline-wrap">
+      <div class="breakdown-header" style="padding:14px 16px 0;">
+        <span class="breakdown-header-icon">🗓️</span>
+        <div>
+          <h4>แผนภาพเส้นเวลาโครงการ (Timeline)</h4>
+          <p class="muted" id="yearTimelineSubtitle"></p>
+        </div>
+      </div>
+      <div id="yearTimelineChart" style="padding:10px 16px 16px;"></div>
+    </section>
+
+    <section class="toolbar">
+      <div class="filters">
+        <select id="fCategory"><option value="">ทุกประเภทโครงการ</option></select>
+        <select id="fDepartment"><option value="">ทุกหน่วยงาน</option></select>
+        <select id="fStatus"><option value="">ทุกสถานะ</option></select>
+        <input type="text" id="fSearch" placeholder="ค้นหาชื่อโครงการ...">
+      </div>
+      <div class="year-nav">
+        <button id="yearPrev" class="btn btn-icon">‹</button>
+        <span id="yearLabel" class="year-label"></span>
+        <button id="yearNext" class="btn btn-icon">›</button>
+      </div>
+      <button class="btn btn-primary admin-only hidden" id="btnAddProject">+ เพิ่มโครงการ</button>
+      <button class="btn btn-outline" id="btnOpenArchive">🗄️ คลังโครงการ <span id="archiveBtnCount"></span></button>
+    </section>
+
+    <section class="export-bar">
+      <button class="btn btn-outline" id="btnExportExcel">📊 ส่งออก Excel</button>
+      <button class="btn btn-outline" id="btnExportPdf">📄 PDF ภาพรวม (A4 แนวนอน)</button>
+      <button class="btn btn-primary" id="btnExportFullPdf">📚 PDF รายงานฉบับเต็ม (ภาพรวม + รายโครงการ)</button>
+    </section>
+
+    <section class="legend">
+      <span class="legend-item"><i class="dot dot-notstarted"></i> ยังไม่เริ่ม</span>
+      <span class="legend-item"><i class="dot dot-progress"></i> กำลังดำเนินการ</span>
+      <span class="legend-item"><i class="dot dot-delay"></i> ล่าช้า</span>
+      <span class="legend-item"><i class="dot dot-done"></i> เสร็จสมบูรณ์</span>
+      <span class="legend-item"><i class="dot dot-hold"></i> ระงับ</span>
+    </section>
+
+    <section class="gantt-wrap">
+      <div class="gantt-header" id="ganttHeader"></div>
+      <div id="ganttBody" class="gantt-body">
+        <div class="loading">กำลังโหลดข้อมูล...</div>
+      </div>
+    </section>
+
+    <section class="attention-card hidden" id="attentionSection">
+      <h3>🚨 โครงการที่ต้องเร่งติดตาม</h3>
+      <p class="muted" id="attentionSubtitle"></p>
+      <div id="attentionList"></div>
+    </section>
+  </main>
+
+  <!-- ===================== DETAIL VIEW ===================== -->
+  <main id="viewDetail" class="view hidden">
+    <button class="btn btn-outline" id="btnBack">‹ กลับหน้าภาพรวม</button>
+
+    <section class="detail-card report-style">
+      <div class="detail-top-row">
+        <div class="detail-title-group">
+          <span class="detail-icon" id="dIcon"></span>
+          <div>
+            <p class="detail-eyebrow" id="dEyebrow"></p>
+            <h2 id="dName"></h2>
+          </div>
+        </div>
+        <span class="status-pill" id="dStatusPill"></span>
+      </div>
+
+      <div class="archived-banner hidden" id="archivedBanner">🗄️ <span id="archivedBannerText"></span></div>
+      <div class="linked-campaign-banner hidden" id="linkedCampaignBanner">
+        <span id="linkedCampaignText"></span>
+        <button class="btn btn-primary" id="btnGoToFullTab">ดูรายละเอียดเต็ม ›</button>
+        <div class="linked-live hidden" id="linkedLive">
+          <div><b>📊 ข้อมูลล่าสุดจากแท็บโครงการ</b> <small class="muted" id="linkedLiveAt"></small></div>
+          <p id="linkedLiveText"></p>
+          <div class="linked-live-src">
+            <span class="src-badge" id="linkedSrcBadge"></span>
+            <button class="btn btn-outline btn-sm admin-only hidden" id="btnUseAutoStatus">↺ ใช้สถานะอัตโนมัติจากแท็บ</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="tg-detail hidden" id="detailTarget"></div>
+
+      <div class="admin-only hidden detail-admin-row" id="detailAdminBtns">
+        <button class="btn btn-outline" id="btnEditProject">แก้ไขข้อมูลโครงการ</button>
+        <button class="btn btn-danger" id="btnArchiveProject">เก็บเข้าคลัง</button>
+      </div>
+
+      <div class="detail-info-grid">
+        <div class="detail-info-card">
+          <div class="info-row"><span class="info-k">ประเภทโครงการ</span><span class="info-v" id="dCategory"></span></div>
+          <div class="info-row"><span class="info-k">หน่วยงานรับผิดชอบ</span><span class="info-v" id="dUnit"></span></div>
+          <div class="info-row"><span class="info-k">ผู้รับผิดชอบ</span><span class="info-v" id="dPerson"></span></div>
+          <div class="info-row"><span class="info-k">ระยะเวลาดำเนินการ</span><span class="info-v" id="dPeriod"></span></div>
+          <div class="info-row"><span class="info-k">ระยะเวลารวม</span><span class="info-v" id="dDuration"></span></div>
+          <div class="info-row">
+            <span class="info-k">ความคืบหน้า</span>
+            <span class="info-v" style="flex:1; display:flex; align-items:center; gap:10px;">
+              <span class="mini-progress-track"><span class="mini-progress-fill" id="dProgressBarFill"></span></span>
+              <strong id="dProgressPct2"></strong>
+            </span>
+          </div>
+        </div>
+        <div class="detail-status-card">
+          <div class="status-card-head"><span id="dStatusIcon"></span> สถานะปัจจุบัน (รายละเอียด)</div>
+          <p id="dStatus"></p>
+        </div>
+      </div>
+
+      <div id="dDescriptionWrap" class="print-desc" style="margin-top:14px;">
+        <strong>รายละเอียดโครงการ:</strong><br><span id="dDescription"></span>
+      </div>
+
+      <h4 style="margin:18px 0 8px; color:var(--gray-800);">Timeline โครงการ</h4>
+      <div class="single-timeline-track">
+        <div class="single-timeline-bar" id="dTimelineBar"></div>
+      </div>
+      <div class="single-timeline-dates">
+        <span id="dStartLabel"></span>
+        <span id="dEndLabel"></span>
+      </div>
+
+      <div class="progress-row" style="margin-top:18px;">
+        <div class="donut-wrap"><canvas id="dProgressDonut" width="90" height="90"></canvas></div>
+        <div class="progress-info">
+          <button class="btn btn-outline" id="btnExportProjectPdf">📄 ส่งออก PDF โครงการนี้ (A4 แนวนอน)</button>
+        </div>
+      </div>
+    </section>
+
+    <div class="photo-mount" id="photoMountDetail" data-photo-key=""></div>
+
+    <section class="log-card">
+      <div class="log-head">
+        <h3>ประวัติความคืบหน้า</h3>
+        <div>
+          <button class="btn btn-outline" id="btnViewProgress">ดูรายละเอียดความคืบหน้า</button>
+          <button class="btn btn-primary admin-only hidden" id="btnAddLog">+ บันทึกความคืบหน้าใหม่</button>
+        </div>
+      </div>
+      <div id="logTimeline" class="hidden"></div>
+    </section>
+
+    <section class="qa-card">
+      <div class="log-head">
+        <h3>💬 สอบถามเกี่ยวกับโครงการนี้</h3>
+        <div>
+          <button class="btn btn-primary" id="btnAskQuestion">❓ ถามคำถาม</button>
+        </div>
+      </div>
+      <p class="muted" style="margin:0 0 10px;">สามารถสอบถามข้อมูลเกี่ยวกับโครงการนี้ได้ทุกคน ระบบจะพยายามตอบอัตโนมัติก่อน หากตอบไม่ได้จะส่งคำถามไปยังผู้ดูแลระบบ</p>
+      <div id="qaList"><p class="muted">ยังไม่มีคำถาม</p></div>
+    </section>
+  </main>
+  </div><!-- /tabProjects -->
+
+  <!-- ===================== แท็บ: ทอดไม่ทิ้ง ===================== -->
+  <div id="tabFryToFly" class="hidden">
+    <main class="view">
+
+      <section class="ftf-hero">
+        <div class="ftf-hero-top">
+          <span class="ftf-hero-icon">🛢️</span>
+          <div>
+            <h2>โครงการ "ทอดไม่ทิ้ง"</h2>
+            <p>แคมเปญขับเคลื่อนสิ่งแวดล้อมของกลุ่มบริษัทบางจาก — รวบรวมน้ำมันพืช/สัตว์ใช้แล้วจากบุคลากร เพื่อนำไปแปรรูปเป็นน้ำมันเชื้อเพลิงอากาศยานยั่งยืน (Sustainable Aviation Fuel หรือ SAF) ลดการปล่อยก๊าซเรือนกระจกได้สูงสุดถึง <strong>80%</strong></p>
+          </div>
+        </div>
+        <div class="ftf-info-row">
+          <div class="ftf-info-chip">📍 จุดรับบริจาค: ชั้น 2 อาคารบริการสนับสนุนทางการแพทย์</div>
+          <div class="ftf-info-chip">🕐 วันจันทร์–ศุกร์ เวลา 09.00–15.00 น.</div>
+          <div class="ftf-info-chip">☎️ ผู้ประสานงาน: นางสาวสุชาดา รัตนบัวแก้ว โทร. 038-320200 ต่อ 20510</div>
+        </div>
+      </section>
+
+      <div class="ov-link-mount" data-link-key="frytofly"></div>
+      <div class="photo-mount" data-photo-key="ftf"></div>
+
+      <section class="ftf-actions">
+        <button class="btn btn-primary btn-lg" id="btnOpenGallonForm">📋 ลงทะเบียนรับ / ส่งคืนแกลลอน</button>
+        <button class="btn btn-outline btn-lg" id="btnShowShareLink">🔗 แชร์ลิงก์ / QR Code</button>
+        <button class="btn btn-outline btn-lg" id="btnExportFtfPdf">📄 ส่งออก PDF</button>
+      </section>
+
+      <section class="breakdown-card ftf-share-card hidden" id="ftfShareCard">
+        <div class="breakdown-header">
+          <span class="breakdown-header-icon">🔗</span>
+          <div>
+            <h4>ลิงก์ฟอร์มลงทะเบียนรับ / ส่งคืนแกลลอน</h4>
+            <p class="muted">แชร์ลิงก์นี้ หรือพิมพ์ QR code ไปติดที่จุดรับบริจาค ให้บุคลากรสแกนแล้วกรอกฟอร์มได้ทันที</p>
+          </div>
+        </div>
+        <div class="ftf-share-body">
+          <div class="ftf-share-link-box">
+            <input type="text" id="ftfShareLinkInput" readonly>
+            <button class="btn btn-primary" id="btnCopyShareLink">📋 คัดลอกลิงก์</button>
+          </div>
+          <p class="muted hidden" id="ftfCopyConfirm">✅ คัดลอกลิงก์แล้ว</p>
+          <div class="ftf-qr-box">
+            <img id="ftfQrImg" alt="QR Code ลิงก์ฟอร์ม" width="180" height="180">
+            <a id="ftfQrDownload" download="ทอดไม่ทิ้ง-QRcode.png" class="btn btn-outline" style="margin-top:8px;">⬇️ ดาวน์โหลด QR Code</a>
+          </div>
+        </div>
+      </section>
+
+      <div id="ftfSubmitConfirm" class="ftf-confirm-banner hidden"></div>
+      <div class="vf-pending-note hidden" id="vfNote-ftf"></div>
+      <section class="vf-panel admin-only hidden" id="vfPanel-ftf"></section>
+
+      <nav class="pj-subtabs theme-ftf" id="ftfSubtabs">
+        <button class="pj-subtab active" data-sub="members">🏆 ผู้เข้าร่วม &amp; แต้มสะสม</button>
+        <button class="pj-subtab" data-sub="ship">🚚 การส่งน้ำมันรายรอบ (ลิตร &amp; ราคา)</button>
+        <button class="pj-subtab" data-sub="sum">📊 สรุปรายเดือน • รายปี • สะสม</button>
+      </nav>
+
+      <div id="ftfPaneMembers">
+      <section class="kpi-row" id="ftfKpiRow"></section>
+
+      <section class="breakdown-card ftf-tier-card">
+        <div class="breakdown-header">
+          <span class="breakdown-header-icon">🏅</span>
+          <div>
+            <h4>สิทธิประโยชน์สมาชิก Green Somdej</h4>
+            <p class="muted">บริจาค 1 แกลลอน (≈4 ลิตร) จะได้ 50 แต้ม — สะสมแต้มเพื่อรับสิทธิประโยชน์ตามระดับ</p>
+          </div>
+        </div>
+        <div class="ftf-tier-grid">
+          <div class="ftf-tier-item ftf-tier-gold"><span>🥇</span><div><strong>400 แต้มขึ้นไป — ระดับทอง</strong><br>เข้าร่วมศึกษาดูงานด้านสิ่งแวดล้อม 1 ครั้ง/ปี, รับน้ำยา EM ขนาด 10 ลิตร (3 เดือน), เหรียญที่ระลึก</div></div>
+          <div class="ftf-tier-item ftf-tier-silver"><span>🥈</span><div><strong>200 แต้มขึ้นไป — ระดับเงิน</strong><br>รับน้ำยา EM 2 ขวด ขนาด 1.5 ลิตร (3 เดือน)</div></div>
+          <div class="ftf-tier-item ftf-tier-bronze"><span>🥉</span><div><strong>100 แต้มขึ้นไป — ระดับทองแดง</strong><br>รับของที่ระลึกจากโครงการ</div></div>
+        </div>
+      </section>
+
+      <section class="ftf-leaderboard-card">
+        <div class="ftf-lb-head">
+          <div>
+            <h3>🏆 อันดับผู้เข้าร่วมกิจกรรม</h3>
+            <p class="muted" id="ftfLeaderboardSubtitle"></p>
+          </div>
+          <input type="text" id="ftfSearchName" placeholder="🔍 ค้นหาชื่อหรือรหัส 7 หลัก...">
+        </div>
+        <div id="ftfLeaderboard"></div>
+      </section>
+      </div><!-- /ftfPaneMembers -->
+
+      <div id="ftfPaneShip" class="hidden theme-ftf"><div class="loading">กำลังโหลดข้อมูล...</div></div>
+      <div id="ftfPaneSum" class="hidden theme-ftf"><div id="sumMountFtf"></div></div>
+
+    </main>
+  </div><!-- /tabFryToFly -->
+
+  <!-- ===================== แท็บ: Paperless (ลดการใช้กระดาษ) ===================== -->
+  <div id="tabPaperless" class="hidden">
+    <main class="view">
+
+      <section class="pl-hero">
+        <!-- อินโทรกราฟิกกระดาษตกแต่งพื้นหลัง -->
+        <svg class="pl-hero-deco" viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <rect x="35" y="18" width="90" height="122" rx="6" fill="#ffffff"/>
+          <path d="M95 18 L125 48 H95 Z" fill="#ffffff" opacity="0.55"/>
+          <line x1="50" y1="58" x2="100" y2="58" stroke="#1d5fa0" stroke-width="4" stroke-linecap="round"/>
+          <line x1="50" y1="73" x2="100" y2="73" stroke="#1d5fa0" stroke-width="4" stroke-linecap="round"/>
+          <line x1="50" y1="88" x2="90" y2="88" stroke="#1d5fa0" stroke-width="4" stroke-linecap="round"/>
+          <line x1="50" y1="103" x2="100" y2="103" stroke="#1d5fa0" stroke-width="4" stroke-linecap="round"/>
+          <line x1="50" y1="118" x2="80" y2="118" stroke="#1d5fa0" stroke-width="4" stroke-linecap="round"/>
+        </svg>
+        <div class="pl-hero-top">
+          <svg class="pl-hero-icon-svg" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <rect x="10" y="8" width="26" height="34" rx="2" fill="#ffffff" opacity="0.35"/>
+            <rect x="7" y="11" width="26" height="34" rx="2" fill="#ffffff" opacity="0.65"/>
+            <path d="M4 15 H26 L30 19 V45 C30 46.1 29.1 47 28 47 H4 C2.9 47 2 46.1 2 45 V17 C2 15.9 2.9 15 4 15 Z" fill="#ffffff"/>
+            <path d="M26 15 V19 H30 Z" fill="#cfe4f7"/>
+            <line x1="7" y1="24" x2="23" y2="24" stroke="#2f7fc4" stroke-width="2" stroke-linecap="round"/>
+            <line x1="7" y1="29" x2="23" y2="29" stroke="#2f7fc4" stroke-width="2" stroke-linecap="round"/>
+            <line x1="7" y1="34" x2="18" y2="34" stroke="#2f7fc4" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="30" cy="38" r="9" fill="#2e8b57"/>
+            <path d="M26 38c0-3.2 3.1-5.8 7.4-5.8-0.6 3.7-3.3 6.3-7.4 6.3" fill="#ffffff"/>
+            <path d="M34.4 38.2c0 3.2-3.1 5.8-7.4 5.8 0.6-3.7 3.3-6.3 7.4-6.3" fill="#e8f5ec"/>
+          </svg>
+          <div>
+            <h2>โครงการ Paperless — ลดการใช้กระดาษ</h2>
+            <p>แต่ละหน่วยงานบันทึกจำนวนเรื่องที่เปลี่ยนมาใช้ระบบอิเล็กทรอนิกส์ และปริมาณกระดาษที่ลดลงได้ (แผ่น) เป็นประจำทุกเดือน เพื่อติดตามภาพรวมการลดการใช้กระดาษของโรงพยาบาล</p>
+          </div>
+        </div>
+        <div class="pl-hero-actions">
+          <button class="btn btn-primary" id="btnPlOpenLogin">🔑 เข้าสู่ระบบหน่วยงาน (บันทึก/แก้ไขข้อมูล)</button>
+          <span class="pl-dept-login-chip hidden" id="plLoggedInChip"></span>
+          <button class="btn btn-outline hidden" id="btnPlLogout">ออกจากระบบ</button>
+        </div>
+      </section>
+
+            <div class="dept-mode-bar admin-only hidden" data-dept-key="paperless">
+        <label class="dm-switch" title="เปิด/ปิดการใช้ข้อมูลหน่วยงานของโครงการนี้"><input type="checkbox"><span class="dm-track"></span></label>
+        <div class="dm-text"><b>ใช้ข้อมูลหน่วยงานในโครงการนี้</b><small class="dm-desc"></small></div>
+        <button type="button" class="btn btn-outline btn-sm dm-manage" data-manage="paperless">🏢 เลือกหน่วยงานที่ใช้</button>
+      </div>
+
+      <div class="ov-link-mount" data-link-key="paperless"></div>
+      <div class="photo-mount" data-photo-key="paperless"></div>
+
+      <section class="toolbar">
+        <div class="year-nav">
+          <button id="plYearPrev" class="btn btn-icon">‹</button>
+          <span id="plYearLabel" class="year-label"></span>
+          <button id="plYearNext" class="btn btn-icon">›</button>
+        </div>
+        <span style="flex:1;"></span>
+        <button class="btn btn-outline dm-matrix-btn" data-matrix="paperless">📈 รายเดือนแยกหน่วยงาน</button>
+        <button class="btn btn-outline" id="btnPlExportExcel">📊 ส่งออก Excel</button>
+        <button class="btn btn-primary" id="btnPlExportPdf">📄 ส่งออกรายงาน PDF (A4 แนวนอน)</button>
+      </section>
+
+      <section class="pl-kpi-row" id="plKpiRow"></section>
+
+      <div id="sumMountPl" class="sum-inpage"></div>
+
+      <section class="gantt-wrap year-timeline-wrap">
+        <div class="breakdown-header" style="padding:14px 16px 0;">
+          <span class="breakdown-header-icon">📈</span>
+          <div>
+            <h4>แนวโน้มปริมาณกระดาษที่ลดลงรวมทั้งโรงพยาบาล (รายเดือน)</h4>
+            <p class="muted" id="plTrendSubtitle"></p>
+          </div>
+        </div>
+        <div id="plTrendChart" style="padding:10px 16px 16px;"></div>
+      </section>
+
+      <section class="pl-rank-card">
+        <div class="pl-rank-head">
+          <div>
+            <h3>🏆 ภาพรวมโครงการ — เรียงลำดับหน่วยงานที่ลดกระดาษได้สูงสุด</h3>
+            <p class="muted" id="plRankSubtitle">คลิกชื่อหน่วยงานเพื่อดูรายงานสรุปรายเดือนของหน่วยงานนั้น</p>
+          </div>
+        </div>
+        <div id="plRankList"><div class="loading">กำลังโหลดข้อมูล...</div></div>
+      </section>
+
+      <section class="pl-monthly-card">
+        <div class="pl-monthly-head">
+          <div>
+            <h3>🗓️ รายการสรุปประจำเดือน (สะสม ม.ค. – เดือนที่เลือก)</h3>
+            <p class="muted">ยอดสะสมตั้งแต่เดือนมกราคมจนถึงเดือนที่เลือก เรียงหน่วยงานที่ลดกระดาษได้มากที่สุดก่อน</p>
+          </div>
+          <select id="plMonthlyReportMonth"></select>
+        </div>
+        <div id="plMonthlyReportList"><div class="loading">กำลังโหลดข้อมูล...</div></div>
+      </section>
+
+    </main>
+  </div><!-- /tabPaperless -->
+
+  <!-- ===================== DETAIL VIEW: รายงานสรุปแต่ละหน่วยงาน (Paperless) ===================== -->
+  <div id="tabPaperlessDetail" class="hidden">
+    <main class="view">
+      <button class="btn btn-outline" id="btnPlBack">‹ กลับหน้าภาพรวม Paperless</button>
+
+      <section class="detail-card report-style">
+        <div class="detail-top-row">
+          <div class="detail-title-group">
+            <span class="detail-icon">📄</span>
+            <div>
+              <p class="detail-eyebrow">รายงานสรุปหน่วยงาน — โครงการ Paperless</p>
+              <h2 id="plDName"></h2>
+            </div>
+          </div>
+          <span class="pl-dept-login-chip hidden" id="plDetailOwnerChip">หน่วยงานของคุณ</span>
+        </div>
+
+        <div class="pl-detail-grid">
+          <div class="kpi-card">
+            <div class="kpi-num" id="plDTotalItems"></div>
+            <div class="kpi-label">จำนวนเรื่องรวม (ปีนี้)</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-num" id="plDTotalSheets"></div>
+            <div class="kpi-label">กระดาษที่ลดลงรวม (แผ่น)</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-num" id="plDRank"></div>
+            <div class="kpi-label">อันดับในโรงพยาบาล</div>
+          </div>
+        </div>
+
+        <table class="pl-month-table">
+          <thead>
+            <tr><th>เดือน</th><th>จำนวนเรื่อง</th><th>กระดาษที่ลดลง (แผ่น)</th><th>ผู้บันทึก</th><th></th></tr>
+          </thead>
+          <tbody id="plDMonthRows"></tbody>
+        </table>
+      </section>
+    </main>
+  </div><!-- /tabPaperlessDetail -->
+  <!-- ===================== แท็บ: ตลับหมึกเก่าเราขอ ===================== -->
+  <div id="tabCartridge" class="hidden">
+    <main class="view">
+
+      <section class="ctg-hero">
+        <!-- อินโทรกราฟิกตลับหมึกตกแต่งพื้นหลัง -->
+        <svg class="ctg-hero-deco" viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <rect x="30" y="50" width="100" height="60" rx="8" fill="#ffffff"/>
+          <rect x="45" y="30" width="70" height="26" rx="6" fill="#ffffff" opacity="0.6"/>
+          <circle cx="50" cy="80" r="8" fill="#4c2a82"/>
+          <circle cx="80" cy="80" r="8" fill="#4c2a82"/>
+          <circle cx="110" cy="80" r="8" fill="#4c2a82"/>
+        </svg>
+        <div class="ctg-hero-top">
+          <svg class="ctg-hero-icon-svg" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <rect x="6" y="16" width="36" height="22" rx="4" fill="#ffffff"/>
+            <rect x="11" y="6" width="26" height="14" rx="3" fill="#ffffff" opacity="0.7"/>
+            <circle cx="15" cy="27" r="4" fill="#6c3fb5"/>
+            <circle cx="24" cy="27" r="4" fill="#6c3fb5"/>
+            <circle cx="33" cy="27" r="4" fill="#6c3fb5"/>
+            <rect x="11" y="34" width="26" height="4" rx="2" fill="#efe7fb"/>
+          </svg>
+          <div>
+            <h2>ตลับหมึกเก่าเราขอ</h2>
+            <p>รวบรวมตลับหมึกพิมพ์ใช้แล้วจากทุกหน่วยงาน ส่งขายให้ร้านรับซื้อเป็นรอบๆ ลดปริมาณขยะอันตรายที่ต้องเสียค่าทำลาย (กก.ละ <span id="ctgDisposalRateText">55</span> บาท) และสร้างรายได้ให้โรงพยาบาล</p>
+          </div>
+        </div>
+        <div class="ctg-hero-actions">
+          <button class="btn btn-primary" id="btnCtgOpenContribute">📦 ส่งตลับหมึกเข้าโครงการ</button>
+          <button class="btn btn-outline" id="btnCtgShowShareLink">🔗 แชร์ลิงก์ / QR Code</button>
+          <button class="btn btn-outline admin-only hidden" id="btnCtgAddSale">+ บันทึกการส่งจำหน่าย (รายรอบ)</button>
+          <button class="btn btn-outline" id="btnCtgExportExcel">📊 ส่งออก Excel</button>
+          <button class="btn btn-outline" id="btnCtgExportPdf">📄 ส่งออก PDF (A4)</button>
+        </div>
+      </section>
+
+            <div class="dept-mode-bar admin-only hidden" data-dept-key="cartridge">
+        <label class="dm-switch" title="เปิด/ปิดการใช้ข้อมูลหน่วยงานของโครงการนี้"><input type="checkbox"><span class="dm-track"></span></label>
+        <div class="dm-text"><b>ใช้ข้อมูลหน่วยงานในโครงการนี้</b><small class="dm-desc"></small></div>
+        <button type="button" class="btn btn-outline btn-sm dm-manage" data-manage="cartridge">🏢 เลือกหน่วยงานที่ใช้</button>
+      </div>
+
+      <div class="ov-link-mount" data-link-key="cartridge"></div>
+      <div class="photo-mount" data-photo-key="cartridge"></div>
+
+      <section class="breakdown-card ftf-share-card hidden" id="ctgShareCard">
+        <div class="breakdown-header">
+          <span class="breakdown-header-icon">🔗</span>
+          <div>
+            <h4>ลิงก์ฟอร์ม "ส่งตลับหมึกเข้าโครงการ"</h4>
+            <p class="muted">แชร์ลิงก์นี้ หรือพิมพ์ QR code ไปติดที่จุดรับตลับหมึก ให้แต่ละหน่วยงานแจ้งจำนวนที่ส่งเข้าได้ทันที</p>
+          </div>
+        </div>
+        <div class="ftf-share-body">
+          <div class="ftf-share-link-box">
+            <input type="text" id="ctgShareLinkInput" readonly>
+            <button class="btn btn-primary" id="btnCtgCopyShareLink">📋 คัดลอกลิงก์</button>
+          </div>
+          <p class="muted hidden" id="ctgCopyConfirm">✅ คัดลอกลิงก์แล้ว</p>
+          <div class="ftf-qr-box">
+            <img id="ctgQrImg" alt="QR Code ลิงก์ฟอร์ม" width="180" height="180">
+            <a id="ctgQrDownload" download="ตลับหมึกเก่าเราขอ-QRcode.png" class="btn btn-outline" style="margin-top:8px;">⬇️ ดาวน์โหลด QR Code</a>
+          </div>
+        </div>
+      </section>
+
+      <div id="ctgSubmitConfirm" class="ftf-confirm-banner hidden"></div>
+      <div class="vf-pending-note hidden" id="vfNote-cartridge"></div>
+      <section class="vf-panel admin-only hidden" id="vfPanel-cartridge"></section>
+
+      <p class="ctg-savings-note" id="ctgSavingsNote"></p>
+
+      <section class="ctg-kpi-row" id="ctgKpiRow"></section>
+
+      <section class="toolbar">
+        <div class="year-nav">
+          <button id="ctgYearPrev" class="btn btn-icon">‹</button>
+          <span id="ctgYearLabel" class="year-label"></span>
+          <button id="ctgYearNext" class="btn btn-icon">›</button>
+        </div>
+        <span style="flex:1;"></span>
+        <button class="btn btn-outline dm-matrix-btn" data-matrix="cartridge">📈 รายเดือนแยกหน่วยงาน</button>
+      </section>
+
+      <nav class="pj-subtabs theme-ctg" id="ctgSubtabs">
+        <button class="pj-subtab active" data-sub="overview">📊 ภาพรวม</button>
+        <button class="pj-subtab" data-sub="ship">🚚 การส่งจำหน่ายรายรอบ (จำนวน &amp; ราคา)</button>
+              <button class="pj-subtab" data-sub="sum">📊 สรุปรายเดือน • รายปี • สะสม</button>
+      </nav>
+
+      <div id="ctgPaneOverview">
+      <section class="gantt-wrap year-timeline-wrap">
+        <div class="breakdown-header" style="padding:14px 16px 0;">
+          <span class="breakdown-header-icon">📈</span>
+          <div>
+            <h4>แนวโน้มรายได้จากการจำหน่ายตลับหมึก (รายเดือน)</h4>
+            <p class="muted" id="ctgTrendSubtitle"></p>
+          </div>
+        </div>
+        <div id="ctgTrendChart" style="padding:10px 16px 16px;"></div>
+      </section>
+
+      <section class="ctg-yearly-card">
+        <div class="ctg-yearly-head">
+          <div>
+            <h3>📅 สรุปรายปี</h3>
+            <p class="muted">ยอดจำหน่ายรวมแต่ละปีงบประมาณ ตั้งแต่เริ่มโครงการ</p>
+          </div>
+        </div>
+        <table class="ctg-yearly-table">
+          <thead>
+            <tr><th>ปี พ.ศ.</th><th>จำนวน (ตลับ)</th><th>จำนวนเงิน (บาท)</th><th>น้ำหนัก (กก.)</th><th>ประหยัดค่าทำลาย (บาท)</th></tr>
+          </thead>
+          <tbody id="ctgYearlyRows"><tr><td colspan="5" class="loading">กำลังโหลดข้อมูล...</td></tr></tbody>
+        </table>
+      </section>
+
+      <section class="ctg-rank-card dept-rank-cartridge">
+        <div class="ctg-rank-head">
+          <div>
+            <h3>🏆 อันดับหน่วยงานที่ส่งตลับหมึกเข้าโครงการมากที่สุด</h3>
+            <p class="muted" id="ctgRankSubtitle">สะสมตั้งแต่เริ่มโครงการ</p>
+          </div>
+        </div>
+        <div id="ctgRankList"><div class="loading">กำลังโหลดข้อมูล...</div></div>
+      </section>
+
+      <section class="ctg-sales-card" id="ctgPendingCard">
+        <div class="ctg-sales-head">
+          <div>
+            <h3>⏳ ตลับหมึกส่งเข้าโครงการ รอจำหน่าย</h3>
+            <p class="muted" id="ctgPendingSubtitle">ตลับหมึกที่หน่วยงานส่งเข้าจุดรับแล้ว แต่ยังไม่ถูกนำไปจำหน่าย</p>
+          </div>
+        </div>
+        <table class="ctg-sales-table">
+          <thead>
+            <tr><th>วันที่ส่ง</th><th>หน่วยงาน</th><th>จำนวน (ตลับ)</th><th>หมายเหตุ</th><th></th></tr>
+          </thead>
+          <tbody id="ctgPendingRows"><tr><td colspan="5" class="loading">กำลังโหลดข้อมูล...</td></tr></tbody>
+        </table>
+      </section>
+
+      <section class="ctg-sales-card" id="ctgUnsellableCard">
+        <div class="ctg-sales-head">
+          <div>
+            <h3>🚫 ตลับหมึกส่งเข้าโครงการ จำหน่ายไม่ได้</h3>
+            <p class="muted" id="ctgUnsellableSubtitle">ตลับหมึกที่ชำรุด/ไม่ได้มาตรฐาน ร้านรับซื้อไม่รับซื้อ</p>
+          </div>
+        </div>
+        <table class="ctg-sales-table">
+          <thead>
+            <tr><th>วันที่ส่ง</th><th>หน่วยงาน</th><th>จำนวน (ตลับ)</th><th>หมายเหตุ</th><th></th></tr>
+          </thead>
+          <tbody id="ctgUnsellableRows"><tr><td colspan="5" class="loading">กำลังโหลดข้อมูล...</td></tr></tbody>
+        </table>
+      </section>
+      </div><!-- /ctgPaneOverview -->
+
+      <div id="ctgPaneShip" class="hidden theme-ctg"><div class="loading">กำลังโหลดข้อมูล...</div></div>
+      <div id="ctgPaneSum" class="hidden theme-ctg"><div id="sumMountCtg"></div></div>
+
+    </main>
+  </div><!-- /tabCartridge -->
+
+  <!-- ===================== แท็บ: จากครัวสู่ท้องฟ้า (ฝ่ายโภชนาการ) ===================== -->
+  <div id="tabKitchen" class="hidden theme-kit">
+    <main class="view">
+
+      <section class="ctg-hero kit-hero">
+        <svg class="ctg-hero-deco" viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <ellipse cx="70" cy="105" rx="52" ry="22" fill="#ffffff"/>
+          <rect x="112" y="98" width="42" height="9" rx="4" fill="#ffffff" opacity="0.7"/>
+          <path d="M70 20 C52 48 46 62 70 70 C94 62 88 48 70 20 Z" fill="#ffffff" opacity="0.85"/>
+        </svg>
+        <div class="ctg-hero-top">
+          <svg class="ctg-hero-icon-svg" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M24 5 C17 16 15 22 24 25 C33 22 31 16 24 5 Z" fill="#ffffff"/>
+            <ellipse cx="22" cy="35" rx="16" ry="7" fill="#ffffff" opacity="0.9"/>
+            <rect x="36" y="33" width="10" height="3.5" rx="1.7" fill="#ffffff" opacity="0.7"/>
+          </svg>
+          <div>
+            <h2>โครงการ "จากครัวสู่ท้องฟ้า"</h2>
+            <p>โครงการของ<strong>ฝ่ายโภชนาการ</strong> — รวบรวมน้ำมันทอดอาหารใช้แล้วจากครัวโรงพยาบาล ส่งให้ผู้รับซื้อเป็นรอบๆ เพื่อนำไปแปรรูปเป็นพลังงานทดแทน แทนการทิ้งลงท่อระบายน้ำ บันทึกเป็น<strong>ลิตรหรือปี๊บ</strong> และราคาของแต่ละรอบ (ซึ่งไม่เท่ากัน)</p>
+            <p style="margin-top:6px;">แตกต่างจาก "ทอดไม่ทิ้ง" ที่เป็นการรับบริจาคน้ำมันจากบุคลากร — โครงการนี้เป็นการจัดการขยะน้ำมันของฝ่ายโภชนาการเอง</p>
+          </div>
+        </div>
+        <div class="hero-chips">
+          <span class="hero-chip">🛢️ 1 ปี๊บ ≈ <span id="kitCanLiters">18</span> ลิตร (ปรับได้ที่ชีต EnvironmentalSettings)</span>
+          <span class="hero-chip">🔒 ผู้ดูแลระบบเท่านั้นที่บันทึก/แก้ไขข้อมูลการส่ง</span>
+        </div>
+      </section>
+
+      <div class="ov-link-mount" data-link-key="kitchen"></div>
+      <div class="photo-mount" data-photo-key="kitchen"></div>
+
+      <nav class="pj-subtabs theme-kit" id="kitSubtabs">
+        <button class="pj-subtab active" data-sub="ship">🚚 การส่งน้ำมันรายรอบ (ลิตร/ปี๊บ &amp; ราคา)</button>
+        <button class="pj-subtab" data-sub="sum">📊 สรุปรายเดือน • รายปี • สะสม</button>
+      </nav>
+
+      <div id="kitPaneShipWrap">
+      <section class="toolbar">
+        <div class="year-nav">
+          <button id="kitYearPrev" class="btn btn-icon">‹</button>
+          <span id="kitYearLabel" class="year-label"></span>
+          <button id="kitYearNext" class="btn btn-icon">›</button>
+        </div>
+      </section>
+
+      <div id="kitPaneShip" class="theme-kit"><div class="loading">กำลังโหลดข้อมูล...</div></div>
+      </div>
+      <div id="kitPaneSum" class="hidden theme-kit"><div id="sumMountKit"></div></div>
+
+    </main>
+  </div><!-- /tabKitchen -->
+
+  <!-- ===================== แท็บ: ปฏิทินเก่าเราขอ (อักษรเบรลล์) ===================== -->
+  <div id="tabCalendar" class="hidden theme-cal">
+    <main class="view">
+
+      <section class="ctg-hero cal-hero">
+        <svg class="ctg-hero-deco" viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <rect x="22" y="30" width="116" height="104" rx="10" fill="#ffffff"/>
+          <rect x="22" y="30" width="116" height="26" rx="10" fill="#ffffff" opacity="0.6"/>
+          <g fill="#a1275a"><circle cx="52" cy="82" r="7"/><circle cx="80" cy="82" r="7"/><circle cx="108" cy="82" r="7"/><circle cx="52" cy="110" r="7"/><circle cx="108" cy="110" r="7"/></g>
+        </svg>
+        <div class="ctg-hero-top">
+          <svg class="ctg-hero-icon-svg" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <rect x="6" y="9" width="36" height="32" rx="5" fill="#ffffff"/>
+            <rect x="6" y="9" width="36" height="9" rx="5" fill="#ffffff" opacity="0.65"/>
+            <g fill="#d03f7e"><circle cx="16" cy="26" r="2.6"/><circle cx="24" cy="26" r="2.6"/><circle cx="32" cy="26" r="2.6"/><circle cx="16" cy="34" r="2.6"/><circle cx="32" cy="34" r="2.6"/></g>
+          </svg>
+          <div>
+            <h2>โครงการ "ปฏิทินเก่าเราขอ"</h2>
+            <p>รับบริจาคปฏิทินเก่าจาก<strong>หน่วยงาน เจ้าหน้าที่ และบริษัทภายนอก</strong>เป็นรอบๆ เพื่อส่งไปจัดทำ<strong>อักษรเบรลล์ให้ผู้พิการทางสายตา</strong> — นับเป็นน้ำหนัก (กก.) เพื่อคำนวณการช่วยรักษาสิ่งแวดล้อม (ต้นไม้ที่ช่วยรักษาไว้ และคาร์บอนที่ลดได้)</p>
+          </div>
+        </div>
+        <div class="ctg-hero-actions">
+          <button class="btn btn-primary" id="btnCalSubmitOpen">📥 ส่งปฏิทินเข้าโครงการ</button>
+          <button class="btn btn-outline" id="btnCalShowShareLink">🔗 แชร์ลิงก์ / QR Code</button>
+          <button class="btn btn-primary admin-only hidden" id="btnCalAdd">+ บันทึกการบริจาคปฏิทิน</button>
+          <button class="btn btn-outline" id="btnCalExportExcel">📊 ส่งออก Excel</button>
+          <button class="btn btn-outline" id="btnCalExportPdf">📄 ส่งออก PDF (A4)</button>
+        </div>
+      </section>
+
+            <div class="dept-mode-bar admin-only hidden" data-dept-key="calendar">
+        <label class="dm-switch" title="เปิด/ปิดการใช้ข้อมูลหน่วยงานของโครงการนี้"><input type="checkbox"><span class="dm-track"></span></label>
+        <div class="dm-text"><b>ใช้ข้อมูลหน่วยงานในโครงการนี้</b><small class="dm-desc"></small></div>
+      </div>
+
+      <div class="ov-link-mount" data-link-key="calendar"></div>
+      <div class="photo-mount" data-photo-key="calendar"></div>
+
+      <section class="breakdown-card ftf-share-card hidden" id="calShareCard">
+        <div class="breakdown-header">
+          <span class="breakdown-header-icon">🔗</span>
+          <div>
+            <h4>ลิงก์ฟอร์ม "ส่งปฏิทินเข้าโครงการ"</h4>
+            <p class="muted">แชร์ลิงก์นี้ หรือพิมพ์ QR code ไปติดที่จุดรับ ให้หน่วยงาน เจ้าหน้าที่ และบริษัท/องค์กรภายนอกแจ้งส่งปฏิทินเก่าเข้าโครงการได้ทันที</p>
+          </div>
+        </div>
+        <div class="ftf-share-body">
+          <div class="ftf-share-link-box">
+            <input type="text" id="calShareLinkInput" readonly>
+            <button class="btn btn-primary" id="btnCalCopyShareLink">📋 คัดลอกลิงก์</button>
+          </div>
+          <p class="muted hidden" id="calCopyConfirm">✅ คัดลอกลิงก์แล้ว</p>
+          <div class="ftf-qr-box">
+            <img id="calQrImg" alt="QR Code ลิงก์ฟอร์มส่งปฏิทิน" width="180" height="180">
+            <a id="calQrDownload" download="ปฏิทินเก่าเราขอ-QRcode.png" class="btn btn-outline" style="margin-top:8px;">⬇️ ดาวน์โหลด QR Code</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="ship-card admin-only hidden" id="calSubPanel">
+        <h3>📬 รายการที่แจ้งส่งปฏิทินเข้าโครงการ <small class="muted" id="calSubCount"></small></h3>
+        <p class="muted">ตรวจสอบแล้วชั่งน้ำหนักจริง กรอกน้ำหนัก (กก.) แล้วกด "รับเข้า" ระบบจะเพิ่มเป็นรายการบริจาคให้อัตโนมัติ</p>
+        <div id="calSubList" class="cal-sub-list"><div class="loading">กำลังโหลด...</div></div>
+      </section>
+
+      <p class="ctg-savings-note" id="calNote" style="background:var(--cal-100); color:var(--cal-700);"></p>
+
+      <section class="ship-kpi-row" id="calKpiRow"><div class="loading">กำลังโหลดข้อมูล...</div></section>
+
+      <div id="sumMountCal" class="sum-inpage"></div>
+
+      <section class="toolbar">
+        <div class="year-nav">
+          <button id="calYearPrev" class="btn btn-icon">‹</button>
+          <span id="calYearLabel" class="year-label"></span>
+          <button id="calYearNext" class="btn btn-icon">›</button>
+        </div>
+      </section>
+
+      <section class="ship-card">
+        <h3>📈 น้ำหนักปฏิทินที่รับบริจาครายเดือน</h3>
+        <p class="muted" id="calTrendSubtitle"></p>
+        <div id="calTrendChart" class="cal-bars"></div>
+      </section>
+
+      <section class="ship-card">
+        <h3>🧺 การบริจาคแต่ละรอบ</h3>
+        <p class="muted" id="calRoundsSubtitle"></p>
+        <div id="calRounds" class="cal-round-grid"></div>
+      </section>
+
+      <section class="ship-card">
+        <h3>🥧 สัดส่วนผู้บริจาคตามประเภท (น้ำหนัก)</h3>
+        <p class="muted" id="calTypeSubtitle"></p>
+        <div class="cal-type-wrap"><div id="calTypePie"></div><div id="calTypeLegend" class="cal-type-legend"></div></div>
+      </section>
+
+      <section class="ship-card">
+        <h3>🏆 อันดับผู้ร่วมบริจาค (สะสมทุกรอบ)</h3>
+        <p class="muted" id="calRankSubtitle"></p>
+        <div id="calRank"></div>
+      </section>
+
+      <section class="ship-card">
+        <h3>🧾 รายการบริจาคของปีที่เลือก</h3>
+        <p class="muted" id="calDonationsSubtitle"></p>
+        <div class="ship-table-wrap">
+          <table class="ship-table">
+            <thead><tr><th class="l">วันที่</th><th class="l">รอบ</th><th class="l">ประเภท</th><th class="l">ผู้บริจาค</th><th>น้ำหนัก (กก.)</th><th class="l">หมายเหตุ</th><th></th></tr></thead>
+            <tbody id="calDonationRows"><tr><td colspan="7" class="loading">กำลังโหลดข้อมูล...</td></tr></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="ship-card">
+        <h3>📅 สรุปรายปี</h3>
+        <div class="ship-table-wrap">
+          <table class="ship-table">
+            <thead><tr><th class="l">ปี พ.ศ.</th><th>รอบ</th><th>ผู้บริจาค (ราย)</th><th>น้ำหนัก (กก.)</th><th>ต้นไม้ที่ช่วยรักษา (ต้น)</th><th>CO2 ที่ลดได้ (กก.)</th></tr></thead>
+            <tbody id="calYearlyRows"><tr><td colspan="6" class="loading">กำลังโหลดข้อมูล...</td></tr></tbody>
+          </table>
+        </div>
+      </section>
+
+    </main>
+  </div><!-- /tabCalendar -->
+
+  <!-- ===================== แท็บ: คัดแยก แบ่งปัน ===================== -->
+  <div id="tabShare" class="hidden">
+    <main class="view">
+
+      <section class="ctg-hero shr-hero">
+        <svg class="ctg-hero-deco" viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <rect x="22" y="70" width="52" height="52" rx="6" fill="#ffffff"/>
+          <rect x="86" y="46" width="52" height="76" rx="6" fill="#ffffff" opacity="0.7"/>
+          <path d="M40 40 q40 -30 80 0" stroke="#ffffff" stroke-width="7" fill="none" stroke-linecap="round"/>
+          <path d="M118 28 l8 14 l-16 2 z" fill="#ffffff"/>
+        </svg>
+        <div class="ctg-hero-top">
+          <svg class="ctg-hero-icon-svg" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <rect x="5" y="22" width="16" height="20" rx="3" fill="#ffffff"/>
+            <rect x="27" y="14" width="16" height="28" rx="3" fill="#ffffff" opacity="0.75"/>
+            <path d="M12 14 q12 -10 24 0" stroke="#ffffff" stroke-width="3" fill="none" stroke-linecap="round"/>
+            <path d="M33 8 l4 6 l-7 1 z" fill="#ffffff"/>
+          </svg>
+          <div>
+            <h2>โครงการ "คัดแยก แบ่งปัน"</h2>
+            <p>ทุกหน่วยงานช่วยคัดแยกเครื่องใช้สำนักงานและวัสดุที่<strong>เกินจำเป็น/หมดความจำเป็น</strong> ส่งเข้าโครงการ — ผู้ดูแลตรวจสอบแล้วรับเข้าคลังรอแบ่งปัน เพื่อให้หน่วยงานอื่นนำไปใช้<strong>แทนการจัดซื้อใหม่</strong> ลดการสั่งซื้อซ้ำซ้อน ลดของเหลือทิ้ง และประหยัดงบประมาณของโรงพยาบาล</p>
+          </div>
+        </div>
+        <div class="ctg-hero-actions">
+          <button class="btn btn-primary" id="btnShrOpenSubmit">📥 ส่งรายการเข้าโครงการ</button>
+          <button class="btn btn-outline" id="btnShrShowLinks">🔗 ลิงก์ / QR Code</button>
+          <button class="btn btn-outline admin-only hidden" id="btnShrAddWithdraw">+ บันทึกการเบิก/แบ่งปัน</button>
+          <button class="btn btn-outline admin-only hidden" id="btnShrAddItem">+ เพิ่มรายการคงเหลือ</button>
+          <button class="btn btn-outline dm-matrix-btn" data-matrix="share">📈 รายเดือนแยกหน่วยงาน</button>
+          <button class="btn btn-outline" id="btnShrExportExcel">📊 ส่งออก Excel</button>
+          <button class="btn btn-outline" id="btnShrExportPdf">📄 ส่งออกรายงาน PDF (A4)</button>
+        </div>
+      </section>
+
+            <div class="dept-mode-bar admin-only hidden" data-dept-key="share">
+        <label class="dm-switch" title="เปิด/ปิดการใช้ข้อมูลหน่วยงานของโครงการนี้"><input type="checkbox"><span class="dm-track"></span></label>
+        <div class="dm-text"><b>ใช้ข้อมูลหน่วยงานในโครงการนี้</b><small class="dm-desc"></small></div>
+        <button type="button" class="btn btn-outline btn-sm dm-manage" data-manage="share">🏢 เลือกหน่วยงานที่ใช้</button>
+      </div>
+
+      <div class="ov-link-mount" data-link-key="share"></div>
+      <div class="photo-mount" data-photo-key="share"></div>
+
+      <section class="breakdown-card ftf-share-card hidden" id="shrShareCard">
+        <div class="breakdown-header">
+          <span class="breakdown-header-icon">🔗</span>
+          <div>
+            <h4>ลิงก์โครงการ "คัดแยก แบ่งปัน"</h4>
+            <p class="muted">แชร์ลิงก์ หรือพิมพ์ QR code ไปติดที่หน่วยงาน/จุดรับ — เปิดแล้วใช้งานได้ทันทีโดยไม่ต้องมีรหัส</p>
+          </div>
+        </div>
+        <div class="shr-link-grid">
+          <div class="shr-link-item">
+            <h5>📥 ลิงก์ส่งรายการเข้าโครงการ</h5>
+            <p class="muted">เปิดฟอร์มแจ้งรายการที่เกินจำเป็นโดยตรง</p>
+            <div class="ftf-share-link-box">
+              <input type="text" id="shrLinkFormInput" readonly>
+              <button class="btn btn-primary" id="btnShrCopyForm">📋 คัดลอก</button>
+            </div>
+            <p class="muted hidden" id="shrCopyFormConfirm">✅ คัดลอกลิงก์แล้ว</p>
+            <div class="ftf-qr-box">
+              <img id="shrQrForm" alt="QR Code ลิงก์ส่งรายการเข้าโครงการ" width="160" height="160">
+              <a id="shrQrFormDl" download="คัดแยกแบ่งปัน-ส่งรายการ-QRcode.png" class="btn btn-outline" style="margin-top:8px;">⬇️ ดาวน์โหลด QR Code</a>
+            </div>
+          </div>
+          <div class="shr-link-item">
+            <h5>📦 ลิงก์ตรวจสอบรายการคงเหลือ</h5>
+            <p class="muted">เปิดดูรายการที่รอแบ่งปันก่อนตัดสินใจจัดซื้อใหม่</p>
+            <div class="ftf-share-link-box">
+              <input type="text" id="shrLinkStockInput" readonly>
+              <button class="btn btn-primary" id="btnShrCopyStock">📋 คัดลอก</button>
+            </div>
+            <p class="muted hidden" id="shrCopyStockConfirm">✅ คัดลอกลิงก์แล้ว</p>
+            <div class="ftf-qr-box">
+              <img id="shrQrStock" alt="QR Code ลิงก์ตรวจสอบรายการคงเหลือ" width="160" height="160">
+              <a id="shrQrStockDl" download="คัดแยกแบ่งปัน-รายการคงเหลือ-QRcode.png" class="btn btn-outline" style="margin-top:8px;">⬇️ ดาวน์โหลด QR Code</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div id="shrSubmitConfirm" class="ftf-confirm-banner shr-banner hidden"></div>
+
+      <section class="ctg-kpi-row" id="shrKpiRow"><div class="loading">กำลังโหลดข้อมูล...</div></section>
+      <p class="ctg-savings-note shr-note" id="shrNote"></p>
+
+      <nav class="shr-subtabs" id="shrSubtabs">
+        <button class="shr-subtab active" data-sub="overview">📊 ภาพรวม</button>
+        <button class="shr-subtab" data-sub="stock">📦 ตรวจสอบรายการคงเหลือ <span class="shr-count" id="shrCntStock"></span></button>
+        <button class="shr-subtab" data-sub="subs">📥 รายการส่งเข้าโครงการ <span class="shr-count shr-count-alert hidden" id="shrCntSubs"></span></button>
+        <button class="shr-subtab" data-sub="wd">🧾 รายการเบิก/แบ่งปัน <span class="shr-count" id="shrCntWd"></span></button>
+              <button class="shr-subtab" data-sub="sum">📊 สรุปรายเดือน • รายปี • สะสม</button>
+      </nav>
+
+      <!-- ภาพรวม -->
+      <div id="shrSubOverview" class="shr-panel">
+        <section class="gantt-wrap year-timeline-wrap">
+          <div class="breakdown-header" style="padding:14px 16px 0;">
+            <span class="breakdown-header-icon">📈</span>
+            <div>
+              <h4>มูลค่าที่แบ่งปันไปใช้แทนการจัดซื้อ (รายเดือน)</h4>
+              <p class="muted" id="shrTrendSubtitle"></p>
+            </div>
+          </div>
+          <div id="shrTrendChart" style="padding:10px 16px 16px;"></div>
+        </section>
+
+        <section class="breakdown-row">
+          <div class="breakdown-card">
+            <div class="breakdown-header">
+              <span class="breakdown-header-icon">🥧</span>
+              <div>
+                <h4>สัดส่วนมูลค่าตามหมวดสินค้า</h4>
+                <p class="muted" id="shrCatSubtitle"></p>
+              </div>
+            </div>
+            <div class="breakdown-body">
+              <div class="breakdown-pie" id="shrCatPie"></div>
+              <div id="shrCatList" class="breakdown-list"></div>
+            </div>
+          </div>
+          <div class="breakdown-card dept-rank-share">
+            <div class="breakdown-header">
+              <span class="breakdown-header-icon">🏆</span>
+              <div>
+                <h4>หน่วยงานที่รับแบ่งปันมากที่สุด</h4>
+                <p class="muted" id="shrDeptSubtitle"></p>
+              </div>
+            </div>
+            <div id="shrDeptRank"></div>
+          </div>
+        </section>
+
+        <section class="ctg-rank-card">
+          <div class="ctg-rank-head">
+            <div>
+              <h3>⭐ รายการที่แบ่งปันมูลค่าสูงสุด</h3>
+              <p class="muted">8 อันดับแรกตามมูลค่ารวมที่เบิกไปใช้</p>
+            </div>
+          </div>
+          <div id="shrTopItems"></div>
+        </section>
+      </div>
+
+      <!-- ตรวจสอบรายการคงเหลือ -->
+      <div id="shrSubStock" class="shr-panel hidden">
+        <section class="ctg-sales-card">
+          <div class="ctg-sales-head">
+            <div>
+              <h3>📦 รายการคงเหลือรอแบ่งปัน</h3>
+              <p class="muted" id="shrStockSubtitle"></p>
+            </div>
+          </div>
+          <div class="shr-filters">
+            <input type="text" id="shrStockSearch" placeholder="🔍 ค้นหาชื่อรายการ...">
+            <select id="shrStockCat"><option value="">ทุกหมวด</option></select>
+            <select id="shrStockStatus">
+              <option value="">ทุกสถานะ</option>
+              <option value="ระบุราคาแล้ว">ระบุราคาแล้ว</option>
+              <option value="รอตรวจสอบราคา">รอตรวจสอบราคา</option>
+              <option value="รอตรวจสอบจำนวน">รอตรวจสอบจำนวน</option>
+              <option value="หมดแล้ว">หมดแล้ว</option>
+            </select>
+            <label class="shr-inline-check"><input type="checkbox" id="shrStockShowEmpty"> แสดงรายการที่หมดแล้ว</label>
+          </div>
+          <div class="shr-table-wrap">
+            <table class="ctg-sales-table shr-table">
+              <thead>
+                <tr><th>#</th><th class="shr-left">รายการ</th><th class="shr-left">หมวด</th><th>คงเหลือ</th><th>หน่วย</th><th>มูลค่า/หน่วย</th><th>ราคารวม</th><th>สถานะ</th><th>ตรวจสอบล่าสุด</th><th></th></tr>
+              </thead>
+              <tbody id="shrStockRows"><tr><td colspan="10" class="loading">กำลังโหลดข้อมูล...</td></tr></tbody>
+              <tfoot id="shrStockFoot"></tfoot>
+            </table>
+          </div>
+        </section>
+      </div>
+
+      <!-- รายการส่งเข้าโครงการ -->
+      <div id="shrSubSubs" class="shr-panel hidden">
+        <section class="ctg-sales-card">
+          <div class="ctg-sales-head">
+            <div>
+              <h3>📥 รายการที่หน่วยงานส่งเข้าโครงการ / ผลสำรวจ</h3>
+              <p class="muted" id="shrSubsSubtitle"></p>
+            </div>
+          </div>
+          <div class="shr-filters">
+            <select id="shrSubsStatus">
+              <option value="">ทุกสถานะ</option>
+              <option value="รอตรวจสอบ">รอตรวจสอบ</option>
+              <option value="รับเข้าคลังแล้ว">รับเข้าคลังแล้ว</option>
+              <option value="ไม่รับเข้า">ไม่รับเข้า</option>
+              <option value="ผลสำรวจเดิม">ผลสำรวจเดิม</option>
+              <option value="ไม่มีรายการ">ไม่มีรายการ</option>
+            </select>
+          </div>
+          <div class="shr-table-wrap">
+            <table class="ctg-sales-table shr-table">
+              <thead>
+                <tr><th>วันที่</th><th class="shr-left">หน่วยงาน</th><th class="shr-admin-col">ผู้แจ้ง</th><th class="shr-left">รายการ</th><th>จำนวน</th><th class="shr-left">สถานะการใช้งาน</th><th>สถานะ</th><th></th></tr>
+              </thead>
+              <tbody id="shrSubRows"><tr><td colspan="8" class="loading">กำลังโหลดข้อมูล...</td></tr></tbody>
+            </table>
+          </div>
+          <p class="muted" style="margin-top:8px;">🔒 ชื่อ-ตำแหน่งผู้แจ้งแสดงเฉพาะผู้ดูแลระบบที่เข้าสู่ระบบแล้วเท่านั้น</p>
+        </section>
+      </div>
+
+      <!-- รายการเบิก/แบ่งปัน -->
+      <div id="shrSubSum" class="shr-panel hidden"><div id="sumMountShr"></div></div>
+
+      <div id="shrSubWd" class="shr-panel hidden">
+        <section class="ctg-sales-card">
+          <div class="ctg-sales-head">
+            <div>
+              <h3>🧾 รายการเบิก/รับแบ่งปัน</h3>
+              <p class="muted" id="shrWdSubtitle"></p>
+            </div>
+          </div>
+          <div class="shr-filters">
+            <input type="text" id="shrWdSearch" placeholder="🔍 ค้นหารายการ / หน่วยงาน...">
+            <select id="shrWdCat"><option value="">ทุกหมวด</option></select>
+          </div>
+          <div class="shr-table-wrap">
+            <table class="ctg-sales-table shr-table">
+              <thead>
+                <tr><th>วันที่</th><th class="shr-left">หมวด</th><th class="shr-left">รายการ</th><th>จำนวน</th><th>หน่วย</th><th>ราคา/หน่วย</th><th>ราคารวม</th><th class="shr-left">หน่วยงานผู้เบิก</th><th></th></tr>
+              </thead>
+              <tbody id="shrWdRows"><tr><td colspan="9" class="loading">กำลังโหลดข้อมูล...</td></tr></tbody>
+              <tfoot id="shrWdFoot"></tfoot>
+            </table>
+          </div>
+        </section>
+      </div>
+
+    </main>
+  </div><!-- /tabShare -->
+
+  <!-- ===================== แท็บ: คลังโครงการ (โครงการที่แล้วเสร็จ) ===================== -->
+  <div id="tabArchive" class="hidden">
+    <main class="view">
+      <section class="arc-hero">
+        <div>
+          <p class="arc-eyebrow">ARCHIVE • คลังโครงการ</p>
+          <h2>🗄️ โครงการที่แล้วเสร็จ / เก็บเข้าคลัง</h2>
+          <p class="muted">โครงการที่ผู้ดูแลระบบเก็บเข้าคลังแล้ว ข้อมูลและประวัติความคืบหน้าทั้งหมดยังอยู่ครบ เปิดดูย้อนหลังได้ทุกเมื่อ และนำกลับมาแสดงในหน้าภาพรวมได้</p>
+        </div>
+        <div class="arc-hero-actions">
+          <button class="btn btn-outline" id="btnArcBack">‹ กลับหน้าภาพรวม</button>
+          <button class="btn btn-outline" id="btnArcExcel">📊 ส่งออก Excel</button>
+        </div>
+      </section>
+      <section class="arc-kpis" id="arcKpis"></section>
+      <section class="arc-ready admin-only hidden" id="arcReady"></section>
+      <section class="toolbar arc-toolbar">
+        <input type="text" id="arcSearch" placeholder="ค้นหาชื่อโครงการ / หน่วยงาน...">
+        <select id="arcCategory"><option value="">ทุกประเภทโครงการ</option></select>
+        <select id="arcYear"><option value="">ทุกปีที่เก็บเข้าคลัง</option></select>
+      </section>
+      <section class="arc-grid" id="arcGrid"><div class="loading">กำลังโหลดข้อมูล...</div></section>
+    </main>
+  </div><!-- /tabArchive -->
+
+  <!-- ===================== แท็บ: น้ำยา EM จากเศษอาหาร ===================== -->
+  <div id="tabEM" class="hidden theme-em">
+    <main class="view">
+
+      <section class="ctg-hero em-hero">
+        <svg class="ctg-hero-deco" viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <rect x="42" y="52" width="76" height="92" rx="12" fill="#ffffff"/>
+          <rect x="34" y="40" width="92" height="16" rx="8" fill="#ffffff" opacity="0.7"/>
+          <circle cx="66" cy="22" r="9" fill="#ffffff" opacity="0.85"/><circle cx="92" cy="14" r="6" fill="#ffffff" opacity="0.7"/><circle cx="110" cy="26" r="5" fill="#ffffff" opacity="0.6"/>
+        </svg>
+        <div class="ctg-hero-top">
+          <svg class="ctg-hero-icon-svg" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M18 6h12v8l7 20a6 6 0 0 1-5.7 8H16.7A6 6 0 0 1 11 34l7-20z" fill="#ffffff"/>
+            <path d="M15 28h18l3 8a3 3 0 0 1-2.8 4H14.8A3 3 0 0 1 12 36z" fill="#9ccc65" opacity=".9"/>
+          </svg>
+          <div>
+            <h2>โครงการ "น้ำยา EM จากเศษอาหาร"</h2>
+            <p>นำ<strong>เศษอาหาร ผักและผลไม้ และเนื้อสัตว์</strong>จากโรงพยาบาลมาหมักเป็น<strong>น้ำยา EM</strong> (จุลินทรีย์ที่มีประโยชน์) ติดตามอายุการหมักของแต่ละถังที่ <strong>7 • 15 • 45 วัน</strong> ตรวจความคืบหน้าทุก 7 วัน เมื่อครบกำหนดเก็บเป็นน้ำยา EM แล้วนำไปใช้ — บันทึกว่าได้กี่ลิตร ใช้ที่ไหน ใครนำไปใช้ และคงเหลือเท่าไร</p>
+          </div>
+        </div>
+        <div class="hero-chips">
+          <span class="hero-chip">⏱️ ครบกำหนดเป็นน้ำยา EM ที่ <b id="emHeroReady">45</b> วัน</span>
+          <span class="hero-chip">🔒 ผู้ดูแลระบบเท่านั้นที่บันทึก/แก้ไข • ทุกคนดูความคืบหน้าได้</span>
+        </div>
+      </section>
+
+      <div class="ov-link-mount" data-link-key="em"></div>
+      <div class="photo-mount" data-photo-key="em"></div>
+
+      <section class="em-flow" id="emFlow"><div class="loading">กำลังโหลดข้อมูล...</div></section>
+      <section class="em-alerts" id="emAlerts"></section>
+
+      <section class="breakdown-card ftf-share-card hidden" id="emShareCard">
+        <div class="breakdown-header">
+          <span class="breakdown-header-icon">🔗</span>
+          <div>
+            <h4>ลิงก์ &amp; QR Code สำหรับกรอกข้อมูลโครงการน้ำยา EM</h4>
+            <p class="muted">แชร์ลิงก์ หรือพิมพ์ QR Code ไปติดที่จุดปฏิบัติงาน — ข้อมูลที่กรอกจะ<b>รอผู้ดูแลระบบยืนยัน</b>ก่อนนับในรายงานทุกครั้ง</p>
+          </div>
+        </div>
+        <div class="shr-link-grid">
+          <div class="shr-link-item">
+            <h5>📝 ฟอร์มบันทึกการหมักประจำวัน (ผู้ปฏิบัติงาน)</h5>
+            <p class="muted">บันทึกเริ่มหมักถังใหม่ / เติมวัตถุดิบ / ตรวจดูแลประจำวัน — เมื่อยืนยันแล้วผูกกับรอบการหมักให้อัตโนมัติ</p>
+            <div class="ftf-share-link-box">
+              <input type="text" id="emLogLinkInput" readonly>
+              <button class="btn btn-primary" id="btnEmCopyLogLink">📋 คัดลอก</button>
+            </div>
+            <p class="muted hidden" id="emLogCopyConfirm">✅ คัดลอกลิงก์แล้ว</p>
+            <div class="ftf-qr-box">
+              <img id="emLogQrImg" alt="QR Code ฟอร์มบันทึกการหมักประจำวัน" width="160" height="160">
+              <a id="emLogQrDownload" download="น้ำยา-EM-บันทึกการหมัก-QRcode.png" class="btn btn-outline" style="margin-top:8px;">⬇️ ดาวน์โหลด QR Code</a>
+            </div>
+          </div>
+          <div class="shr-link-item">
+            <h5>💧 ฟอร์มบันทึกการนำน้ำยา EM ไปใช้ (ผู้นำไปใช้)</h5>
+            <p class="muted">วันที่ ปริมาณ สถานที่ และชื่อผู้นำไปใช้ — ปริมาณหักจากคงเหลือหลังผู้ดูแลยืนยัน</p>
+            <div class="ftf-share-link-box">
+              <input type="text" id="emShareLinkInput" readonly>
+              <button class="btn btn-primary" id="btnEmCopyShareLink">📋 คัดลอก</button>
+            </div>
+            <p class="muted hidden" id="emCopyConfirm">✅ คัดลอกลิงก์แล้ว</p>
+            <div class="ftf-qr-box">
+              <img id="emQrImg" alt="QR Code ลิงก์ฟอร์มบันทึกการใช้น้ำยา EM" width="160" height="160">
+              <a id="emQrDownload" download="น้ำยา-EM-บันทึกการใช้-QRcode.png" class="btn btn-outline" style="margin-top:8px;">⬇️ ดาวน์โหลด QR Code</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div id="emLogConfirm" class="ftf-confirm-banner hidden"></div>
+      <div class="vf-pending-note hidden" id="vfNote-emlog"></div>
+      <section class="vf-panel admin-only hidden" id="vfPanel-emlog"></section>
+      <div id="emUseConfirm" class="ftf-confirm-banner hidden"></div>
+      <div class="vf-pending-note hidden" id="vfNote-emuse"></div>
+      <section class="vf-panel admin-only hidden" id="vfPanel-emuse"></section>
+
+      <section class="toolbar em-toolbar">
+        <button class="btn btn-primary admin-only hidden" id="btnEmAddBatch">+ เริ่มหมักรอบใหม่</button>
+        <button class="btn btn-primary admin-only hidden" id="btnEmAddUsage">+ บันทึกการนำน้ำยาไปใช้</button>
+        <button class="btn btn-primary" id="btnEmLogForm">📝 บันทึกการหมักประจำวัน</button>
+        <button class="btn btn-primary" id="btnEmUseForm">💧 บันทึกการนำน้ำยา EM ไปใช้</button>
+        <button class="btn btn-outline" id="btnEmShareLink">🔗 ลิงก์ &amp; QR Code</button>
+        <span style="flex:1;"></span>
+        <button class="btn btn-outline" id="btnEmExcel">📊 ส่งออก Excel</button>
+        <button class="btn btn-primary" id="btnEmPdf">📄 ส่งออกรายงาน PDF (A4 แนวนอน)</button>
+      </section>
+
+      <nav class="pj-subtabs theme-em" id="emSubtabs">
+        <button class="pj-subtab active" data-sub="overview">📊 ภาพรวมกระบวนการ</button>
+        <button class="pj-subtab" data-sub="batches">🧪 รอบการหมัก <span class="shr-count" id="emCntBatches"></span></button>
+        <button class="pj-subtab" data-sub="weekly">🗓️ รายงานทุก 7 วัน</button>
+        <button class="pj-subtab" data-sub="usage">💧 การนำไปใช้ &amp; คงเหลือ</button>
+      </nav>
+
+      <div id="emPaneOverview"></div>
+      <div id="emPaneBatches" class="hidden"></div>
+      <div id="emPaneWeekly" class="hidden"></div>
+      <div id="emPaneUsage" class="hidden"></div>
+    </main>
+  </div><!-- /tabEM -->
+
+<!-- COMPOST-TAB-BEGIN -->
+  <!-- ===================== แท็บ: ปุ๋ยหมักจากขยะใบไม้ ===================== -->
+  <div id="tabCP" class="hidden theme-cp">
+    <main class="view">
+
+      <section class="ctg-hero cp-hero">
+        <svg class="ctg-hero-deco" viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M140 14C70 14 30 52 28 100c0 14 6 24 14 30 6-30 26-56 66-72-30 20-50 44-56 72 10 4 20 2 28-2C142 108 150 56 140 14z" fill="#ffffff"/><ellipse cx="62" cy="140" rx="48" ry="10" fill="#ffffff" opacity=".6"/></svg>
+        <div class="ctg-hero-top">
+          <svg class="ctg-hero-icon-svg" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M40 6C18 6 8 18 8 32c0 4 2 7 5 9 2-9 8-17 20-22-9 6-15 13-17 22 3 1 6 1 8 0C38 38 42 22 40 6z" fill="#ffffff"/></svg>
+          <div>
+            <h2>โครงการ "ปุ๋ยหมักจากขยะใบไม้"</h2>
+            <p>นำ<strong>ขยะใบไม้ ใบไม้แห้ง/สด เศษหญ้า และกิ่งไม้</strong>ที่ตัดแต่งในพื้นที่โรงพยาบาลมาหมักเป็น<strong>ปุ๋ยหมัก</strong> ติดตามอายุการหมักของแต่ละกองที่ <strong>7 • 15 • 45 วัน</strong> ตรวจความคืบหน้า (กลับกอง/วัดอุณหภูมิกอง) ทุก 7 วัน เมื่อครบกำหนดเก็บเป็นปุ๋ยหมักแล้วนำไปใช้ — บันทึกว่าได้กี่กิโลกรัม ใช้ที่ไหน ใครนำไปใช้ และคงเหลือเท่าไร</p>
+          </div>
+        </div>
+        <div class="hero-chips">
+          <span class="hero-chip">⏱️ ครบกำหนดเป็นปุ๋ยหมักที่ <b id="cpHeroReady">45</b> วัน</span>
+          <span class="hero-chip">🔒 ผู้ดูแลระบบเท่านั้นที่บันทึก/แก้ไข • ทุกคนดูความคืบหน้าได้</span>
+        </div>
+      </section>
+
+      <div class="ov-link-mount" data-link-key="compost"></div>
+      <div class="photo-mount" data-photo-key="compost"></div>
+
+      <section class="em-flow" id="cpFlow"><div class="loading">กำลังโหลดข้อมูล...</div></section>
+      <section class="em-alerts" id="cpAlerts"></section>
+
+      <section class="breakdown-card ftf-share-card hidden" id="cpShareCard">
+        <div class="breakdown-header">
+          <span class="breakdown-header-icon">🔗</span>
+          <div>
+            <h4>ลิงก์ &amp; QR Code สำหรับกรอกข้อมูลโครงการปุ๋ยหมัก</h4>
+            <p class="muted">แชร์ลิงก์ หรือพิมพ์ QR Code ไปติดที่จุดปฏิบัติงาน — ข้อมูลที่กรอกจะ<b>รอผู้ดูแลระบบยืนยัน</b>ก่อนนับในรายงานทุกครั้ง</p>
+          </div>
+        </div>
+        <div class="shr-link-grid">
+          <div class="shr-link-item">
+            <h5>📝 ฟอร์มบันทึกการหมักประจำวัน (ผู้ปฏิบัติงาน)</h5>
+            <p class="muted">บันทึกเริ่มหมักกองใหม่ / เติมวัตถุดิบ / ตรวจดูแลประจำวัน — เมื่อยืนยันแล้วผูกกับรอบการหมักให้อัตโนมัติ</p>
+            <div class="ftf-share-link-box">
+              <input type="text" id="cpLogLinkInput" readonly>
+              <button class="btn btn-primary" id="btnCpCopyLogLink">📋 คัดลอก</button>
+            </div>
+            <p class="muted hidden" id="cpLogCopyConfirm">✅ คัดลอกลิงก์แล้ว</p>
+            <div class="ftf-qr-box">
+              <img id="cpLogQrImg" alt="QR Code ฟอร์มบันทึกการหมักประจำวัน" width="160" height="160">
+              <a id="cpLogQrDownload" download="ปุ๋ยหมัก-CP-บันทึกการหมัก-QRcode.png" class="btn btn-outline" style="margin-top:8px;">⬇️ ดาวน์โหลด QR Code</a>
+            </div>
+          </div>
+          <div class="shr-link-item">
+            <h5>💧 ฟอร์มบันทึกการนำปุ๋ยหมักไปใช้ (ผู้นำไปใช้)</h5>
+            <p class="muted">วันที่ ปริมาณ สถานที่ และชื่อผู้นำไปใช้ — ปริมาณหักจากคงเหลือหลังผู้ดูแลยืนยัน</p>
+            <div class="ftf-share-link-box">
+              <input type="text" id="cpShareLinkInput" readonly>
+              <button class="btn btn-primary" id="btnCpCopyShareLink">📋 คัดลอก</button>
+            </div>
+            <p class="muted hidden" id="cpCopyConfirm">✅ คัดลอกลิงก์แล้ว</p>
+            <div class="ftf-qr-box">
+              <img id="cpQrImg" alt="QR Code ลิงก์ฟอร์มบันทึกการใช้ปุ๋ยหมัก" width="160" height="160">
+              <a id="cpQrDownload" download="ปุ๋ยหมัก-CP-บันทึกการใช้-QRcode.png" class="btn btn-outline" style="margin-top:8px;">⬇️ ดาวน์โหลด QR Code</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div id="cpLogConfirm" class="ftf-confirm-banner hidden"></div>
+      <div class="vf-pending-note hidden" id="vfNote-cplog"></div>
+      <section class="vf-panel admin-only hidden" id="vfPanel-cplog"></section>
+      <div id="cpUseConfirm" class="ftf-confirm-banner hidden"></div>
+      <div class="vf-pending-note hidden" id="vfNote-cpuse"></div>
+      <section class="vf-panel admin-only hidden" id="vfPanel-cpuse"></section>
+
+      <section class="toolbar em-toolbar">
+        <button class="btn btn-primary admin-only hidden" id="btnCpAddBatch">+ เริ่มหมักรอบใหม่</button>
+        <button class="btn btn-primary admin-only hidden" id="btnCpAddUsage">+ บันทึกการนำปุ๋ยหมักไปใช้</button>
+        <button class="btn btn-primary" id="btnCpLogForm">📝 บันทึกการหมักประจำวัน</button>
+        <button class="btn btn-primary" id="btnCpUseForm">💧 บันทึกการนำปุ๋ยหมักไปใช้</button>
+        <button class="btn btn-outline" id="btnCpShareLink">🔗 ลิงก์ &amp; QR Code</button>
+        <span style="flex:1;"></span>
+        <button class="btn btn-outline" id="btnCpExcel">📊 ส่งออก Excel</button>
+        <button class="btn btn-primary" id="btnCpPdf">📄 ส่งออกรายงาน PDF (A4 แนวนอน)</button>
+      </section>
+
+      <nav class="pj-subtabs theme-cp" id="cpSubtabs">
+        <button class="pj-subtab active" data-sub="overview">📊 ภาพรวมกระบวนการ</button>
+        <button class="pj-subtab" data-sub="batches">🌱 รอบการหมัก <span class="shr-count" id="cpCntBatches"></span></button>
+        <button class="pj-subtab" data-sub="weekly">🗓️ รายงานทุก 7 วัน</button>
+        <button class="pj-subtab" data-sub="usage">💧 การนำไปใช้ &amp; คงเหลือ</button>
+      </nav>
+
+      <div id="cpPaneOverview"></div>
+      <div id="cpPaneBatches" class="hidden"></div>
+      <div id="cpPaneWeekly" class="hidden"></div>
+      <div id="cpPaneUsage" class="hidden"></div>
+    </main>
+  </div><!-- /tabCP -->
+
+<!-- COMPOST-TAB-END -->
+  <div id="tabEnvReport" class="hidden">
+    <main class="view">
+
+      <section class="env-poster" id="envPoster">
+        <svg class="env-poster-scene" viewBox="0 0 600 220" preserveAspectRatio="xMaxYMax meet" aria-hidden="true">
+          <defs>
+            <linearGradient id="epSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d9f1ff"/><stop offset="1" stop-color="#eefbe9"/></linearGradient>
+          </defs>
+          <rect width="600" height="220" fill="url(#epSky)" opacity="0"/>
+          <circle cx="520" cy="46" r="26" fill="#ffd84d" opacity=".9"/>
+          <g fill="#fff" opacity=".9"><ellipse cx="380" cy="40" rx="34" ry="11"/><ellipse cx="406" cy="32" rx="22" ry="10"/><ellipse cx="270" cy="70" rx="28" ry="9"/></g>
+          <g transform="translate(20,70)">
+            <rect x="0" y="40" width="150" height="110" rx="4" fill="#fff" stroke="#bcd7e6"/>
+            <rect x="150" y="62" width="90" height="88" rx="4" fill="#f3f9fd" stroke="#bcd7e6"/>
+            <g fill="#8fc7e8"><rect x="12" y="54" width="22" height="16"/><rect x="42" y="54" width="22" height="16"/><rect x="72" y="54" width="22" height="16"/><rect x="102" y="54" width="22" height="16"/>
+              <rect x="12" y="82" width="22" height="16"/><rect x="42" y="82" width="22" height="16"/><rect x="72" y="82" width="22" height="16"/><rect x="102" y="82" width="22" height="16"/>
+              <rect x="12" y="110" width="22" height="16"/><rect x="42" y="110" width="22" height="16"/><rect x="102" y="110" width="22" height="16"/><rect x="164" y="76" width="18" height="14"/><rect x="194" y="76" width="18" height="14"/><rect x="164" y="102" width="18" height="14"/><rect x="194" y="102" width="18" height="14"/></g>
+            <rect x="66" y="112" width="26" height="38" fill="#7fb7d9"/>
+            <rect x="58" y="0" width="34" height="34" rx="6" fill="#fff" stroke="#e5484d" stroke-width="2"/>
+            <path d="M71 6h8v9h9v8h-9v9h-8v-9h-9v-8h9z" fill="#e5484d" transform="translate(-1,-1) scale(1)"/>
+          </g>
+          <rect y="205" width="600" height="15" fill="#6fcf7a" opacity=".55"/>
+          <g><ellipse cx="300" cy="190" rx="26" ry="30" fill="#2e9e57"/><rect x="297" y="205" width="6" height="14" fill="#8a5a1b"/>
+             <ellipse cx="350" cy="196" rx="20" ry="24" fill="#49b36a"/><rect x="347" y="208" width="5" height="11" fill="#8a5a1b"/>
+             <ellipse cx="560" cy="186" rx="30" ry="34" fill="#2e9e57"/><rect x="557" y="204" width="6" height="16" fill="#8a5a1b"/>
+             <ellipse cx="505" cy="196" rx="20" ry="24" fill="#49b36a"/><rect x="502" y="208" width="5" height="11" fill="#8a5a1b"/></g>
+        </svg>
+        <div class="env-poster-main">
+          <div class="env-poster-badge">🌱 ระบบติดตามโครงการสิ่งแวดล้อมโรงพยาบาล</div>
+          <h2 class="env-poster-title">รายงานผลด้านสิ่งแวดล้อม</h2>
+          <div class="env-poster-period" id="envPosterPeriod">ข้อมูลสะสมทุกโครงการ</div>
+          <p class="env-poster-lead">รวมผลลัพธ์ 6 โครงการ: Paperless • ทอดไม่ทิ้ง • ตลับหมึกเก่าเราขอ • จากครัวสู่ท้องฟ้า • ปฏิทินเก่าเราขอ • คัดแยก แบ่งปัน</p>
+          <div class="env-poster-actions"><button class="btn env-poster-btn" id="btnEnvExportPdf">📄 ส่งออก PDF (A4)</button></div>
+        </div>
+      </section>
+
+      <section class="env-hl-row" id="envHighlights"></section>
+
+      <div class="env-main-grid">
+        <section class="env-panel env-donut-card" id="envCo2Split"></section>
+        <section class="env-panel env-sum-card" id="envSummary"></section>
+      </div>
+
+
+      <h3 class="env-section-title"><span>🔑</span> ตัวเลขสำคัญ (รวมทุกโครงการ) <small>ใต้ตัวเลขแต่ละใบอธิบายว่านับอะไรและคำนวณอย่างไร • คำอธิบายคำศัพท์อยู่ล่างสุดของหน้า</small></h3>
+      <section class="env-kpi-row" id="envKpiRow"></section>
+
+
+      <h3 class="env-section-title"><span>📂</span> ผลลัพธ์แยกรายโครงการ <small>แต่ละใบบอกว่าโครงการคืออะไร ตัวเลขแต่ละบรรทัดหมายถึงอะไร และสื่อสารได้ว่าอย่างไร</small></h3>
+
+      <section class="breakdown-row env-breakdown-row">
+        <div class="breakdown-card env-card env-c-pl" id="envPaperlessCard">
+          <div class="breakdown-header">
+            <span class="breakdown-header-icon">📄</span>
+            <div>
+              <h4>โครงการ Paperless</h4>
+              <p class="muted">ลดการใช้กระดาษ</p>
+            </div>
+          </div>
+          <p class="env-about">ลดการพิมพ์เอกสาร โดยหันมาใช้เอกสารอิเล็กทรอนิกส์แทน แต่ละเรื่องที่ไม่ต้องพิมพ์จะนับเป็นจำนวนแผ่นที่ประหยัดได้</p>
+          <div id="envPaperlessStats" class="loading">กำลังโหลดข้อมูล...</div>
+        </div>
+
+        <div class="breakdown-card env-card env-c-ftf" id="envFtfCard">
+          <div class="breakdown-header">
+            <span class="breakdown-header-icon">🛢️</span>
+            <div>
+              <h4>โครงการทอดไม่ทิ้ง</h4>
+              <p class="muted">เก็บน้ำมันใช้แล้วไปกำจัด/แปรรูปอย่างถูกวิธี</p>
+            </div>
+          </div>
+          <p class="env-about">รับบริจาคน้ำมันทอดอาหารที่ใช้แล้วจากเจ้าหน้าที่และผู้ร่วมโครงการ เพื่อไม่ให้ถูกเททิ้งลงท่อระบายน้ำ แล้วส่งต่อไปแปรรูป (เป็นโครงการ “รับบริจาค”)</p>
+          <div id="envFtfStats" class="loading">กำลังโหลดข้อมูล...</div>
+        </div>
+
+        <div class="breakdown-card env-card env-c-ctg" id="envCartridgeCard">
+          <div class="breakdown-header">
+            <span class="breakdown-header-icon">🖨️</span>
+            <div>
+              <h4>ตลับหมึกเก่าเราขอ</h4>
+              <p class="muted">ลดขยะอันตรายจากตลับหมึกพิมพ์</p>
+            </div>
+          </div>
+          <p class="env-about">รวบรวมตลับหมึกพิมพ์ที่ใช้หมดแล้วจากหน่วยงานต่างๆ ส่งให้ผู้รับซื้อนำไปรีไซเคิล แทนการทิ้งเป็นขยะอันตราย</p>
+          <div id="envCartridgeStats" class="loading">กำลังโหลดข้อมูล...</div>
+        </div>
+
+        <div class="breakdown-card env-card env-c-kit" id="envKitchenCard">
+          <div class="breakdown-header">
+            <span class="breakdown-header-icon">🍳</span>
+            <div>
+              <h4>จากครัวสู่ท้องฟ้า</h4>
+              <p class="muted">น้ำมันทอดอาหารใช้แล้วของฝ่ายโภชนาการ</p>
+            </div>
+          </div>
+          <p class="env-about">น้ำมันทอดอาหารที่ใช้แล้วของครัวฝ่ายโภชนาการเอง ส่งให้ผู้รับนำไปแปรรูป (เป็นการจัดการขยะของหน่วยงาน ต่างจากทอดไม่ทิ้งที่เป็นการรับบริจาค)</p>
+          <div id="envKitchenStats" class="loading">กำลังโหลดข้อมูล...</div>
+        </div>
+
+        <div class="breakdown-card env-card env-c-cal" id="envCalendarCard">
+          <div class="breakdown-header">
+            <span class="breakdown-header-icon">📅</span>
+            <div>
+              <h4>ปฏิทินเก่าเราขอ</h4>
+              <p class="muted">บริจาคปฏิทินเก่าทำอักษรเบรลล์</p>
+            </div>
+          </div>
+          <p class="env-about">รับบริจาคปฏิทินเก่าจากหน่วยงาน เจ้าหน้าที่ และบริษัทภายนอก ไปจัดทำเอกสารอักษรเบรลล์ให้ผู้พิการทางสายตา นับเป็นน้ำหนักกระดาษที่ไม่กลายเป็นขยะ</p>
+          <div id="envCalendarStats" class="loading">กำลังโหลดข้อมูล...</div>
+        </div>
+
+        <div class="breakdown-card env-card env-c-shr" id="envShareCard">
+          <div class="breakdown-header">
+            <span class="breakdown-header-icon">♻️</span>
+            <div>
+              <h4>คัดแยก แบ่งปัน</h4>
+              <p class="muted">นำวัสดุเหลือใช้ไปใช้ซ้ำแทนการซื้อใหม่</p>
+            </div>
+          </div>
+          <p class="env-about">นำวัสดุสำนักงานที่เหลือใช้ (กระดาษ ตลับหมึก ปากกา ฯลฯ) ของหน่วยงานหนึ่งไปแบ่งปันให้หน่วยงานอื่นใช้ต่อ แทนการซื้อใหม่หรือทิ้ง</p>
+          <div id="envShareStats" class="loading">กำลังโหลดข้อมูล...</div>
+        </div>
+      </section>
+
+      <h3 class="env-section-title"><span>🧮</span> ค่าที่ใช้คำนวณ <small>แก้ไขได้ที่ชีต EnvironmentalSettings โดยไม่ต้องแก้โค้ด</small></h3>
+      <p class="ctg-savings-note env-assumptions-note" id="envAssumptionsNote"></p>
+
+      <section class="env-closing" id="envClosing">
+        <div class="env-closing-globe">🌏</div>
+        <div><b>ร่วมมือกันลดขยะ เพื่อสิ่งแวดล้อมที่ยั่งยืน</b><span>ทุกการแยก ทุกการใช้ซ้ำ ทุกการบริจาค ของบุคลากรทุกคน คือส่วนหนึ่งของผลลัพธ์ในรายงานนี้</span></div>
+      </section>
+
+      <details class="env-guide" id="envGuide"></details>
+
+    </main>
+  </div><!-- /tabEnvReport -->
+  </div><!-- /app-main -->
+  </div><!-- /app-shell -->
+
+
+  <!-- ===================== MODALS ===================== -->
+  <div class="modal-backdrop hidden" id="modalBackdrop"></div>
+
+  <div class="modal hidden" id="modalLogin">
+    <h3>เข้าสู่ระบบผู้ดูแล (รายหน่วยงาน)</h3>
+    <label>หน่วยงาน</label>
+    <select id="loginDept"></select>
+    <label>รหัส PIN</label>
+    <input type="password" id="loginPin" placeholder="กรอกรหัส PIN">
+    <p class="error hidden" id="loginError"></p>
+    <div class="modal-actions">
+      <button class="btn btn-outline" data-close>ยกเลิก</button>
+      <button class="btn btn-primary" id="btnDoLogin">เข้าสู่ระบบ</button>
+    </div>
+  </div>
+
+  <div class="modal hidden" id="modalProject">
+    <h3 id="projectModalTitle">เพิ่มโครงการใหม่</h3>
+    <input type="hidden" id="pfProjectId">
+    <label>ชื่อโครงการ</label>
+    <input type="text" id="pfName">
+    <label>ประเภทโครงการ</label>
+    <input type="text" id="pfCategory" placeholder="เช่น พลังงาน / การจัดการน้ำ / การจัดการขยะ">
+    <label>รายละเอียดโครงการ</label>
+    <textarea id="pfDescription" rows="3" placeholder="อธิบายวัตถุประสงค์ ขอบเขต หรือรายละเอียดของโครงการ"></textarea>
+    <div class="grid2">
+      <div><label>วันที่เริ่ม</label><input type="date" id="pfStart"></div>
+      <div><label>วันที่คาดว่าจะแล้วเสร็จ</label><input type="date" id="pfTarget"></div>
+    </div>
+    <label>ผู้รับผิดชอบ</label>
+    <input type="text" id="pfResponsible">
+    <label>หน่วยงานรับผิดชอบ</label>
+    <input type="text" id="pfUnit">
+    <div class="grid2">
+      <div>
+        <label>สถานะ</label>
+        <select id="pfStatusCategory"></select>
+      </div>
+      <div>
+        <label>ความคืบหน้า (%)</label>
+        <input type="number" id="pfProgress" min="0" max="100">
+      </div>
+    </div>
+    <label>ข้อความสถานะ (แสดงในหน้ารายละเอียด)</label>
+    <input type="text" id="pfCurrentStatus" placeholder="เช่น อยู่ระหว่างจัดซื้อวัสดุ">
+    <div class="modal-actions">
+      <button class="btn btn-outline" data-close>ยกเลิก</button>
+      <button class="btn btn-primary" id="btnSaveProject">บันทึก</button>
+    </div>
+  </div>
+
+  <div class="modal hidden" id="modalLog">
+    <h3>บันทึกความคืบหน้าใหม่</h3>
+    <input type="hidden" id="lfProjectId">
+    <label>วันที่บันทึก (เลือกย้อนหลังได้ เช่น บันทึกของเดือนก่อนๆ)</label>
+    <input type="date" id="lfDate">
+    <p class="muted" style="margin:2px 0 0;">💡 หากต้องการบันทึกความคืบหน้าของเดือนที่ผ่านมา ให้เลือกวันที่ในเดือนนั้นแทนวันที่ปัจจุบัน ระบบจะนำไปแสดงไว้ตรงตำแหน่งเดือนนั้นบน Gantt chart ให้อัตโนมัติ</p>
+    <label>รายละเอียดความคืบหน้า</label>
+    <textarea id="lfText" rows="4"></textarea>
+    <div class="grid2">
+      <div>
+        <label>สถานะ</label>
+        <select id="lfStatusCategory"></select>
+      </div>
+      <div>
+        <label>ความคืบหน้า (%)</label>
+        <input type="number" id="lfProgress" min="0" max="100">
+      </div>
+    </div>
+    <label>ระยะ/ขั้นตอน (ถ้ามี)</label>
+    <input type="text" id="lfStage" placeholder="เช่น เริ่มโครงการ / ดำเนินการตามแผน / สรุปโครงการ">
+    <div class="modal-actions">
+      <button class="btn btn-outline" data-close>ยกเลิก</button>
+      <button class="btn btn-primary" id="btnSaveLog">บันทึก</button>
+    </div>
+  </div>
+
+  <div class="modal hidden" id="modalGallonForm">
+    <h3>📋 ลงทะเบียนรับ / ส่งคืนแกลลอน</h3>
+    <label>รหัส 7 หลัก (เจ้าหน้าที่)</label>
+    <input type="text" id="gfStaffCode" maxlength="10" placeholder="เช่น 5452380">
+    <label>ชื่อ - นามสกุล</label>
+    <input type="text" id="gfName">
+    <label>เบอร์โทรศัพท์มือถือ</label>
+    <input type="tel" id="gfPhone" placeholder="เช่น 0812345678">
+    <div class="grid2">
+      <div>
+        <label>📦 จำนวนแกลลอนที่รับ</label>
+        <input type="number" id="gfReceivedQty" min="0" step="1" value="0">
+      </div>
+      <div>
+        <label>💧 จำนวนที่คืน/บริจาค</label>
+        <input type="number" id="gfReturnedQty" min="0" step="0.5" value="0">
+      </div>
+    </div>
+    <p class="muted" style="margin:2px 0 0;">💡 กรอกได้ทั้งสองช่อง หรือช่องใดช่องหนึ่ง — 1 แกลลอนที่คืน = 50 แต้ม (กรอกทศนิยมได้ เช่น 1.5)</p>
+    <label>หมายเหตุ (ถ้ามี)</label>
+    <input type="text" id="gfNote">
+    <p class="error hidden" id="gfError"></p>
+    <div class="modal-actions">
+      <button class="btn btn-outline" data-close>ยกเลิก</button>
+      <button class="btn btn-primary" id="btnSubmitGallonForm">บันทึก</button>
+    </div>
+  </div>
+
+  <div class="modal hidden" id="modalPlLogin">
+    <h3>🔑 เข้าสู่ระบบหน่วยงาน — Paperless</h3>
+    <label>หน่วยงาน</label>
+    <select id="plLoginDept"></select>
+    <label>รหัส PIN</label>
+    <input type="password" id="plLoginPin" placeholder="กรอกรหัส PIN">
+    <p class="error hidden" id="plLoginError"></p>
+    <div class="modal-actions">
+      <button class="btn btn-outline" data-close>ยกเลิก</button>
+      <button class="btn btn-primary" id="btnPlDoLogin">เข้าสู่ระบบ</button>
+    </div>
+  </div>
+
+  <div class="modal hidden" id="modalPlLog">
+    <h3>📝 บันทึกข้อมูลประจำเดือน — Paperless</h3>
+    <input type="hidden" id="plfDepartmentId">
+    <label>หน่วยงาน</label>
+    <input type="text" id="plfDepartmentName" disabled>
+    <div class="grid2">
+      <div><label>ปี (ค.ศ.)</label><input type="number" id="plfYear"></div>
+      <div>
+        <label>เดือน</label>
+        <select id="plfMonth"></select>
+      </div>
+    </div>
+    <div class="grid2">
+      <div><label>จำนวนเรื่อง</label><input type="number" id="plfItemCount" min="0" step="1" value="0"></div>
+      <div><label>ปริมาณกระดาษที่ลดลง (แผ่น)</label><input type="number" id="plfSheetsReduced" min="0" step="1" value="0"></div>
+    </div>
+    <label>ผู้บันทึก</label>
+    <input type="text" id="plfRecordedByName" placeholder="ชื่อผู้บันทึกข้อมูล (ถ้ามี)">
+    <label>หมายเหตุ (ถ้ามี)</label>
+    <input type="text" id="plfNote">
+    <p class="muted" style="margin:4px 0 0;">💡 หากเดือนนี้เคยบันทึกไว้แล้ว การบันทึกซ้ำจะเป็นการแก้ไขค่าเดิม ไม่สร้างแถวซ้ำ</p>
+    <p class="error hidden" id="plLogError"></p>
+    <div class="modal-actions">
+      <button class="btn btn-outline" data-close>ยกเลิก</button>
+      <button class="btn btn-primary" id="btnPlSaveLog">บันทึก</button>
+    </div>
+  </div>
+
+  <div class="modal hidden" id="modalAskQuestion">
+    <h3>❓ ถามคำถามเกี่ยวกับโครงการนี้</h3>
+    <input type="hidden" id="qfProjectId">
+    <label>ชื่อผู้ถาม (ถ้าต้องการ)</label>
+    <input type="text" id="qfAskerName" placeholder="ไม่ระบุก็ได้">
+    <label>ช่องทางติดต่อ (ถ้าต้องการให้ติดต่อกลับ)</label>
+    <input type="text" id="qfAskerContact" placeholder="เช่น เบอร์โทร / อีเมล (ไม่ระบุก็ได้)">
+    <label>คำถาม</label>
+    <textarea id="qfQuestionText" rows="4" placeholder="เช่น โครงการนี้คืบหน้าไปถึงไหนแล้ว?"></textarea>
+    <p class="error hidden" id="qfError"></p>
+    <div class="modal-actions">
+      <button class="btn btn-outline" data-close>ยกเลิก</button>
+      <button class="btn btn-primary" id="btnSubmitQuestion">ส่งคำถาม</button>
+    </div>
+  </div>
+
+  <div class="modal hidden" id="modalAnswerQuestion">
+    <h3>✍️ ตอบคำถาม</h3>
+    <input type="hidden" id="afQuestionId">
+    <label>คำถาม</label>
+    <p id="afQuestionText" class="muted" style="white-space:pre-wrap;"></p>
+    <label>คำตอบ</label>
+    <textarea id="afAnswerText" rows="4"></textarea>
+    <p class="error hidden" id="afError"></p>
+    <div class="modal-actions">
+      <button class="btn btn-outline" data-close>ยกเลิก</button>
+      <button class="btn btn-primary" id="btnSubmitAnswer">บันทึกคำตอบ</button>
+    </div>
+  </div>
+
+  <div class="modal hidden" id="modalCtgContribute">
+    <h3>📦 ส่งตลับหมึกเข้าโครงการ</h3>
+    <label class="dept-f-cartridge">หน่วยงาน</label>
+    <select id="ctgCfDepartment" class="dept-f-cartridge"></select>
+    <label>วันที่ส่ง</label>
+    <input type="date" id="ctgCfDate">
+    <label>จำนวนตลับหมึก (ตลับ)</label>
+    <input type="number" id="ctgCfQuantity" min="1" step="1">
+    <label>หมายเหตุ (ถ้ามี)</label>
+    <input type="text" id="ctgCfNote" placeholder="เช่น ยี่ห้อ/รุ่นตลับหมึก">
+    <p class="error hidden" id="ctgCfError"></p>
+    <div class="modal-actions">
+      <button class="btn btn-outline" data-close>ยกเลิก</button>
+      <button class="btn btn-primary" id="btnCtgSubmitContribute">บันทึก</button>
+    </div>
+  </div>
+
+  <!-- ===================== ฟอร์มบันทึกการส่งจำหน่ายรายรอบ (ใช้ร่วม: ทอดไม่ทิ้ง / ตลับหมึก / จากครัวสู่ท้องฟ้า) ===================== -->
+  <datalist id="shipBuyerList"></datalist>
+  <div class="modal hidden" id="modalShip">
+    <h3 id="shipModalTitle">บันทึกการส่งจำหน่าย</h3>
+    <input type="hidden" id="shipId">
+    <input type="hidden" id="shipKey">
+    <label>วันที่ส่ง</label>
+    <input type="date" id="shipDate">
+    <label id="shipBuyerLabel">ผู้รับซื้อ</label>
+    <input type="text" id="shipBuyer" list="shipBuyerList" autocomplete="off" placeholder="พิมพ์ชื่อ — ถ้ามีในระบบจะขึ้นให้เลือกอัตโนมัติ">
+    <div class="ship-chips" id="shipBuyerChips"></div>
+    <p class="ship-hint" id="shipBuyerHint"></p>
+    <div class="grid2">
+      <div><label id="shipQtyLabel">จำนวน</label><input type="number" id="shipQty" min="0" step="any"></div>
+      <div id="shipUnitWrap"><label>หน่วย</label><select id="shipUnit"></select></div>
+    </div>
+    <div class="grid2">
+      <div><label id="shipPriceLabel">ราคาต่อหน่วย (บาท)</label><input type="number" id="shipUnitPrice" min="0" step="any"></div>
+      <div><label>จำนวนเงินรวม (บาท)</label><input type="number" id="shipAmount" min="0" step="any"></div>
+    </div>
+    <div class="ship-calc" id="shipCalc">💡 กรอก "ราคาต่อหน่วย" ระบบคำนวณจำนวนเงินรวมให้ หรือกรอก "จำนวนเงินรวม" ระบบคำนวณราคาต่อหน่วยให้ (ราคาแต่ละรอบไม่เท่ากัน บันทึกแยกตามรอบ)</div>
+    <label>หมายเหตุ (ถ้ามี)</label>
+    <input type="text" id="shipNote">
+    <p class="error hidden" id="shipError"></p>
+    <div class="modal-actions">
+      <button class="btn btn-outline" data-close>ยกเลิก</button>
+      <button class="btn btn-primary" id="btnShipSave">บันทึก</button>
+    </div>
+  </div>
+
+  <!-- ===================== ปฏิทินเก่าเราขอ: ฟอร์มบันทึกการบริจาค ===================== -->
+  <datalist id="calRoundList"></datalist>
+  <datalist id="calDonorList"></datalist>
+  <div class="modal hidden" id="modalCalSubmit">
+    <h3>📥 ส่งปฏิทินเก่าเข้าโครงการ "ปฏิทินเก่าเราขอ"</h3>
+    <p class="muted" style="margin-top:0;">แจ้งความประสงค์ส่งปฏิทินเก่า เจ้าหน้าที่จะตรวจสอบ ชั่งน้ำหนัก และติดต่อกลับหากต้องนัดส่งมอบ ปฏิทินที่ได้จะนำไปจัดทำอักษรเบรลล์ให้ผู้พิการทางสายตา</p>
+    <label>ท่านส่งในนาม *</label>
+    <select id="calsType"></select>
+    <label id="calsNameLabel">ชื่อผู้บริจาค *</label>
+    <input type="text" id="calsName" maxlength="120" autocomplete="off">
+    <div id="calsOrgWrap"><label>ชื่อบริษัท / องค์กร *</label><input type="text" id="calsOrg" maxlength="150" autocomplete="off"></div>
+    <label>ช่องทางติดต่อ * (เบอร์โทรหรืออีเมล)</label>
+    <input type="text" id="calsContact" maxlength="120" placeholder="08x-xxx-xxxx หรือ name@example.com">
+    <div class="grid2">
+      <div><label>จำนวนโดยประมาณ (เล่ม)</label><input type="number" id="calsQty" min="0" step="1"></div>
+      <div><label>วันที่สะดวกส่งมอบ</label><input type="date" id="calsDate"></div>
+    </div>
+    <label>หมายเหตุ</label>
+    <input type="text" id="calsNote" maxlength="300" placeholder="เช่น ปฏิทินปี 2568 ขนาดตั้งโต๊ะ">
+    <input type="text" id="calsWebsite" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;opacity:0;height:0;width:0;">
+    <p class="error hidden" id="calsError"></p>
+    <p class="success-note hidden" id="calsOk"></p>
+    <div class="modal-actions">
+      <button class="btn btn-outline" data-close>ปิด</button>
+      <button class="btn btn-primary" id="btnCalsSend">ส่งข้อมูล</button>
+    </div>
+  </div>
+
+  <div class="modal hidden modal-wide modal-targets" id="modalTargets">
+    <div class="dmx-head">
+      <h3 id="tgmTitle">🎯 ตั้งเป้าหมายรายเดือน</h3>
+      <div class="dmx-ctl"><label for="tgmYear" style="margin:0;">ปี</label><select id="tgmYear" style="width:auto;"></select></div>
+    </div>
+    <p class="muted" id="tgmHint" style="margin:6px 0 10px;"></p>
+    <div class="tgm-tools">
+      <label style="margin:0;">เป้ารวมทั้งปี</label>
+      <input type="number" id="tgmAnnual" min="0" step="any" placeholder="เช่น 1200">
+      <button type="button" class="btn btn-outline btn-sm" id="tgmSpread">แบ่งเท่าๆ กันทุกเดือน</button>
+      <button type="button" class="btn btn-outline btn-sm" id="tgmCopy">คัดลอกจากปีก่อน</button>
+      <button type="button" class="btn btn-outline btn-sm" id="tgmClear">ล้างทั้งหมด</button>
+    </div>
+    <div class="tgm-grid" id="tgmGrid"></div>
+    <div class="tgm-sum">รวมทั้งปี: <b id="tgmTotal">0</b> <span id="tgmUnit"></span></div>
+    <p class="error hidden" id="tgmError"></p>
+    <div class="modal-actions">
+      <button class="btn btn-outline" data-close>ยกเลิก</button>
+      <button class="btn btn-primary" id="tgmSave">บันทึกเป้าหมาย</button>
+    </div>
+  </div>
+
+  <div class="modal hidden modal-wide" id="modalEmBatch">
+    <h3 id="embTitle">🧪 เริ่มหมักรอบใหม่</h3>
+    <input type="hidden" id="embId">
+    <div class="grid2">
+      <div><label>วันที่เริ่มหมัก *</label><input type="date" id="embDate"></div>
+      <div><label>สถานที่หมัก</label><input type="text" id="embLocation" maxlength="120" placeholder="เช่น ลานหลังโรงครัว"></div>
+    </div>
+    <h4 class="emm-h">📥 วัตถุดิบนำเข้า (INPUT) — กิโลกรัม</h4>
+    <div class="emm-grid3">
+      <div><label>🥗 เศษอาหาร</label><input type="number" id="embFood" min="0" step="any"></div>
+      <div><label>🍎 ผักและผลไม้</label><input type="number" id="embFruit" min="0" step="any"></div>
+      <div><label>🥩 เนื้อสัตว์</label><input type="number" id="embMeat" min="0" step="any"></div>
+    </div>
+    <div class="grid2">
+      <div><label>กากน้ำตาล (กก.) <small class="muted">ไม่บังคับ</small></label><input type="number" id="embMolasses" min="0" step="any"></div>
+      <div><label>น้ำ (ลิตร) <small class="muted">ไม่บังคับ</small></label><input type="number" id="embWater" min="0" step="any"></div>
+    </div>
+    <h4 class="emm-h">🛢️ การหมัก (PROCESS)</h4>
+    <div class="emm-grid3">
+      <div><label>จำนวนถัง *</label><input type="number" id="embBarrels" min="1" step="1"></div>
+      <div><label>ขนาดถัง (ลิตร/ถัง)</label><input type="number" id="embBarrelL" min="1" step="any"></div>
+      <div><label>หมักกี่วันจึงครบกำหนด</label><input type="number" id="embReadyDays" min="1" step="1" placeholder="ค่าเริ่มต้น"></div>
+    </div>
+    <label>น้ำยา EM ที่คาดว่าจะได้ (ลิตร) <small class="muted">เว้นว่าง = คำนวณอัตโนมัติ</small></label>
+    <input type="number" id="embExpected" min="0" step="any">
+    <p class="emm-calc" id="embCalc"></p>
+    <label>หมายเหตุ</label>
+    <input type="text" id="embNote" maxlength="300" placeholder="เช่น ผักผลไม้จากโรงครัวสัปดาห์นี้">
+    <p class="error hidden" id="embError"></p>
+    <div class="modal-actions"><button class="btn btn-outline" data-close>ยกเลิก</button><button class="btn btn-primary" id="embSave">บันทึก</button></div>
+  </div>
+
+  <div class="modal hidden" id="modalEmHarvest">
+    <h3>🧪 เก็บเป็นน้ำยา EM</h3>
+    <p class="muted" id="emhInfo" style="margin-top:0;"></p>
+    <input type="hidden" id="emhId">
+    <div class="grid2">
+      <div><label>วันที่เก็บ *</label><input type="date" id="emhDate"></div>
+      <div><label>ได้น้ำยา EM (ลิตร) *</label><input type="number" id="emhLiters" min="0" step="any"></div>
+    </div>
+    <label>หมายเหตุ / ลักษณะน้ำยา</label>
+    <input type="text" id="emhNote" maxlength="300" placeholder="เช่น ใส ไม่มีกลิ่นเน่า สีน้ำตาลอำพัน">
+    <p class="error hidden" id="emhError"></p>
+    <div class="modal-actions"><button class="btn btn-outline" data-close>ยกเลิก</button><button class="btn btn-primary" id="emhSave">บันทึกผลผลิต</button></div>
+  </div>
+
+  <div class="modal hidden" id="modalEmCheck">
+    <h3>🔎 บันทึกผลตรวจ (ทุก 7 วัน)</h3>
+    <p class="muted" id="emcInfo" style="margin-top:0;"></p>
+    <input type="hidden" id="emcId">
+    <div class="grid2">
+      <div><label>วันที่ตรวจ *</label><input type="date" id="emcDate"></div>
+      <div><label>ตรวจครั้งที่ (สัปดาห์)</label><select id="emcWeek"></select></div>
+    </div>
+    <div class="grid2">
+      <div><label>ค่า pH <small class="muted">ไม่บังคับ (0–14)</small></label><input type="number" id="emcPH" min="0" max="14" step="0.1" placeholder="เช่น 3.5"></div>
+      <div><label>กลิ่น</label><select id="emcSmell"><option value="">— เลือก —</option><option>หอมเปรี้ยวหวาน (ปกติ)</option><option>เปรี้ยวฉุน</option><option>มีกลิ่นเหม็นเน่า</option><option>ไม่มีกลิ่น</option></select></div>
+    </div>
+    <label>ลักษณะที่เห็น</label>
+    <input type="text" id="emcAppearance" maxlength="200" placeholder="เช่น มีฝ้าขาวบางๆ ผิวหน้า / น้ำใส / มีหนอนแมลงวัน">
+    <label>สิ่งที่ทำ</label>
+    <input type="text" id="emcAction" maxlength="200" placeholder="เช่น กวนผสม เติมกากน้ำตาล 1 กก. ปิดฝาให้สนิท">
+    <label>หมายเหตุ</label>
+    <input type="text" id="emcNote" maxlength="300">
+    <p class="error hidden" id="emcError"></p>
+    <div class="modal-actions"><button class="btn btn-outline" data-close>ยกเลิก</button><button class="btn btn-primary" id="emcSave">บันทึกผลตรวจ</button></div>
+  </div>
+
+  <div class="modal hidden modal-wide" id="modalEmLogForm">
+    <h3>📝 บันทึกการหมักประจำวัน</h3>
+    <p class="muted" style="margin:0 0 4px;">สำหรับผู้ปฏิบัติงาน — เจ้าหน้าที่จะตรวจสอบและยืนยัน แล้วระบบผูกข้อมูลกับรอบการหมักให้</p>
+    <div class="grid2">
+      <div><label>วันที่ปฏิบัติงาน *</label><input type="date" id="emlDate"></div>
+      <div><label>ชื่อผู้ปฏิบัติงาน *</label><input type="text" id="emlOperator" maxlength="120" placeholder="ชื่อ-นามสกุล"></div>
+    </div>
+    <label>วันนี้ทำอะไร *</label>
+    <select id="emlType"><option>เริ่มหมักถังใหม่</option><option>เติมวัตถุดิบเพิ่ม</option><option>ตรวจ/ดูแลประจำวัน</option></select>
+    <div id="emlBatchWrap"><label>รอบการหมัก *</label><select id="emlBatch"></select></div>
+    <div id="emlMatWrap">
+      <h4 class="emm-h">🥗 วัตถุดิบ — กิโลกรัม</h4>
+      <div class="emm-grid3">
+        <div><label>🥗 เศษอาหาร</label><input type="number" id="emlFood" min="0" step="any"></div>
+        <div><label>🍎 ผักและผลไม้</label><input type="number" id="emlFruit" min="0" step="any"></div>
+        <div><label>🥩 เนื้อสัตว์</label><input type="number" id="emlMeat" min="0" step="any"></div>
+      </div>
+      <div class="grid2">
+        <div><label id="emlBarrelsLabel">จำนวนถัง *</label><input type="number" id="emlBarrels" min="0" step="1"></div>
+        <div id="emlLocWrap"><label>สถานที่หมัก</label><input type="text" id="emlLocation" maxlength="120" placeholder="เช่น ลานหมักหลังโรงครัว"></div>
+      </div>
+    </div>
+    <div id="emlCheckWrap">
+      <h4 class="emm-h">🔎 ผลตรวจ / การดูแล</h4>
+      <div class="grid2">
+        <div><label>ค่า pH <small class="muted">ไม่บังคับ (0–14)</small></label><input type="number" id="emlPH" min="0" max="14" step="0.1" placeholder="เช่น 3.5"></div>
+        <div><label>กลิ่น</label><select id="emlSmell"><option value="">— เลือก —</option><option>หอมเปรี้ยวหวาน (ปกติ)</option><option>เปรี้ยวฉุน</option><option>มีกลิ่นเหม็นเน่า</option><option>ไม่มีกลิ่น</option></select></div>
+      </div>
+      <label>ลักษณะที่เห็น</label><input type="text" id="emlAppearance" maxlength="200" placeholder="เช่น มีฝ้าขาวบางๆ / น้ำใส / มีหนอนแมลงวัน">
+      <label>สิ่งที่ทำ</label><input type="text" id="emlAction" maxlength="200" placeholder="เช่น กวนผสม เติมกากน้ำตาล ปิดฝาสนิท">
+    </div>
+    <label>หมายเหตุ</label><input type="text" id="emlNote" maxlength="300">
+    <input type="text" id="emlWebsite" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;opacity:0;height:0;width:0;">
+    <p class="error hidden" id="emlError"></p>
+    <div class="modal-actions"><button class="btn btn-outline" data-close>ยกเลิก</button><button class="btn btn-primary" id="emlSave">ส่งข้อมูล</button></div>
+  </div>
+
+  <div class="modal hidden" id="modalEmUseForm">
+    <h3>💧 บันทึกการนำน้ำยา EM ไปใช้</h3>
+    <p class="emu-stock" id="emufStock"></p>
+    <p class="muted" style="margin:0 0 4px;">กรอกข้อมูลการนำน้ำยา EM ไปใช้ เจ้าหน้าที่จะตรวจสอบและยืนยันอีกครั้ง</p>
+    <div class="grid2">
+      <div><label>วันที่นำไปใช้ *</label><input type="date" id="emufDate"></div>
+      <div><label>ปริมาณ (ลิตร) *</label><input type="number" id="emufLiters" min="0" step="any"></div>
+    </div>
+    <label>นำไปใช้ที่ไหน *</label>
+    <input type="text" id="emufPlace" maxlength="150" list="emufPlaceList" placeholder="เช่น บ่อบำบัดน้ำเสีย อาคาร A">
+    <datalist id="emufPlaceList"></datalist>
+    <label>ชื่อผู้นำไปใช้ *</label>
+    <input type="text" id="emufUser" maxlength="120" placeholder="ชื่อ-นามสกุล / หน่วยงาน">
+    <label>วัตถุประสงค์</label>
+    <input type="text" id="emufPurpose" maxlength="200" list="emuPurposeList" placeholder="เช่น บำบัดน้ำเสีย ดับกลิ่น">
+    <label>หมายเหตุ</label>
+    <input type="text" id="emufNote" maxlength="300">
+    <input type="text" id="emufWebsite" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;opacity:0;height:0;width:0;">
+    <p class="error hidden" id="emufError"></p>
+    <div class="modal-actions"><button class="btn btn-outline" data-close>ยกเลิก</button><button class="btn btn-primary" id="emufSave">ส่งข้อมูล</button></div>
+  </div>
+
+  <div class="modal hidden" id="modalEmUsage">
+    <h3>💧 บันทึกการนำน้ำยา EM ไปใช้</h3>
+    <p class="emu-stock" id="emuStock"></p>
+    <div class="grid2">
+      <div><label>วันที่นำไปใช้ *</label><input type="date" id="emuDate"></div>
+      <div><label>ปริมาณ (ลิตร) *</label><input type="number" id="emuLiters" min="0" step="any"></div>
+    </div>
+    <label>นำไปใช้ที่ไหน *</label>
+    <input type="text" id="emuPlace" maxlength="150" list="emuPlaceList" placeholder="เช่น บ่อบำบัดน้ำเสีย อาคาร A">
+    <datalist id="emuPlaceList"></datalist>
+    <label>ผู้นำไปใช้ *</label>
+    <input type="text" id="emuUser" maxlength="120" list="emuUserList" placeholder="ชื่อ-นามสกุล / หน่วยงาน">
+    <datalist id="emuUserList"></datalist>
+    <label>วัตถุประสงค์</label>
+    <input type="text" id="emuPurpose" maxlength="200" list="emuPurposeList" placeholder="เช่น บำบัดน้ำเสีย ดับกลิ่น">
+    <datalist id="emuPurposeList"><option value="บำบัดน้ำเสีย"><option value="ดับกลิ่น"><option value="ปรับปรุงดิน/รดต้นไม้"><option value="ทำความสะอาดพื้น/ห้องน้ำ"><option value="ย่อยสลายไขมันในท่อ"></datalist>
+    <label>นำมาจากรอบไหน <small class="muted">ไม่บังคับ</small></label>
+    <select id="emuBatch"></select>
+    <label>หมายเหตุ</label>
+    <input type="text" id="emuNote" maxlength="300">
+    <p class="error hidden" id="emuError"></p>
+    <div class="modal-actions"><button class="btn btn-outline" data-close>ยกเลิก</button><button class="btn btn-primary" id="emuSave">บันทึกการใช้งาน</button></div>
+  </div>
+
+  <div class="modal hidden modal-wide modal-integ" id="modalIntegration">
+    <div class="dmx-head"><h3>🔌 เชื่อมต่อระบบอื่น (Google Sheets / Apps Script)</h3><button class="btn btn-outline btn-sm" data-close>ปิด</button></div>
+    <div id="integBody"><p class="muted">กำลังโหลด...</p></div>
+  </div>
+
+<!-- COMPOST-MODALS-BEGIN -->
+  <div class="modal hidden modal-wide" id="modalCpBatch">
+    <h3 id="cpbTitle">🌱 เริ่มหมักรอบใหม่</h3>
+    <input type="hidden" id="cpbId">
+    <div class="grid2">
+      <div><label>วันที่เริ่มหมัก *</label><input type="date" id="cpbDate"></div>
+      <div><label>สถานที่หมัก</label><input type="text" id="cpbLocation" maxlength="120" placeholder="เช่น ลานหมักหลังอาคาร"></div>
+    </div>
+    <h4 class="emm-h">📥 วัตถุดิบนำเข้า (INPUT) — กิโลกรัม</h4>
+    <div class="emm-grid3">
+      <div><label>🍂 ใบไม้แห้ง</label><input type="number" id="cpbFood" min="0" step="any"></div>
+      <div><label>🌿 ใบไม้สด/เศษหญ้า</label><input type="number" id="cpbFruit" min="0" step="any"></div>
+      <div><label>🪵 กิ่งไม้/เศษไม้</label><input type="number" id="cpbMeat" min="0" step="any"></div>
+    </div>
+    <div class="grid2">
+      <div><label>สารเร่ง/มูลสัตว์ (กก.) <small class="muted">ไม่บังคับ</small></label><input type="number" id="cpbMolasses" min="0" step="any"></div>
+      <div><label>น้ำ (ลิตร) <small class="muted">ไม่บังคับ</small></label><input type="number" id="cpbWater" min="0" step="any"></div>
+    </div>
+    <h4 class="emm-h">🪴 การหมัก (PROCESS)</h4>
+    <div class="emm-grid3">
+      <div><label>จำนวนกอง *</label><input type="number" id="cpbPiles" min="1" step="1"></div>
+      <div><label>หมักกี่วันจึงครบกำหนด</label><input type="number" id="cpbReadyDays" min="1" step="1" placeholder="ค่าเริ่มต้น"></div>
+    </div>
+    <label>ปุ๋ยหมักที่คาดว่าจะได้ (กก.) <small class="muted">เว้นว่าง = คำนวณอัตโนมัติ</small></label>
+    <input type="number" id="cpbExpected" min="0" step="any">
+    <p class="emm-calc" id="cpbCalc"></p>
+    <label>หมายเหตุ</label>
+    <input type="text" id="cpbNote" maxlength="300" placeholder="เช่น ใบไม้จากสวนหน้าอาคาร A สัปดาห์นี้">
+    <p class="error hidden" id="cpbError"></p>
+    <div class="modal-actions"><button class="btn btn-outline" data-close>ยกเลิก</button><button class="btn btn-primary" id="cpbSave">บันทึก</button></div>
+  </div>
+
+  <div class="modal hidden modal-wide" id="modalCpLogForm">
+    <h3>📝 บันทึกการหมักประจำวัน</h3>
+    <p class="muted" style="margin:0 0 4px;">สำหรับผู้ปฏิบัติงาน — เจ้าหน้าที่จะตรวจสอบและยืนยัน แล้วระบบผูกข้อมูลกับรอบการหมักให้</p>
+    <div class="grid2">
+      <div><label>วันที่ปฏิบัติงาน *</label><input type="date" id="cplDate"></div>
+      <div><label>ชื่อผู้ปฏิบัติงาน *</label><input type="text" id="cplOperator" maxlength="120" placeholder="ชื่อ-นามสกุล"></div>
+    </div>
+    <label>วันนี้ทำอะไร *</label>
+    <select id="cplType"><option>เริ่มหมักกองใหม่</option><option>เติมวัตถุดิบเพิ่ม</option><option>ตรวจ/ดูแลประจำวัน</option></select>
+    <div id="cplBatchWrap"><label>รอบการหมัก *</label><select id="cplBatch"></select></div>
+    <div id="cplMatWrap">
+      <h4 class="emm-h">🍂 วัตถุดิบ — กิโลกรัม</h4>
+      <div class="emm-grid3">
+        <div><label>🍂 ใบไม้แห้ง</label><input type="number" id="cplFood" min="0" step="any"></div>
+        <div><label>🌿 ใบไม้สด/เศษหญ้า</label><input type="number" id="cplFruit" min="0" step="any"></div>
+        <div><label>🪵 กิ่งไม้/เศษไม้</label><input type="number" id="cplMeat" min="0" step="any"></div>
+      </div>
+      <div class="grid2">
+        <div><label id="cplPilesLabel">จำนวนกอง *</label><input type="number" id="cplPiles" min="0" step="1"></div>
+        <div id="cplLocWrap"><label>สถานที่หมัก</label><input type="text" id="cplLocation" maxlength="120" placeholder="เช่น ลานหมักหลังอาคาร"></div>
+      </div>
+    </div>
+    <div id="cplCheckWrap">
+      <h4 class="emm-h">🔎 ผลตรวจ / การดูแล</h4>
+      <div class="grid2">
+        <div><label>อุณหภูมิกอง (°C) <small class="muted">ไม่บังคับ (0–100)</small></label><input type="number" id="cplTempC" min="0" max="100" step="1" placeholder="เช่น 55"></div>
+        <div><label>กลิ่น</label><select id="cplSmell"><option value="">— เลือก —</option><option>กลิ่นดินหอม (ปกติ)</option><option>กลิ่นอับ/เปรี้ยว</option><option>มีกลิ่นเหม็นเน่า</option><option>ไม่มีกลิ่น</option></select></div>
+      </div>
+      <label>ลักษณะที่เห็น</label><input type="text" id="cplAppearance" maxlength="200" placeholder="เช่น มีเส้นใยราขาว / กองแห้งเกินไป / มีมดหรือแมลง">
+      <label>สิ่งที่ทำ</label><input type="text" id="cplAction" maxlength="200" placeholder="เช่น กลับกองปุ๋ย รดน้ำให้ชื้น คลุมผ้าใบ">
+    </div>
+    <label>หมายเหตุ</label><input type="text" id="cplNote" maxlength="300">
+    <input type="text" id="cplWebsite" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;opacity:0;height:0;width:0;">
+    <p class="error hidden" id="cplError"></p>
+    <div class="modal-actions"><button class="btn btn-outline" data-close>ยกเลิก</button><button class="btn btn-primary" id="cplSave">ส่งข้อมูล</button></div>
+  </div>
+
+  <div class="modal hidden" id="modalCpUseForm">
+    <h3>💧 บันทึกการนำปุ๋ยหมักไปใช้</h3>
+    <p class="emu-stock" id="cpufStock"></p>
+    <p class="muted" style="margin:0 0 4px;">กรอกข้อมูลการนำปุ๋ยหมักไปใช้ เจ้าหน้าที่จะตรวจสอบและยืนยันอีกครั้ง</p>
+    <div class="grid2">
+      <div><label>วันที่นำไปใช้ *</label><input type="date" id="cpufDate"></div>
+      <div><label>ปริมาณ (กก.) *</label><input type="number" id="cpufKg" min="0" step="any"></div>
+    </div>
+    <label>นำไปใช้ที่ไหน *</label>
+    <input type="text" id="cpufPlace" maxlength="150" list="cpufPlaceList" placeholder="เช่น สวนหย่อมหน้าอาคาร A">
+    <datalist id="cpufPlaceList"></datalist>
+    <label>ชื่อผู้นำไปใช้ *</label>
+    <input type="text" id="cpufUser" maxlength="120" placeholder="ชื่อ-นามสกุล / หน่วยงาน">
+    <label>วัตถุประสงค์</label>
+    <input type="text" id="cpufPurpose" maxlength="200" list="cpuPurposeList" placeholder="เช่น ปรับปรุงดิน ปลูกต้นไม้">
+    <label>หมายเหตุ</label>
+    <input type="text" id="cpufNote" maxlength="300">
+    <input type="text" id="cpufWebsite" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;opacity:0;height:0;width:0;">
+    <p class="error hidden" id="cpufError"></p>
+    <div class="modal-actions"><button class="btn btn-outline" data-close>ยกเลิก</button><button class="btn btn-primary" id="cpufSave">ส่งข้อมูล</button></div>
+  </div>
+
+  <div class="modal hidden" id="modalCpUsage">
+    <h3>💧 บันทึกการนำปุ๋ยหมักไปใช้</h3>
+    <p class="emu-stock" id="cpuStock"></p>
+    <div class="grid2">
+      <div><label>วันที่นำไปใช้ *</label><input type="date" id="cpuDate"></div>
+      <div><label>ปริมาณ (กก.) *</label><input type="number" id="cpuKg" min="0" step="any"></div>
+    </div>
+    <label>นำไปใช้ที่ไหน *</label>
+    <input type="text" id="cpuPlace" maxlength="150" list="cpuPlaceList" placeholder="เช่น สวนหย่อมหน้าอาคาร A">
+    <datalist id="cpuPlaceList"></datalist>
+    <label>ผู้นำไปใช้ *</label>
+    <input type="text" id="cpuUser" maxlength="120" list="cpuUserList" placeholder="ชื่อ-นามสกุล / หน่วยงาน">
+    <datalist id="cpuUserList"></datalist>
+    <label>วัตถุประสงค์</label>
+    <input type="text" id="cpuPurpose" maxlength="200" list="cpuPurposeList" placeholder="เช่น ปรับปรุงดิน ปลูกต้นไม้">
+    <datalist id="cpuPurposeList"><option value="ปรับปรุงดินปลูกต้นไม้"><option value="ใส่แปลงผัก/สวนหย่อม"><option value="รองก้นหลุมปลูกต้นไม้"><option value="คลุมโคนต้นไม้"><option value="แจกบุคลากร/ชุมชน"></datalist>
+    <label>นำมาจากรอบไหน <small class="muted">ไม่บังคับ</small></label>
+    <select id="cpuBatch"></select>
+    <label>หมายเหตุ</label>
+    <input type="text" id="cpuNote" maxlength="300">
+    <p class="error hidden" id="cpuError"></p>
+    <div class="modal-actions"><button class="btn btn-outline" data-close>ยกเลิก</button><button class="btn btn-primary" id="cpuSave">บันทึกการใช้งาน</button></div>
+  </div>
+
+  <div class="modal hidden" id="modalCpHarvest">
+    <h3>🌱 เก็บเป็นปุ๋ยหมัก</h3>
+    <p class="muted" id="cphInfo" style="margin-top:0;"></p>
+    <input type="hidden" id="cphId">
+    <div class="grid2">
+      <div><label>วันที่เก็บ *</label><input type="date" id="cphDate"></div>
+      <div><label>ได้ปุ๋ยหมัก (กก.) *</label><input type="number" id="cphKg" min="0" step="any"></div>
+    </div>
+    <label>หมายเหตุ / ลักษณะปุ๋ยหมัก</label>
+    <input type="text" id="cphNote" maxlength="300" placeholder="เช่น ร่วนซุย สีน้ำตาลเข้ม ไม่มีกลิ่นเหม็น">
+    <p class="error hidden" id="cphError"></p>
+    <div class="modal-actions"><button class="btn btn-outline" data-close>ยกเลิก</button><button class="btn btn-primary" id="cphSave">บันทึกผลผลิต</button></div>
+  </div>
+
+  <div class="modal hidden" id="modalCpCheck">
+    <h3>🔎 บันทึกผลตรวจ (ทุก 7 วัน)</h3>
+    <p class="muted" id="cpcInfo" style="margin-top:0;"></p>
+    <input type="hidden" id="cpcId">
+    <div class="grid2">
+      <div><label>วันที่ตรวจ *</label><input type="date" id="cpcDate"></div>
+      <div><label>ตรวจครั้งที่ (สัปดาห์)</label><select id="cpcWeek"></select></div>
+    </div>
+    <div class="grid2">
+      <div><label>อุณหภูมิกอง (°C) <small class="muted">ไม่บังคับ (0–100)</small></label><input type="number" id="cpcTempC" min="0" max="100" step="1" placeholder="เช่น 55"></div>
+      <div><label>กลิ่น</label><select id="cpcSmell"><option value="">— เลือก —</option><option>กลิ่นดินหอม (ปกติ)</option><option>กลิ่นอับ/เปรี้ยว</option><option>มีกลิ่นเหม็นเน่า</option><option>ไม่มีกลิ่น</option></select></div>
+    </div>
+    <label>ลักษณะที่เห็น</label>
+    <input type="text" id="cpcAppearance" maxlength="200" placeholder="เช่น มีเส้นใยราขาว / กองแห้งเกินไป / มีมดหรือแมลง">
+    <label>สิ่งที่ทำ</label>
+    <input type="text" id="cpcAction" maxlength="200" placeholder="เช่น กลับกองปุ๋ย รดน้ำให้ชื้น คลุมผ้าใบ">
+    <label>หมายเหตุ</label>
+    <input type="text" id="cpcNote" maxlength="300">
+    <p class="error hidden" id="cpcError"></p>
+    <div class="modal-actions"><button class="btn btn-outline" data-close>ยกเลิก</button><button class="btn btn-primary" id="cpcSave">บันทึกผลตรวจ</button></div>
+  </div>
+
+<!-- COMPOST-MODALS-END -->
+  <div class="modal hidden modal-wide" id="modalDeptMonthly">
+    <div class="dmx-head">
+      <h3 id="dmxTitle">รายงานรายเดือนแยกหน่วยงาน</h3>
+      <div class="dmx-ctl">
+        <label for="dmxYear" style="margin:0;">ปี</label>
+        <select id="dmxYear" style="width:auto;"></select>
+        <button class="btn btn-primary btn-sm" id="dmxPrint">📄 พิมพ์ PDF (A4 แนวนอน)</button>
+        <button class="btn btn-outline btn-sm" data-close>ปิด</button>
+      </div>
+    </div>
+    <div id="dmxBody"><p class="muted">กำลังโหลด...</p></div>
+  </div>
+
+  <div class="modal hidden modal-thanks" id="modalThanks">
+    <div class="thx-icon">✓</div>
+    <h3 id="thxTitle">ท่านบันทึกส่งคืนเรียบร้อยแล้ว</h3>
+    <p class="thx-detail" id="thxDetail"></p>
+    <div class="thx-wait">⏳ <span id="thxWait">รอผู้ดูแลระบบยืนยันอีกครั้ง</span></div>
+    <p class="thx-love">🌿 ขอบคุณที่ร่วมเป็นผู้ร่วมรักษาสิ่งแวดล้อมไปด้วยกัน</p>
+    <p class="thx-proj" id="thxProj"></p>
+    <div class="modal-actions" style="justify-content:center;">
+      <button class="btn btn-outline hidden" id="thxMore">+ บันทึกเพิ่ม</button>
+      <button class="btn btn-primary" data-close id="thxOk">ตกลง</button>
+    </div>
+  </div>
+
+  <div class="modal hidden" id="modalDeptManage">
+    <h3 id="dmgTitle">เลือกหน่วยงานที่ใช้ในโครงการ</h3>
+    <p class="muted" style="margin-top:0;">ติ๊กหน่วยงานที่ "ใช้" ในโครงการนี้ หน่วยงานที่ไม่ติ๊กจะไม่แสดงในฟอร์มและตาราง (ข้อมูลที่บันทึกไว้แล้วไม่ถูกลบ เปิดกลับได้ทุกเมื่อ)</p>
+    <input type="text" id="dmgSearch" placeholder="ค้นหาหน่วยงาน..." autocomplete="off">
+    <div class="dmg-tools">
+      <button type="button" class="btn btn-outline btn-sm" id="dmgAll">เลือกทั้งหมดที่แสดง</button>
+      <button type="button" class="btn btn-outline btn-sm" id="dmgNone">ยกเลิกทั้งหมดที่แสดง</button>
+      <span class="muted" id="dmgCount"></span>
+    </div>
+    <div class="dmg-list" id="dmgList"></div>
+
+    <details class="dmg-add" id="dmgAddBox">
+      <summary>➕ เพิ่มหน่วยงานใหม่</summary>
+      <div class="dmg-add-body">
+        <label for="dmgNewName">ชื่อหน่วยงาน</label>
+        <input type="text" id="dmgNewName" maxlength="120" placeholder="เช่น หอผู้ป่วยใน 5" autocomplete="off">
+        <div id="dmgNewPinWrap" class="hidden">
+          <label for="dmgNewPin">PIN ของหน่วยงาน (ตัวเลข 4–8 หลัก)</label>
+          <input type="password" id="dmgNewPin" inputmode="numeric" maxlength="8" autocomplete="new-password" placeholder="หน่วยงานใช้ PIN นี้เข้าสู่ระบบ Paperless">
+        </div>
+        <div class="dmg-also" id="dmgAlso"></div>
+        <p class="error hidden" id="dmgAddError"></p>
+        <p class="dmg-ok hidden" id="dmgAddOk"></p>
+        <button type="button" class="btn btn-primary btn-sm" id="dmgAddBtn">เพิ่มหน่วยงาน</button>
+      </div>
+    </details>
+
+    <p class="error hidden" id="dmgError"></p>
+    <div class="modal-actions">
+      <button class="btn btn-outline" data-close>ยกเลิก</button>
+      <button class="btn btn-primary" id="dmgSave">บันทึก</button>
+    </div>
+  </div>
+
+  <div class="modal hidden" id="modalCalDonation">
+    <h3 id="calModalTitle">บันทึกการบริจาคปฏิทินเก่า</h3>
+    <input type="hidden" id="calfId">
+    <div class="grid2">
+      <div><label>วันที่รับบริจาค</label><input type="date" id="calfDate"></div>
+      <div><label>รอบ</label><input type="text" id="calfRound" list="calRoundList" autocomplete="off" placeholder="เช่น รอบที่ 1/2569"></div>
+    </div>
+    <label>ประเภทผู้บริจาค</label>
+    <select id="calfType"></select>
+    <label>ชื่อผู้บริจาค</label>
+    <input type="text" id="calfName" list="calDonorList" autocomplete="off" placeholder="พิมพ์ชื่อ — ถ้าเคยบริจาคแล้วจะขึ้นให้เลือกอัตโนมัติ">
+    <p class="ship-hint" id="calfNameHint"></p>
+    <label>น้ำหนักปฏิทิน (กิโลกรัม)</label>
+    <input type="number" id="calfWeight" min="0" step="any">
+    <p class="ship-hint" id="calfImpact"></p>
+    <label>หมายเหตุ (ถ้ามี)</label>
+    <input type="text" id="calfNote" placeholder="เช่น จำนวนเล่ม / ปีของปฏิทิน">
+    <p class="error hidden" id="calfError"></p>
+    <div class="modal-actions">
+      <button class="btn btn-outline" data-close>ยกเลิก</button>
+      <button class="btn btn-primary" id="btnCalSave">บันทึก</button>
+    </div>
+  </div>
+
+  <!-- ===================== โครงการ คัดแยก แบ่งปัน: MODALS ===================== -->
+  <datalist id="shrDeptList"></datalist>
+  <datalist id="shrUnitList">
+    <option value="กล่อง"></option><option value="ตลับ"></option><option value="รีม"></option><option value="ม้วน"></option>
+    <option value="ด้าม"></option><option value="แพ็ค"></option><option value="ชิ้น"></option><option value="ขวด"></option>
+    <option value="แท่ง"></option><option value="ถัง"></option><option value="อัน"></option>
+  </datalist>
+
+  <div class="modal hidden" id="modalShrSubmit">
+    <h3>📥 ส่งรายการเข้าโครงการ "คัดแยก แบ่งปัน"</h3>
+    <label class="dept-f-share">หน่วยงาน</label>
+    <input class="dept-f-share" type="text" id="shrSfDept" list="shrDeptList" placeholder="เลือกจากรายการ หรือพิมพ์ชื่อหน่วยงาน" autocomplete="off">
+    <div class="grid2">
+      <div><label>ชื่อ-สกุลผู้แจ้ง</label><input type="text" id="shrSfName"></div>
+      <div><label>ตำแหน่ง</label><input type="text" id="shrSfPos"></div>
+    </div>
+    <label class="shr-check"><input type="checkbox" id="shrSfNoItems"> หน่วยงานของฉันไม่มีรายการที่เกินความจำเป็น</label>
+    <div id="shrSfItemFields">
+      <label>ชื่อรายการ</label>
+      <input type="text" id="shrSfItem" placeholder="เช่น กระดาษ F4 / ลวดเสียบกระดาษ / หมึก HP 83A">
+      <div class="grid2">
+        <div><label>หมวด</label><select id="shrSfCat"></select></div>
+        <div><label>สถานะการใช้งาน</label><select id="shrSfUsage"></select></div>
+      </div>
+      <div class="grid2">
+        <div><label>จำนวน</label><input type="number" id="shrSfQty" min="1" step="1"></div>
+        <div><label>หน่วย</label><input type="text" id="shrSfUnit" list="shrUnitList" placeholder="เช่น กล่อง รีม ตลับ" autocomplete="off"></div>
+      </div>
+    </div>
+    <label>หมายเหตุ (ถ้ามี)</label>
+    <input type="text" id="shrSfNote" placeholder="เช่น ยี่ห้อ/รุ่น สภาพ ที่เก็บของ ผู้ติดต่อ">
+    <p class="muted" style="margin:6px 0 0;">💡 รายการจะอยู่สถานะ "รอตรวจสอบ" จนกว่าผู้ดูแลโครงการตรวจสอบและรับเข้าคลัง — กรุณาเก็บของไว้ที่หน่วยงานก่อน</p>
+    <p class="error hidden" id="shrSfError"></p>
+    <div class="modal-actions">
+      <button class="btn btn-outline" data-close>ยกเลิก</button>
+      <button class="btn btn-primary" id="btnShrSubmit">ส่งเข้าโครงการ</button>
+    </div>
+  </div>
+
+  <div class="modal hidden" id="modalShrAccept">
+    <h3>✅ ตรวจสอบและรับเข้าคลังรอแบ่งปัน</h3>
+    <input type="hidden" id="shrAfId">
+    <p class="muted" id="shrAfInfo" style="margin:0 0 4px;"></p>
+    <label>ชื่อรายการ</label>
+    <input type="text" id="shrAfName">
+    <div class="grid2">
+      <div><label>หมวด</label><select id="shrAfCat"></select></div>
+      <div><label>มูลค่า/หน่วย (บาท) — ถ้าทราบ</label><input type="number" id="shrAfValue" min="0" step="0.01"></div>
+    </div>
+    <div class="grid2">
+      <div><label>จำนวนที่รับเข้า</label><input type="number" id="shrAfQty" min="1" step="1"></div>
+      <div><label>หน่วย</label><input type="text" id="shrAfUnit" list="shrUnitList" autocomplete="off"></div>
+    </div>
+    <p class="muted" style="margin:6px 0 0;">💡 ถ้าในคลังมีรายการชื่อและหน่วยเดียวกันอยู่แล้ว ระบบจะรวมยอดให้อัตโนมัติ</p>
+    <p class="error hidden" id="shrAfError"></p>
+    <div class="modal-actions">
+      <button class="btn btn-outline" data-close>ยกเลิก</button>
+      <button class="btn btn-primary" id="btnShrAccept">รับเข้าคลัง</button>
+    </div>
+  </div>
+
+  <div class="modal hidden" id="modalShrItem">
+    <h3 id="shrItemModalTitle">เพิ่มรายการคงเหลือ</h3>
+    <input type="hidden" id="shrIfId">
+    <label>ชื่อรายการ</label>
+    <input type="text" id="shrIfName">
+    <div class="grid2">
+      <div><label>หมวด</label><select id="shrIfCat"></select></div>
+      <div><label>หน่วย</label><input type="text" id="shrIfUnit" list="shrUnitList" autocomplete="off"></div>
+    </div>
+    <div class="grid2">
+      <div><label>จำนวนคงเหลือ</label><input type="number" id="shrIfQty" min="0" step="1"></div>
+      <div><label>มูลค่า/หน่วย (บาท)</label><input type="number" id="shrIfValue" min="0" step="0.01" placeholder="เว้นว่าง = รอตรวจสอบราคา"></div>
+    </div>
+    <label>หมายเหตุ (ถ้ามี)</label>
+    <input type="text" id="shrIfNote">
+    <p class="error hidden" id="shrIfError"></p>
+    <div class="modal-actions">
+      <button class="btn btn-outline" data-close>ยกเลิก</button>
+      <button class="btn btn-primary" id="btnShrSaveItem">บันทึก</button>
+    </div>
+  </div>
+
+  <div class="modal hidden" id="modalShrCount">
+    <h3>🔎 ตรวจนับรายการคงเหลือ</h3>
+    <input type="hidden" id="shrCfId">
+    <p id="shrCfInfo" style="margin:0 0 4px; font-weight:600;"></p>
+    <label>จำนวนที่นับได้จริง</label>
+    <input type="number" id="shrCfQty" min="0" step="1">
+    <p class="muted" style="margin:6px 0 0;">💡 ถ้าจำนวนที่นับได้ต่างจากในระบบ ระบบจะปรับยอดให้ตรงและบันทึกประวัติไว้ในชีต ShareStockLog</p>
+    <p class="error hidden" id="shrCfError"></p>
+    <div class="modal-actions">
+      <button class="btn btn-outline" data-close>ยกเลิก</button>
+      <button class="btn btn-primary" id="btnShrConfirmCount">ยืนยันการตรวจนับ</button>
+    </div>
+  </div>
+
+  <div class="modal hidden" id="modalShrWithdraw">
+    <h3>🎁 บันทึกการเบิก/แบ่งปัน</h3>
+    <label>รายการจากคลัง</label>
+    <select id="shrWfItem"></select>
+    <div id="shrWfManual">
+      <label>ชื่อรายการ (กรณีไม่ได้อยู่ในคลัง)</label>
+      <input type="text" id="shrWfName">
+      <div class="grid2">
+        <div><label>หมวด</label><select id="shrWfCat"></select></div>
+        <div><label>หน่วย</label><input type="text" id="shrWfUnit" list="shrUnitList" autocomplete="off"></div>
+      </div>
+    </div>
+    <div class="grid2">
+      <div><label>จำนวน</label><input type="number" id="shrWfQty" min="0.01" step="1"></div>
+      <div><label>ราคา/หน่วย (บาท)</label><input type="number" id="shrWfPrice" min="0" step="0.01" placeholder="ว่าง = ใช้มูลค่าในคลัง"></div>
+    </div>
+    <label class="dept-f-share">หน่วยงานผู้เบิก</label>
+    <input class="dept-f-share" type="text" id="shrWfDept" list="shrDeptList" placeholder="เลือกจากรายการ หรือพิมพ์ชื่อหน่วยงาน" autocomplete="off">
+    <div class="grid2">
+      <div><label>วันที่เบิก</label><input type="date" id="shrWfDate"></div>
+      <div><label>หมายเหตุ</label><input type="text" id="shrWfNote"></div>
+    </div>
+    <p class="error hidden" id="shrWfError"></p>
+    <div class="modal-actions">
+      <button class="btn btn-outline" data-close>ยกเลิก</button>
+      <button class="btn btn-primary" id="btnShrSaveWithdraw">บันทึก</button>
+    </div>
+  </div>
+
+
+  <!-- ===================== ผู้ช่วยตอบคำถามอัตโนมัติ + สอบถามเจ้าหน้าที่ ===================== -->
+  <button class="asst-fab" id="asstFab" type="button" aria-label="เปิดผู้ช่วยตอบคำถาม"><span class="asst-fab-ico">💬</span><span class="asst-fab-txt">ถามผู้ช่วย</span></button>
+  <section class="asst-panel hidden" id="asstPanel" aria-label="ผู้ช่วยตอบคำถามเกี่ยวกับระบบ">
+    <header class="asst-head">
+      <div class="asst-head-ttl"><span class="asst-avatar">🌱</span><div><b>ผู้ช่วยโครงการสิ่งแวดล้อม</b><small>ตอบเฉพาะเรื่องของระบบนี้ • ตอบอัตโนมัติ</small></div></div>
+      <button class="asst-x" id="asstClose" type="button" aria-label="ปิด">✕</button>
+    </header>
+    <div class="asst-body" id="asstBody" aria-live="polite"></div>
+    <div class="asst-chips" id="asstChips"></div>
+    <form class="asst-form" id="asstForm" autocomplete="off">
+      <input type="text" id="asstInput" maxlength="300" placeholder="พิมพ์คำถามเกี่ยวกับโครงการ…">
+      <button class="btn btn-primary" type="submit" id="asstSend">ส่ง</button>
+    </form>
+    <div class="asst-foot">
+      <button class="asst-link" type="button" id="asstMail">✉️ ส่งอีเมลสอบถามเจ้าหน้าที่</button>
+      <button class="asst-link admin-only hidden" type="button" id="asstInbox">📥 กล่องข้อความ</button>
+    </div>
+  </section>
+
+  <div class="modal hidden" id="modalInquiry">
+    <h3>✉️ ส่งอีเมลสอบถามเจ้าหน้าที่</h3>
+    <p class="muted" style="margin-top:0;">สำหรับเจ้าหน้าที่โรงพยาบาลและบริษัท/องค์กรภายนอก ที่ต้องการสอบถามหรือขอเข้าร่วมโครงการ เจ้าหน้าที่จะติดต่อกลับตามช่องทางที่ระบุ</p>
+    <label>ท่านคือ *</label>
+    <select id="inqType">
+      <option value="เจ้าหน้าที่โรงพยาบาล">เจ้าหน้าที่โรงพยาบาล</option>
+      <option value="บริษัท/องค์กรภายนอก">บริษัท/องค์กรภายนอก</option>
+      <option value="บุคคลทั่วไป">บุคคลทั่วไป</option>
+    </select>
+    <label>ชื่อผู้สอบถาม *</label>
+    <input type="text" id="inqName" maxlength="100" placeholder="ชื่อ-นามสกุล">
+    <label id="inqOrgLabel">หน่วยงาน / บริษัท</label>
+    <input type="text" id="inqOrg" maxlength="150" placeholder="เช่น ฝ่ายการพยาบาล / บริษัท ABC จำกัด">
+    <label>ช่องทางติดต่อกลับ * (อีเมลหรือเบอร์โทร)</label>
+    <input type="text" id="inqContact" maxlength="120" placeholder="name@example.com หรือ 08x-xxx-xxxx">
+    <label>เรื่อง / โครงการที่สนใจ</label>
+    <select id="inqTopic"><option>ทั่วไป / เรื่องอื่นๆ</option></select>
+    <label>คำถาม / รายละเอียด *</label>
+    <textarea id="inqQuestion" rows="4" maxlength="1500" placeholder="เช่น บริษัทเราสนใจบริจาคปฏิทินเก่าจำนวน 100 เล่ม ต้องทำอย่างไร"></textarea>
+    <input type="text" id="inqWebsite" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;opacity:0;height:0;width:0;">
+    <p class="error hidden" id="inqError"></p>
+    <p class="success-note hidden" id="inqOk"></p>
+    <div class="modal-actions">
+      <button class="btn btn-outline" data-close>ปิด</button>
+      <button class="btn btn-primary" id="btnInqSend">ส่งคำถาม</button>
+    </div>
+  </div>
+
+  <div class="modal hidden modal-wide" id="modalInbox">
+    <h3>📥 กล่องข้อความสอบถาม (ผู้ดูแลระบบ)</h3>
+    <div id="inboxList" class="inbox-list"><div class="loading">กำลังโหลด...</div></div>
+    <div class="modal-actions"><button class="btn btn-outline" data-close>ปิด</button></div>
+  </div>
+
+  <!-- ===================== ภาพกิจกรรมโครงการ ===================== -->
+  <div class="modal hidden modal-wide" id="modalPhotoUpload">
+    <h3>📸 เพิ่มภาพกิจกรรม — <span id="phUpTitle"></span></h3>
+    <input type="hidden" id="phUpKey">
+    <p class="muted" style="margin-top:0;">เลือกรูปได้หลายรูป (JPG/PNG/WEBP) ระบบจะย่อรูปให้อัตโนมัติก่อนอัปโหลด พิมพ์คำอธิบายใต้รูปได้</p>
+    <input type="file" id="phUpFiles" accept="image/jpeg,image/png,image/webp,image/gif" multiple>
+    <div id="phUpList" class="ph-up-list"></div>
+    <p class="error hidden" id="phUpError"></p>
+    <div class="modal-actions">
+      <button class="btn btn-outline" data-close>ปิด</button>
+      <button class="btn btn-primary" id="btnPhUpGo" disabled>อัปโหลด</button>
+    </div>
+  </div>
+
+  <div class="lightbox hidden" id="lightbox" role="dialog" aria-modal="true" aria-label="ดูภาพกิจกรรม">
+    <button class="lb-x" id="lbClose" type="button" aria-label="ปิด">✕</button>
+    <button class="lb-nav lb-prev" id="lbPrev" type="button" aria-label="รูปก่อนหน้า">‹</button>
+    <figure class="lb-fig">
+      <img id="lbImg" alt="">
+      <figcaption><div id="lbCap" class="lb-cap"></div><div id="lbCount" class="lb-count"></div></figcaption>
+      <div class="lb-admin admin-only hidden">
+        <input type="text" id="lbCapInput" maxlength="200" placeholder="คำอธิบายรูป">
+        <button class="btn btn-outline" id="lbSaveCap" type="button">บันทึกคำอธิบาย</button>
+        <button class="btn btn-outline" id="lbCover" type="button">⭐ ตั้งเป็นรูปปก</button>
+        <button class="btn btn-danger" id="lbDel" type="button">🗑 ลบรูป</button>
+      </div>
+    </figure>
+    <button class="lb-nav lb-next" id="lbNext" type="button" aria-label="รูปถัดไป">›</button>
+  </div>
+
+  <script>
+    // ค่าจาก query string ของลิงก์ ใช้เปิดแท็บ/ฟอร์มโดยตรง
+    var INITIAL_PAGE = "<?= initialPage ?>";
+    var INITIAL_ACTION = "<?= initialAction ?>";
+    var WEBAPP_URL = "<?= webAppUrl ?>";
+  </script>
+  <?!= include('JS'); ?>
+
+  <div id="printArea"></div>
+
+  <footer style="text-align:center; padding:14px; font-size:11px; color:#9aa39d;">
+    ระบบเวอร์ชัน: 2026-10-16-v20 (ถ้าเลขนี้ไม่ตรงกับที่คาดไว้ แปลว่ายังไม่ได้ deploy เวอร์ชันล่าสุด หรือเบราว์เซอร์แคชหน้าเก่าอยู่ — ลองกด Ctrl+Shift+R)
+  </footer>
+</body>
+</html>
