@@ -4,7 +4,7 @@
  * Deploy → Manage deployments → คัดลอก "Web app URL"
  */
 window.ECO_CONFIG = {
-  APP_URL: 'https://script.google.com/macros/s/AKfycbxljhuUeUWHWzzwbDWbCVWzSE2wsdVK8rpjvDduDX-_9Wc31L7vbhivZyIMh-dvZSoL/exec',                       // เช่น 'https://script.google.com/macros/s/xxxxxxxx/exec'
+  APP_URL: 'https://script.google.com/macros/s/AKfycbzrbfcVp3xfSEX08Hv-W2mgo3ITj-iv3D4K75JmF2WW_ubfgJQ2zu49LOgfEXaqkJPV/exec',                       // เช่น 'https://script.google.com/macros/s/xxxxxxxx/exec'
   ORG_NAME: 'Green Somdej',
   APP_NAME: 'ระบบติดตามโครงการสิ่งแวดล้อมโรงพยาบาล'
 };
