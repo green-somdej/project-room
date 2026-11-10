@@ -1648,6 +1648,12 @@ function applyInitialRouteFromLink(){
   }
   if (INITIAL_PAGE === 'kitchen') switchTab('kitchen');
   if (['paperless', 'envreport', 'archive', 'projects'].indexOf(INITIAL_PAGE) !== -1) switchTab(INITIAL_PAGE);
+  if ((INITIAL_PAGE === 'em' || INITIAL_PAGE === 'compost') && (INITIAL_ACTION === 'request' || INITIAL_ACTION === 'receive')){
+    const pk = INITIAL_PAGE; switchTab(pk);
+    if (INITIAL_ACTION === 'request') setTimeout(() => openRqForm(pk), 600);
+    else setTimeout(() => openRqReceive(pk, typeof INITIAL_RID !== 'undefined' ? INITIAL_RID : '', typeof INITIAL_TOKEN !== 'undefined' ? INITIAL_TOKEN : ''), 400);
+    return;
+  }
   if (INITIAL_PAGE === 'compost'){ switchTab('compost'); if (INITIAL_ACTION === 'use') setTimeout(openCpUseForm, 400); if (INITIAL_ACTION === 'log') setTimeout(openCpLogForm, 400); }
   if (INITIAL_PAGE === 'em'){ switchTab('em'); if (INITIAL_ACTION === 'use') setTimeout(openEmUseForm, 400); if (INITIAL_ACTION === 'log') setTimeout(openEmLogForm, 400); }
   if (INITIAL_PAGE === 'calendar'){
@@ -5824,7 +5830,7 @@ function emBatchCardHtml(b, d){
       <span class="emb-pill" style="background:${c.color}">${c.ico} ${escapeHtml(b.stageLabel)}</span></div>
     ${emTrackHtml(b, st)}
     <div class="emb-stats">
-      <div><small>อายุการหมัก</small><b>${b.stage === 'done' ? 'เก็บเมื่อวันที่ ' + b.age : b.age + ' / ' + b.readyDays} วัน</b></div>
+      <div><small>อายุการหมัก</small><b>${b.stage === 'done' ? 'ตามจริง ' + b.age : b.age + ' / ' + b.readyDays} วัน</b><em>${fermDaysNote(b, st)}</em></div>
       <div><small>วัตถุดิบ</small><b>${emN(b.inputKg)} กก.</b><em>🥗${emN(b.foodKg)} 🍎${emN(b.fruitVegKg)} 🥩${emN(b.meatKg)}</em></div>
       <div><small>จำนวนถัง</small><b>${b.barrels} ถัง</b><em>ถังละ ${emN(b.barrelLiters, 0)} ลิตร</em></div>
       <div><small>${b.stage === 'done' ? 'ได้น้ำยา EM จริง' : 'คาดว่าได้น้ำยา EM'}</small><b>${emN(b.stage === 'done' ? b.yieldLiters : b.expectedLiters)} ลิตร</b>${b.stage === 'done' ? `<em>ใช้แล้ว ${emN(b.usedLiters)} • เหลือ ${emN(b.remainingLiters)}</em>` : `<em>ครบกำหนด ${fmtDate(b.readyDate)}</em>`}</div>
@@ -5925,6 +5931,7 @@ function renderEm(){
   document.getElementById('emAlerts').innerHTML = emAlertsHtml(d);
   try { renderVerifyNote('emlog', d.totals.pendingLogs, 0); if (state.session) loadVerify('emlog'); else document.getElementById('vfPanel-emlog').classList.add('hidden'); } catch (e) { /* ข้าม */ }
   try { renderVerifyNote('emuse', d.totals.pendingUsage, d.totals.pendingUsageLiters); if (state.session) loadVerify('emuse'); else document.getElementById('vfPanel-emuse').classList.add('hidden'); } catch (e) { /* ข้าม */ }
+  try { loadRq('em'); } catch (e) { /* ข้าม */ }
   document.getElementById('btnEmUseForm').classList.toggle('hidden', !!state.session);
   document.getElementById('btnEmLogForm').classList.toggle('hidden', !!state.session);
   document.getElementById('emCntBatches').textContent = d.totals.batches ? '(' + d.totals.batches + ')' : '';
@@ -5947,7 +5954,7 @@ function bindEmDynamic(){
 function emSub(sub){
   EM.sub = sub;
   document.querySelectorAll('#emSubtabs .pj-subtab').forEach(x => x.classList.toggle('active', x.dataset.sub === sub));
-  [['overview', 'emPaneOverview'], ['batches', 'emPaneBatches'], ['weekly', 'emPaneWeekly'], ['usage', 'emPaneUsage']].forEach(([k, id]) => document.getElementById(id).classList.toggle('hidden', k !== sub));
+  [['overview', 'emPaneOverview'], ['batches', 'emPaneBatches'], ['weekly', 'emPaneWeekly'], ['usage', 'emPaneUsage'], ['balance', 'emPaneBalance']].forEach(([k, id]) => document.getElementById(id).classList.toggle('hidden', k !== sub));
 }
 
 /* ---------- การกระทำของผู้ดูแล ---------- */
@@ -5988,7 +5995,7 @@ function openEmBatch(id){
   set('embMolasses', b ? b.molassesKg || '' : ''); set('embWater', b ? b.waterL || '' : '');
   set('embBarrels', b ? b.barrels : ''); set('embBarrelL', b ? b.barrelLiters : st.DefaultBarrelLiters); set('embReadyDays', b && b.readyDays !== st.ReadyDays ? b.readyDays : '');
   set('embExpected', b ? b.expectedLiters : ''); set('embNote', b ? b.note : '');
-  document.getElementById('embReadyDays').placeholder = st.ReadyDays + ' (ค่าเริ่มต้น)';
+  document.getElementById('embReadyDays').placeholder = 'ตามเกณฑ์ ' + st.ReadyDays + ' วัน';
   document.getElementById('embError').classList.add('hidden');
   embCalc(); openModal('modalEmBatch');
 }
@@ -6195,6 +6202,7 @@ function renderEmShareLink(){
   const qr = 'https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=' + encodeURIComponent(link);
   document.getElementById('emQrImg').src = qr; document.getElementById('emQrDownload').href = qr;
   document.getElementById('emCopyConfirm').classList.add('hidden');
+  renderRqLink('em');
 }
 function toggleEmShareCard(){
   const card = document.getElementById('emShareCard'), was = card.classList.contains('hidden');
@@ -6410,7 +6418,7 @@ function bindEm(){
   document.getElementById('btnEmShareLink').onclick = toggleEmShareCard;
   document.getElementById('btnEmCopyShareLink').onclick = copyEmShareLink;
   document.getElementById('emufSave').onclick = submitEmUseForm;
-  bindSubtabs('emSubtabs', { overview: 'emPaneOverview', batches: 'emPaneBatches', weekly: 'emPaneWeekly', usage: 'emPaneUsage' });
+  bindSubtabs('emSubtabs', { overview: 'emPaneOverview', batches: 'emPaneBatches', weekly: 'emPaneWeekly', usage: 'emPaneUsage', balance: 'emPaneBalance' }, { balance: () => loadRawBal('em') });
   document.getElementById('btnEmAddBatch').onclick = () => openEmBatch(null);
   document.getElementById('btnEmAddUsage').onclick = openEmUsage;
   document.getElementById('btnEmExcel').onclick = emExportExcel;
@@ -6646,7 +6654,7 @@ function cpBatchCardHtml(b, d){
       <span class="emb-pill" style="background:${c.color}">${c.ico} ${escapeHtml(b.stageLabel)}</span></div>
     ${cpTrackHtml(b, st)}
     <div class="emb-stats">
-      <div><small>อายุการหมัก</small><b>${b.stage === 'done' ? 'เก็บเมื่อวันที่ ' + b.age : b.age + ' / ' + b.readyDays} วัน</b></div>
+      <div><small>อายุการหมัก</small><b>${b.stage === 'done' ? 'ตามจริง ' + b.age : b.age + ' / ' + b.readyDays} วัน</b><em>${fermDaysNote(b, st)}</em></div>
       <div><small>วัตถุดิบ</small><b>${cpN(b.inputKg)} กก.</b><em>🍂${cpN(b.dryKg)} 🌿${cpN(b.freshKg)} 🪵${cpN(b.branchKg)}</em></div>
       <div><small>จำนวนกอง</small><b>${b.piles} กอง</b></div>
       <div><small>${b.stage === 'done' ? 'ได้ปุ๋ยหมักจริง' : 'คาดว่าได้ปุ๋ยหมัก'}</small><b>${cpN(b.stage === 'done' ? b.yieldKg : b.expectedKg)} กก.</b>${b.stage === 'done' ? `<em>ใช้แล้ว ${cpN(b.usedKg)} • เหลือ ${cpN(b.remainingKg)}</em>` : `<em>ครบกำหนด ${fmtDate(b.readyDate)}</em>`}</div>
@@ -6747,6 +6755,7 @@ function renderCp(){
   document.getElementById('cpAlerts').innerHTML = cpAlertsHtml(d);
   try { renderVerifyNote('cplog', d.totals.pendingLogs, 0); if (state.session) loadVerify('cplog'); else document.getElementById('vfPanel-cplog').classList.add('hidden'); } catch (e) { /* ข้าม */ }
   try { renderVerifyNote('cpuse', d.totals.pendingUsage, d.totals.pendingUsageKg); if (state.session) loadVerify('cpuse'); else document.getElementById('vfPanel-cpuse').classList.add('hidden'); } catch (e) { /* ข้าม */ }
+  try { loadRq('compost'); } catch (e) { /* ข้าม */ }
   document.getElementById('btnCpUseForm').classList.toggle('hidden', !!state.session);
   document.getElementById('btnCpLogForm').classList.toggle('hidden', !!state.session);
   document.getElementById('cpCntBatches').textContent = d.totals.batches ? '(' + d.totals.batches + ')' : '';
@@ -6769,7 +6778,7 @@ function bindCpDynamic(){
 function cpSub(sub){
   CP.sub = sub;
   document.querySelectorAll('#cpSubtabs .pj-subtab').forEach(x => x.classList.toggle('active', x.dataset.sub === sub));
-  [['overview', 'cpPaneOverview'], ['batches', 'cpPaneBatches'], ['weekly', 'cpPaneWeekly'], ['usage', 'cpPaneUsage']].forEach(([k, id]) => document.getElementById(id).classList.toggle('hidden', k !== sub));
+  [['overview', 'cpPaneOverview'], ['batches', 'cpPaneBatches'], ['weekly', 'cpPaneWeekly'], ['usage', 'cpPaneUsage'], ['balance', 'cpPaneBalance']].forEach(([k, id]) => document.getElementById(id).classList.toggle('hidden', k !== sub));
 }
 
 /* ---------- การกระทำของผู้ดูแล ---------- */
@@ -6810,7 +6819,7 @@ function openCpBatch(id){
   set('cpbMolasses', b ? b.activatorKg || '' : ''); set('cpbWater', b ? b.waterL || '' : '');
   set('cpbPiles', b ? b.piles : ''); set('cpbReadyDays', b && b.readyDays !== st.ReadyDays ? b.readyDays : '');
   set('cpbExpected', b ? b.expectedKg : ''); set('cpbNote', b ? b.note : '');
-  document.getElementById('cpbReadyDays').placeholder = st.ReadyDays + ' (ค่าเริ่มต้น)';
+  document.getElementById('cpbReadyDays').placeholder = 'ตามเกณฑ์ ' + st.ReadyDays + ' วัน';
   document.getElementById('cpbError').classList.add('hidden');
   cpbCalc(); openModal('modalCpBatch');
 }
@@ -7017,6 +7026,7 @@ function renderCpShareLink(){
   const qr = 'https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=' + encodeURIComponent(link);
   document.getElementById('cpQrImg').src = qr; document.getElementById('cpQrDownload').href = qr;
   document.getElementById('cpCopyConfirm').classList.add('hidden');
+  renderRqLink('compost');
 }
 function toggleCpShareCard(){
   const card = document.getElementById('cpShareCard'), was = card.classList.contains('hidden');
@@ -7073,7 +7083,7 @@ function bindCp(){
   document.getElementById('btnCpShareLink').onclick = toggleCpShareCard;
   document.getElementById('btnCpCopyShareLink').onclick = copyCpShareLink;
   document.getElementById('cpufSave').onclick = submitCpUseForm;
-  bindSubtabs('cpSubtabs', { overview: 'cpPaneOverview', batches: 'cpPaneBatches', weekly: 'cpPaneWeekly', usage: 'cpPaneUsage' });
+  bindSubtabs('cpSubtabs', { overview: 'cpPaneOverview', batches: 'cpPaneBatches', weekly: 'cpPaneWeekly', usage: 'cpPaneUsage', balance: 'cpPaneBalance' }, { balance: () => loadRawBal('compost') });
   document.getElementById('btnCpAddBatch').onclick = () => openCpBatch(null);
   document.getElementById('btnCpAddUsage').onclick = openCpUsage;
   document.getElementById('btnCpExcel').onclick = cpExportExcel;
@@ -7388,4 +7398,307 @@ function bindDeptMonthly(){
 }
 bindDeptMonthly();
 
+
+/* ============================================================
+   คำขอรับน้ำยา EM / ปุ๋ยหมัก + ตั้งค่ารอบการหมัก
+   ============================================================ */
+const RQ_CFG = {
+  em:      { label: 'น้ำยา EM', unit: 'ลิตร', icon: '🧪', data: () => EM.data, stock: d => d && d.totals ? d.totals.stockLiters : null, reload: () => reloadEm() },
+  compost: { label: 'ปุ๋ยหมัก', unit: 'กก.', icon: '🪴', data: () => CP.data, stock: d => d && d.totals ? d.totals.stockKg : null, reload: () => reloadCp() }
+};
+const RQ = { project: 'em', rows: {}, filter: { em: 'open', compost: 'open' }, recv: null };
+const RQ_ST = { wait: 'รอรับของ', recv: 'ผู้ขอยืนยันรับแล้ว', done: 'ผู้ดูแลยืนยันแล้ว', cancel: 'ยกเลิก' };
+function rqLink(project){
+  const base = (typeof WEBAPP_URL !== 'undefined' && WEBAPP_URL) ? WEBAPP_URL : window.location.href.split('?')[0];
+  return base + '?page=' + project + '&action=request';
+}
+function renderRqLink(project){
+  const link = rqLink(project), qr = 'https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=' + encodeURIComponent(link);
+  const i = document.getElementById('rqLinkInput-' + project); if (!i) return;
+  i.value = link; document.getElementById('rqQrImg-' + project).src = qr; document.getElementById('rqQrDownload-' + project).href = qr;
+  document.getElementById('rqCopyConfirm-' + project).classList.add('hidden');
+}
+function rqCopy(input, confirmEl){
+  const ok = () => { if (confirmEl){ confirmEl.classList.remove('hidden'); setTimeout(() => confirmEl.classList.add('hidden'), 2500); } };
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(input.value).then(ok).catch(() => fallbackCopy(input, ok)); else fallbackCopy(input, ok);
+}
+function fermDaysNote(b, st){
+  const crit = st && st.ReadyDays ? st.ReadyDays : b.readyDays;
+  if (b.stage === 'done') return 'ตามเกณฑ์ ' + crit + ' วัน' + (b.age !== crit ? (b.age > crit ? ' • ช้ากว่าเกณฑ์ ' + (b.age - crit) : ' • เร็วกว่าเกณฑ์ ' + (crit - b.age)) + ' วัน' : ' • ตรงเกณฑ์');
+  return 'ตามเกณฑ์ ' + crit + ' วัน' + (b.readyDays !== crit ? ' • รอบนี้ตามจริง ' + b.readyDays + ' วัน' : '');
+}
+
+/* ---------- ฟอร์มลงทะเบียน ---------- */
+function rqType(){ const r = document.querySelector('input[name="rqType"]:checked'); return r ? r.value : 'เจ้าหน้าที่'; }
+function rqApplyType(){
+  const t = rqType();
+  document.querySelectorAll('.rq-only-staff').forEach(e => e.classList.toggle('hidden', t !== 'เจ้าหน้าที่'));
+  document.querySelectorAll('.rq-only-org').forEach(e => e.classList.toggle('hidden', t !== 'บริษัทภายนอก'));
+  document.querySelectorAll('.rq-only-ext').forEach(e => e.classList.toggle('hidden', t === 'เจ้าหน้าที่'));
+  document.getElementById('rqfNameLbl').textContent = t === 'บริษัทภายนอก' ? 'ชื่อ - นามสกุล ผู้ติดต่อ *' : 'ชื่อ - นามสกุล *';
+  document.querySelectorAll('#rqfTypes label').forEach(l => l.classList.toggle('on', l.querySelector('input').checked));
+}
+function openRqForm(project){
+  const c = RQ_CFG[project]; RQ.project = project;
+  if (!c.data()){ (project === 'em' ? loadEm : loadCp)(); setTimeout(() => openRqForm(project), 900); return; }
+  const stock = c.stock(c.data());
+  document.getElementById('rqfTitle').textContent = '🙋 ลงทะเบียนขอรับ' + c.label;
+  document.getElementById('rqfStock').innerHTML = stock == null ? '' : `${c.icon} ${c.label} คงเหลือขณะนี้ <b>${emN(stock)} ${c.unit}</b>`;
+  document.getElementById('rqfQtyLbl').textContent = 'ปริมาณที่ขอรับ (' + c.unit + ') *';
+  ['rqfStaff', 'rqfOrg', 'rqfName', 'rqfPhone', 'rqfEmail', 'rqfQty', 'rqfDate', 'rqfPurpose', 'rqfPlace', 'rqfNote', 'rqfWebsite'].forEach(k => document.getElementById(k).value = '');
+  try { const u = JSON.parse(localStorage.getItem('ecoUser') || 'null'); if (u){ document.getElementById('rqfStaff').value = u.code; document.getElementById('rqfName').value = u.name; } } catch (e) {}
+  document.querySelector('input[name="rqType"][value="เจ้าหน้าที่"]').checked = true; rqApplyType();
+  document.getElementById('rqfError').classList.add('hidden'); openModal('modalRqForm');
+}
+function submitRqForm(){
+  const g = k => document.getElementById(k).value.trim(), t = rqType(), c = RQ_CFG[RQ.project], btn = document.getElementById('rqfSave');
+  const err = m => emShowErr('rqfError', m);
+  document.getElementById('rqfError').classList.add('hidden');
+  const staff = g('rqfStaff').replace(/\D/g, '');
+  if (t === 'เจ้าหน้าที่' && !/^\d{7}$/.test(staff)) return err('รหัสเจ้าหน้าที่ต้องเป็นตัวเลข 7 หลัก');
+  if (t === 'บริษัทภายนอก' && !g('rqfOrg')) return err('กรุณากรอกชื่อบริษัท');
+  if (g('rqfName').length < 3) return err(t === 'บริษัทภายนอก' ? 'กรุณากรอกชื่อผู้ติดต่อ' : 'กรุณากรอกชื่อ-นามสกุล');
+  if (t !== 'เจ้าหน้าที่' && !/^[0-9+\-\s()]{9,}$/.test(g('rqfPhone'))) return err('กรุณากรอกเบอร์โทรศัพท์ให้ถูกต้อง');
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(g('rqfEmail'))) return err('กรุณากรอก E-mail ให้ถูกต้อง');
+  if (!(Number(g('rqfQty')) > 0)) return err('กรุณาระบุปริมาณที่ขอรับ (' + c.unit + ')');
+  if (!g('rqfPurpose')) return err('กรุณาระบุว่าจะนำไปใช้เพื่ออะไร');
+  btn.disabled = true; btn.textContent = 'กำลังส่ง...';
+  google.script.run.withSuccessHandler(r => {
+    btn.disabled = false; btn.textContent = 'ส่งคำขอ'; closeModals();
+    document.getElementById('rqdCode').textContent = r.code || '-';
+    document.getElementById('rqdMail').textContent = r.mailed ? '📧 ส่งรหัสคำขอและลิงก์ยืนยันไปที่ ' + g('rqfEmail') + ' แล้ว' : '⚠️ ส่งอีเมลไม่สำเร็จ — กรุณาจดรหัสคำขอนี้ไว้';
+    document.getElementById('rqdLink').value = r.link || '';
+    openModal('modalRqDone');
+    if (state.session) loadRq(RQ.project);
+  }).withFailureHandler(e => { btn.disabled = false; btn.textContent = 'ส่งคำขอ'; err((e && e.message) || e); })
+    .submitProductRequest({ Project: RQ.project, RequesterType: t, StaffCode: staff, Organization: g('rqfOrg'), FullName: g('rqfName'), Phone: g('rqfPhone'), Email: g('rqfEmail'),
+      Quantity: Number(g('rqfQty')), WantedDate: g('rqfDate'), Purpose: g('rqfPurpose'), Place: g('rqfPlace'), Note: g('rqfNote'), website: g('rqfWebsite') });
+}
+
+/* ---------- ผู้ขอยืนยันว่าได้รับ ---------- */
+function rqStatusBadge(st){
+  const m = { [RQ_ST.wait]: ['rqs-wait', '⏳ รอรับของ'], [RQ_ST.recv]: ['rqs-recv', '📦 ผู้ขอยืนยันรับแล้ว — รอผู้ดูแลยืนยัน'], [RQ_ST.done]: ['rqs-done', '✅ ผู้ดูแลยืนยันแล้ว'], [RQ_ST.cancel]: ['rqs-cancel', '✕ ยกเลิก'] }[st] || ['rqs-wait', st];
+  return `<span class="rqs ${m[0]}">${m[1]}</span>`;
+}
+function rqRenderInfo(r){
+  const box = document.getElementById('rqrInfo');
+  box.innerHTML = `<div class="rq-info-h"><b>${escapeHtml(r.RequestCode)}</b>${rqStatusBadge(r.Status)}</div>
+    <div class="rq-info-g"><span>โครงการ</span><b>${escapeHtml(r.ProjectLabel)}</b><span>ผู้ขอ</span><b>${escapeHtml(r.Who)} <small class="muted">(${escapeHtml(r.RequesterType)})</small></b>
+    <span>ปริมาณ</span><b>${emN(r.ConfirmedQty || r.Quantity)} ${escapeHtml(r.Unit)}</b><span>นำไปใช้เพื่อ</span><b>${escapeHtml(r.Purpose || '-')}</b>
+    <span>ลงทะเบียนเมื่อ</span><b>${r.CreatedAt ? fmtDate(r.CreatedAt.slice(0, 10)) : '-'}</b>${r.ReceivedAt ? `<span>ยืนยันรับเมื่อ</span><b>${fmtDate(r.ReceivedAt.slice(0, 10))}</b>` : ''}</div>`;
+  box.classList.remove('hidden');
+  const btn = document.getElementById('rqrConfirm');
+  btn.classList.toggle('hidden', r.Status !== RQ_ST.wait);
+}
+function openRqReceive(project, rid, token){
+  RQ.project = project; RQ.recv = null;
+  document.getElementById('rqrError').classList.add('hidden'); document.getElementById('rqrInfo').classList.add('hidden');
+  document.getElementById('rqrConfirm').classList.add('hidden');
+  document.getElementById('rqrCode').value = ''; document.getElementById('rqrContact').value = '';
+  document.getElementById('rqrLookup').classList.toggle('hidden', !!(rid && token));
+  openModal('modalRqReceive');
+  if (rid && token) rqFind({ rid: rid, token: token });
+}
+function rqFind(q){
+  const er = document.getElementById('rqrError'); er.classList.add('hidden');
+  if (!q){
+    const code = document.getElementById('rqrCode').value.trim().toUpperCase(), contact = document.getElementById('rqrContact').value.trim();
+    if (!code || !contact) return emShowErr('rqrError', 'กรุณากรอกรหัสคำขอ และ E-mail / เบอร์โทร / รหัสเจ้าหน้าที่');
+    q = { code: code, contact: contact };
+  }
+  const btn = document.getElementById('rqrFind'); btn.disabled = true;
+  google.script.run.withSuccessHandler(r => { btn.disabled = false; RQ.recv = r; rqRenderInfo(r); })
+    .withFailureHandler(e => { btn.disabled = false; document.getElementById('rqrLookup').classList.remove('hidden'); emShowErr('rqrError', (e && e.message) || e); })
+    .getProductRequestForReceive(q);
+}
+function rqConfirmReceived(){
+  if (!RQ.recv) return;
+  const btn = document.getElementById('rqrConfirm'); btn.disabled = true; btn.textContent = 'กำลังบันทึก...';
+  google.script.run.withSuccessHandler(r => {
+    btn.disabled = false; btn.textContent = '✅ ยืนยันว่าได้รับแล้ว';
+    RQ.recv = Object.assign(RQ.recv, r); rqRenderInfo(RQ.recv);
+    document.getElementById('rqrInfo').insertAdjacentHTML('beforeend', '<p class="rq-thanks">🙏 ขอบคุณค่ะ — ผู้ดูแลโครงการจะยืนยันอีกครั้ง และแจ้งผลทาง E-mail ที่ลงทะเบียนไว้</p>');
+    if (state.session) loadRq(RQ.project);
+  }).withFailureHandler(e => { btn.disabled = false; btn.textContent = '✅ ยืนยันว่าได้รับแล้ว'; emShowErr('rqrError', (e && e.message) || e); })
+    .confirmProductReceived(RQ.recv.RequestID, RQ.recv.token);
+}
+
+/* ---------- ผู้ดูแลระบบ: รายการคำขอ ---------- */
+function loadRq(project){
+  const panel = document.getElementById('rqPanel-' + project);
+  if (!panel) return;
+  if (!state.session){ panel.classList.add('hidden'); return; }
+  google.script.run.withSuccessHandler(rows => { RQ.rows[project] = rows || []; renderRqPanel(project); })
+    .withFailureHandler(() => panel.classList.add('hidden'))
+    .getProductRequests(state.session.departmentId, state.session.pin, project);
+}
+function renderRqPanel(project){
+  const panel = document.getElementById('rqPanel-' + project), all = RQ.rows[project] || [], c = RQ_CFG[project];
+  panel.classList.toggle('hidden', !state.session); if (!state.session) return;
+  const f = RQ.filter[project];
+  const cnt = k => all.filter(r => k === 'open' ? (r.Status === RQ_ST.wait || r.Status === RQ_ST.recv) : k === 'all' ? true : r.Status === k).length;
+  const rows = all.filter(r => f === 'open' ? (r.Status === RQ_ST.wait || r.Status === RQ_ST.recv) : f === 'all' ? true : r.Status === f);
+  const tabs = [['open', 'ค้างดำเนินการ'], [RQ_ST.recv, 'ผู้ขอรับแล้ว'], [RQ_ST.done, 'เสร็จสิ้น'], [RQ_ST.cancel, 'ยกเลิก'], ['all', 'ทั้งหมด']]
+    .map(([k, l]) => `<button class="rq-tab${f === k ? ' on' : ''}" data-rqf="${k}">${l} <i>${cnt(k)}</i></button>`).join('');
+  const body = rows.length ? rows.map(r => `<tr class="${r.Status === RQ_ST.recv ? 'rq-hl' : ''}">
+      <td><b>${escapeHtml(r.RequestCode)}</b><br><small class="muted">${r.CreatedAt ? fmtDate(r.CreatedAt.slice(0, 10)) : ''}</small></td>
+      <td><b>${escapeHtml(r.Who)}</b><br><small class="muted">${escapeHtml(r.RequesterType)}${r.StaffCode ? ' • ' + escapeHtml(r.StaffCode) : ''}</small></td>
+      <td><small>${r.Phone ? '📞 ' + escapeHtml(r.Phone) + '<br>' : ''}📧 ${escapeHtml(r.Email)}</small></td>
+      <td class="num"><b>${emN(r.ConfirmedQty || r.Quantity)}</b> ${escapeHtml(r.Unit)}</td>
+      <td>${escapeHtml(r.Purpose)}${r.Place ? '<br><small class="muted">📍 ' + escapeHtml(r.Place) + '</small>' : ''}${r.WantedDate ? '<br><small class="muted">ต้องการรับ ' + fmtDate(r.WantedDate) + '</small>' : ''}</td>
+      <td>${rqStatusBadge(r.Status)}${r.Status === RQ_ST.done ? `<br><small class="muted">${escapeHtml(r.AdminBy)}${r.EmailSentAt ? ' • 📧 ส่งอีเมลแล้ว' : ' • ⚠️ ยังไม่ได้ส่งอีเมล'}</small>` : ''}${r.CancelReason ? '<br><small class="muted">' + escapeHtml(r.CancelReason) + '</small>' : ''}</td>
+      <td class="vf-act">${(r.Status === RQ_ST.wait || r.Status === RQ_ST.recv) ? `<button class="btn btn-primary btn-sm" data-rqok="${escapeHtml(r.RequestID)}">✓ ยืนยันส่งมอบ</button><button class="btn btn-outline btn-sm vf-no" data-rqno="${escapeHtml(r.RequestID)}">✕</button>` : ''}</td>
+    </tr>`).join('') : `<tr><td colspan="7" class="muted" style="text-align:center;padding:18px">ไม่มีรายการ</td></tr>`;
+  panel.innerHTML = `<div class="vf-head"><h4>🙋 คำขอรับ${c.label} — ค้างดำเนินการ <span class="vf-count">${cnt('open')}</span></h4><div class="rq-tabs">${tabs}</div></div>
+    <p class="muted vf-hint">ขั้นตอน: ผู้ขอลงทะเบียน → ผู้ขอกด "ยืนยันว่าได้รับแล้ว" (แถวสีเหลือง) → ผู้ดูแลระบบกด <b>✓ ยืนยันส่งมอบ</b> = หักจาก${c.label} คงเหลือ บันทึกในประวัติการใช้ และส่ง E-mail แจ้งผู้ขอ</p>
+    <div class="vf-scroll"><table class="vf-table"><thead><tr><th>รหัสคำขอ</th><th>ผู้ขอ</th><th>ติดต่อ</th><th class="num">ปริมาณ</th><th>นำไปใช้</th><th>สถานะ</th><th></th></tr></thead><tbody>${body}</tbody></table></div>`;
+  panel.querySelectorAll('[data-rqf]').forEach(b => b.onclick = () => { RQ.filter[project] = b.dataset.rqf; renderRqPanel(project); });
+  panel.querySelectorAll('[data-rqok]').forEach(b => b.onclick = () => rqAdminConfirm(project, b.dataset.rqok));
+  panel.querySelectorAll('[data-rqno]').forEach(b => b.onclick = () => rqAdminCancel(project, b.dataset.rqno));
+}
+function rqAdminConfirm(project, rid){
+  if (!requireSession()) return;
+  const r = (RQ.rows[project] || []).find(x => x.RequestID === rid), c = RQ_CFG[project];
+  if (!r) return;
+  const note = r.Status === RQ_ST.recv ? '' : '\n(ผู้ขอยังไม่ได้กดยืนยันว่าได้รับ)';
+  const v = prompt(`ยืนยันส่งมอบ${c.label} ให้ ${r.Who}${note}\nปริมาณที่ส่งมอบจริง (${c.unit}):`, r.Quantity);
+  if (v === null) return;
+  if (!(Number(v) > 0)) return alert('ปริมาณต้องมากกว่า 0');
+  const panel = document.getElementById('rqPanel-' + project); panel.querySelectorAll('button').forEach(b => b.disabled = true);
+  google.script.run.withSuccessHandler(res => {
+    if (!res.mailed) alert('ยืนยันเรียบร้อย แต่ส่ง E-mail ไม่สำเร็จ — กรุณาแจ้งผู้ขอด้วยตนเอง');
+    c.reload();
+  }).withFailureHandler(e => { alertErr(e); renderRqPanel(project); })
+    .adminConfirmProductRequest(state.session.departmentId, state.session.pin, rid, Number(v));
+}
+function rqAdminCancel(project, rid){
+  if (!requireSession()) return;
+  const reason = prompt('ยกเลิกคำขอนี้? ระบุเหตุผล (ไม่บังคับ):', '');
+  if (reason === null) return;
+  google.script.run.withSuccessHandler(() => loadRq(project)).withFailureHandler(alertErr)
+    .adminCancelProductRequest(state.session.departmentId, state.session.pin, rid, reason);
+}
+
+/* ---------- ตั้งค่ารอบการหมัก ---------- */
+function openFermSettings(project){
+  if (!requireSession()) return;
+  const c = RQ_CFG[project], d = c.data(); RQ.project = project;
+  if (!d){ (project === 'em' ? loadEm : loadCp)(); setTimeout(() => openFermSettings(project), 900); return; }
+  const st = d.settings || {};
+  document.getElementById('fsTitle').textContent = '⚙️ ตั้งค่ารอบการหมัก — ' + (project === 'em' ? 'น้ำยา EM' : 'ปุ๋ยหมักใบไม้');
+  document.getElementById('fsStage1').value = st.Stage1Days; document.getElementById('fsStage2').value = st.Stage2Days;
+  document.getElementById('fsReady').value = st.ReadyDays; document.getElementById('fsCheck').value = st.CheckIntervalDays;
+  document.getElementById('fsError').classList.add('hidden'); fsPreview(); openModal('modalFermSettings');
+}
+function fsVals(){ const n = id => Math.round(Number(document.getElementById(id).value)); return { Stage1Days: n('fsStage1'), Stage2Days: n('fsStage2'), ReadyDays: n('fsReady'), CheckIntervalDays: n('fsCheck') }; }
+function fsPreview(){
+  const v = fsVals(), el = document.getElementById('fsPreview');
+  if (!(v.ReadyDays > 0)) { el.innerHTML = ''; return; }
+  const pos = d => Math.max(0, Math.min(100, d / v.ReadyDays * 100));
+  const d = RQ_CFG[RQ.project].data(), batches = d && d.batches ? d.batches.filter(b => b.stage === 'done') : [];
+  const avg = batches.length ? Math.round(batches.reduce((s, b) => s + b.age, 0) / batches.length) : null;
+  el.innerHTML = `<div class="fs-bar"><i style="left:${pos(v.Stage1Days)}%"><em>${v.Stage1Days}</em></i><i style="left:${pos(v.Stage2Days)}%"><em>${v.Stage2Days}</em></i><i class="end" style="left:100%"><em>${v.ReadyDays} วัน</em></i></div>
+    <p class="muted">ตามเกณฑ์: ครบกำหนด <b>${v.ReadyDays}</b> วัน • ตรวจทุก <b>${v.CheckIntervalDays || '-'}</b> วัน${avg !== null ? ` • ตามจริง (เฉลี่ย ${batches.length} รอบที่เก็บแล้ว): <b>${avg}</b> วัน` : ''}</p>`;
+}
+function saveFermSettingsUi(){
+  const v = fsVals(), btn = document.getElementById('fsSave');
+  if (!(v.Stage1Days < v.Stage2Days && v.Stage2Days < v.ReadyDays)) return emShowErr('fsError', 'ต้องเรียงจากน้อยไปมาก: ระยะที่ 1 < ระยะที่ 2 < ครบกำหนด');
+  btn.disabled = true;
+  google.script.run.withSuccessHandler(() => { btn.disabled = false; closeModals(); RQ_CFG[RQ.project].reload(); })
+    .withFailureHandler(e => { btn.disabled = false; emShowErr('fsError', (e && e.message) || e); })
+    .saveFermentSettings(state.session.departmentId, state.session.pin, RQ.project, v);
+}
+
+/* ---------- ผูกปุ่ม ---------- */
+(function bindRq(){
+  document.addEventListener('click', e => {
+    const o = e.target.closest('[data-rq-open]'); if (o) return openRqForm(o.dataset.rqOpen);
+    const r = e.target.closest('[data-rq-receive]'); if (r) return openRqReceive(r.dataset.rqReceive);
+    const s = e.target.closest('[data-ferm-settings]'); if (s) return openFermSettings(s.dataset.fermSettings);
+    const cp = e.target.closest('[data-rq-copy]'); if (cp){ const k = cp.dataset.rqCopy; return rqCopy(document.getElementById('rqLinkInput-' + k), document.getElementById('rqCopyConfirm-' + k)); }
+  });
+  document.querySelectorAll('input[name="rqType"]').forEach(i => i.onchange = rqApplyType);
+  document.getElementById('rqfStaff').addEventListener('input', e => { e.target.value = e.target.value.replace(/\D/g, '').slice(0, 7); });
+  document.getElementById('rqfSave').onclick = submitRqForm;
+  document.getElementById('rqrFind').onclick = () => rqFind();
+  document.getElementById('rqrConfirm').onclick = rqConfirmReceived;
+  document.getElementById('rqdCopy').onclick = () => rqCopy(document.getElementById('rqdLink'));
+  ['fsStage1', 'fsStage2', 'fsReady', 'fsCheck'].forEach(id => document.getElementById(id).oninput = fsPreview);
+  document.getElementById('fsSave').onclick = saveFermSettingsUi;
+})();
+
+/* ============================================================
+   วัตถุดิบเข้า-ออกรายเดือน (ขยะเปียก → น้ำยา EM / ใบไม้ → ปุ๋ยหมัก)
+   ============================================================ */
+const RAW = { em: { year: new Date().getFullYear(), data: null }, compost: { year: new Date().getFullYear(), data: null }, edit: null };
+const RAW_MON = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
+const RAW_MON_FULL = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
+const RAW_NAME = { em: { in: 'ขยะเปียกเข้า', out: 'นำไปหมัก EM', title: 'ขยะเปียก', pane: 'emPaneBalance' }, compost: { in: 'วัตถุดิบเข้า', out: 'นำไปหมักปุ๋ย', title: 'ใบไม้ เศษหญ้า กิ่งไม้', pane: 'cpPaneBalance' } };
+function rawKg(v){ v = Number(v) || 0; return v.toLocaleString(undefined, { maximumFractionDigits: 2 }); }
+function loadRawBal(project, year){
+  const R = RAW[project], pane = document.getElementById(RAW_NAME[project].pane);
+  if (year) R.year = year;
+  if (!R.data) pane.innerHTML = '<div class="loading">กำลังโหลดข้อมูล...</div>';
+  google.script.run.withSuccessHandler(d => { R.data = d; renderRawBal(project); })
+    .withFailureHandler(e => { pane.innerHTML = '<p class="error">' + escapeHtml((e && e.message) || e) + '</p>'; })
+    .getRawBalance(project, R.year);
+}
+function renderRawBal(project){
+  const d = RAW[project].data, N = RAW_NAME[project], pane = document.getElementById(N.pane), admin = !!state.session;
+  const t = d.totals, maxV = Math.max(1, ...d.months.map(m => Math.max(m.inKg, m.usedKg)));
+  const kpi = (ic, lbl, v, cls, sub) => `<div class="rb-kpi ${cls || ''}"><span>${ic} ${lbl}</span><b>${rawKg(v)}</b><em>กก.${sub ? ' • ' + sub : ''}</em></div>`;
+  const bars = d.months.map(m => `<div class="rb-col${m.future ? ' fut' : ''}" title="${RAW_MON_FULL[m.month - 1]}: เข้า ${rawKg(m.inKg)} • ออก ${rawKg(m.usedKg)} กก.">
+      <div class="rb-pair"><i class="in" style="height:${m.inKg / maxV * 100}%"></i><i class="out" style="height:${m.usedKg / maxV * 100}%"></i></div><small>${RAW_MON[m.month - 1]}</small></div>`).join('');
+  const rows = d.months.map(m => {
+    const neg = m.closing < -1e-9, warn = !m.hasIn && m.usedKg > 0;
+    return `<tr class="${m.future ? 'rb-fut' : ''}${neg ? ' rb-neg' : ''}">
+      <td><b>${RAW_MON_FULL[m.month - 1]}</b>${m.note ? '<br><small class="muted">' + escapeHtml(m.note) + '</small>' : ''}</td>
+      <td class="num">${rawKg(m.opening)}</td>
+      <td class="num rb-in">${m.hasIn ? '+' + rawKg(m.inKg) : '<span class="muted">' + (warn ? '⚠️ ยังไม่บันทึก' : '–') + '</span>'}</td>
+      <td class="num rb-out">${m.usedKg ? '−' + rawKg(m.usedKg) : '<span class="muted">–</span>'}</td>
+      <td class="num"><b>${rawKg(m.closing)}</b>${neg ? '<br><small class="rb-negtxt">ใช้เกินที่บันทึกเข้า</small>' : ''}</td>
+      <td class="num">${m.usePct === null ? '–' : '<span class="rb-pct"><i style="width:' + Math.min(100, m.usePct) + '%"></i></span> ' + m.usePct + '%'}</td>
+      ${admin ? `<td><button class="btn btn-outline btn-sm" data-rawedit="${m.month}">✏️</button></td>` : ''}
+    </tr>`; }).join('');
+  pane.innerHTML = `<section class="breakdown-card rb">
+    <div class="rb-head">
+      <div><h4>⚖️ ${N.title} เข้า-ออก รายเดือน</h4><p class="muted">เข้า = ปริมาณที่มีในระบบแต่ละเดือน • ออก = นำไปหมักจริง (รอบใหม่นับเดือนที่เริ่มหมัก, การเติมวัตถุดิบนับเดือนที่เติม) • คงเหลือยกไปเดือนถัดไป</p></div>
+      <div class="rb-tools"><select id="rbYear-${project}">${d.years.map(y => `<option value="${y}" ${y === d.year ? 'selected' : ''}>ปี ${y + 543}</option>`).join('')}</select>
+        ${admin ? `<button class="btn btn-primary btn-sm" data-rawedit="0">+ บันทึก${N.in}</button>` : ''}</div>
+    </div>
+    <div class="rb-kpis">${kpi('📥', 'ยกมาต้นปี', d.opening)}${kpi('➕', N.in + ' (ปีนี้)', t.inKg, 'in')}${kpi('➖', N.out + ' (ปีนี้)', t.usedKg, 'out')}${kpi('📦', 'คงเหลือ', t.closing, t.closing < 0 ? 'neg' : 'bal', t.usePct === null ? '' : 'ใช้ประโยชน์ ' + t.usePct + '%')}</div>
+    <div class="rb-chart">${bars}</div>
+    <div class="rb-legend"><span><i class="in"></i>${N.in}</span><span><i class="out"></i>${N.out}</span></div>
+    <div class="vf-scroll"><table class="vf-table rb-table"><thead><tr><th>เดือน</th><th class="num">ยกมา</th><th class="num">เข้า</th><th class="num">ออก (หมัก)</th><th class="num">คงเหลือ</th><th class="num">% ใช้</th>${admin ? '<th></th>' : ''}</tr></thead>
+      <tbody>${rows}</tbody><tfoot><tr><td><b>รวมปี ${d.year + 543}</b></td><td class="num">${rawKg(d.opening)}</td><td class="num rb-in"><b>+${rawKg(t.inKg)}</b></td><td class="num rb-out"><b>−${rawKg(t.usedKg)}</b></td><td class="num"><b>${rawKg(t.closing)}</b></td><td class="num">${t.usePct === null ? '–' : t.usePct + '%'}</td>${admin ? '<td></td>' : ''}</tr></tfoot></table></div>
+  </section>`;
+  document.getElementById('rbYear-' + project).onchange = e => loadRawBal(project, Number(e.target.value));
+  pane.querySelectorAll('[data-rawedit]').forEach(b => b.onclick = () => openRawIn(project, Number(b.dataset.rawedit)));
+}
+function openRawIn(project, month){
+  if (!requireSession()) return;
+  const d = RAW[project].data, N = RAW_NAME[project], now = new Date();
+  RAW.edit = project;
+  const m = month || (d.year === now.getFullYear() ? now.getMonth() + 1 : 1);
+  document.getElementById('rawTitle').textContent = '⚖️ บันทึก' + N.in + 'ประจำเดือน';
+  document.getElementById('rawHint').textContent = 'ปริมาณ' + N.title + 'ที่มีในระบบของเดือน — ระบบจะหักส่วนที่นำไปหมักในเดือนเดียวกันให้อัตโนมัติ';
+  document.getElementById('rawMonth').innerHTML = RAW_MON_FULL.map((n, i) => `<option value="${i + 1}" ${i + 1 === m ? 'selected' : ''}>${n}</option>`).join('');
+  const ys = []; for (let y = now.getFullYear() + 1; y >= now.getFullYear() - 5; y--) ys.push(y);
+  document.getElementById('rawYear').innerHTML = ys.map(y => `<option value="${y}" ${y === d.year ? 'selected' : ''}>${y + 543}</option>`).join('');
+  const fill = () => { const mm = Number(document.getElementById('rawMonth').value), yy = Number(document.getElementById('rawYear').value);
+    const row = yy === d.year ? d.months[mm - 1] : null;
+    document.getElementById('rawKg').value = row && row.hasIn ? row.inKg : ''; document.getElementById('rawNote').value = row ? row.note : ''; };
+  document.getElementById('rawMonth').onchange = fill; document.getElementById('rawYear').onchange = fill; fill();
+  document.getElementById('rawError').classList.add('hidden'); openModal('modalRawIn');
+}
+function saveRawIn(){
+  const project = RAW.edit, btn = document.getElementById('rawSave'), kgS = document.getElementById('rawKg').value.trim();
+  if (kgS !== '' && !(Number(kgS) >= 0)) return emShowErr('rawError', 'กรุณาระบุปริมาณเป็นตัวเลข (กก.)');
+  const y = Number(document.getElementById('rawYear').value);
+  btn.disabled = true;
+  google.script.run.withSuccessHandler(() => { btn.disabled = false; closeModals(); RAW[project].year = y; loadRawBal(project); })
+    .withFailureHandler(e => { btn.disabled = false; emShowErr('rawError', (e && e.message) || e); })
+    .saveRawMonthly(state.session.departmentId, state.session.pin, project, y, Number(document.getElementById('rawMonth').value), kgS === '' ? '' : Number(kgS), document.getElementById('rawNote').value.trim());
+}
+document.getElementById('rawSave').onclick = saveRawIn;
 </script>

@@ -144,6 +144,68 @@ svg{display:block}
 .rv{opacity:0;transform:translateY(16px);transition:opacity .6s,transform .6s cubic-bezier(.2,.8,.2,1)}
 .rv.in{opacity:1;transform:none}
 
+
+/* ================= INVITE CAROUSEL ================= */
+.invite{margin-bottom:26px}
+.inv-h{text-align:center;margin:4px 0 18px}
+.inv-h .kick{display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border-radius:99px;background:linear-gradient(135deg,#fef08a,#fbbf24);color:#713f12;font-weight:800;font-size:.85rem;box-shadow:0 6px 16px rgba(251,191,36,.35);animation:kick 3s ease-in-out infinite}
+@keyframes kick{50%{transform:translateY(-3px)}}
+.inv-h h1{font-size:clamp(1.55rem,4vw,2.5rem);line-height:1.3;margin:12px 0 6px}
+.inv-h h1 .g{background:linear-gradient(90deg,#16a34a,#0d9488,#0284c7);-webkit-background-clip:text;background-clip:text;color:transparent}
+.inv-h p{color:var(--ink-2);font-size:clamp(1rem,2.2vw,1.15rem)}
+.inv-h p b{color:#047857}[data-theme="dark"] .inv-h p b{color:#6ee7b7}
+.car{position:relative;border-radius:28px;overflow:hidden;box-shadow:var(--shadow-lg);isolation:isolate;touch-action:pan-y;user-select:none}
+.car-track{display:flex;transition:transform .8s cubic-bezier(.7,0,.25,1)}
+.slide{position:relative;flex:0 0 100%;min-height:340px;padding:38px 76px;color:#fff;overflow:hidden;display:grid;grid-template-columns:1.25fr .75fr;gap:20px;align-items:center;
+  background:linear-gradient(125deg,color-mix(in srgb,var(--c) 92%,#000) 0%,var(--c) 45%,color-mix(in srgb,var(--c) 55%,#0ea5e9) 100%)}
+.slide::before{content:"";position:absolute;inset:0;background:radial-gradient(420px 260px at 88% 10%,rgba(255,255,255,.25),transparent 65%),radial-gradient(380px 240px at 0 110%,rgba(0,0,0,.22),transparent 65%);pointer-events:none}
+.slide .ring1,.slide .ring2{position:absolute;border-radius:50%;border:2px solid rgba(255,255,255,.18);pointer-events:none}
+.slide .ring1{width:420px;height:420px;right:-90px;top:-110px}
+.slide .ring2{width:260px;height:260px;right:40px;bottom:-140px;border-style:dashed;animation:spin 30s linear infinite}
+.sl-txt{position:relative;z-index:1}
+.sl-txt>*{opacity:0;transform:translateY(18px);transition:opacity .6s,transform .6s cubic-bezier(.2,.9,.3,1.2)}
+.slide.on .sl-txt>*{opacity:1;transform:none}
+.slide.on .sl-txt>*:nth-child(2){transition-delay:.12s}.slide.on .sl-txt>*:nth-child(3){transition-delay:.24s}.slide.on .sl-txt>*:nth-child(4){transition-delay:.36s}.slide.on .sl-txt>*:nth-child(5){transition-delay:.48s}
+.sl-tag{display:inline-flex;gap:6px;align-items:center;padding:5px 12px;border-radius:99px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);font-weight:700;font-size:.82rem}
+.sl-txt h2{font-size:clamp(1.5rem,3.6vw,2.3rem);line-height:1.25;margin:12px 0 8px}
+.sl-txt p{font-size:clamp(.98rem,2vw,1.12rem);opacity:.95;max-width:540px}
+.sl-impact{display:inline-flex;align-items:center;gap:8px;margin-top:14px;padding:8px 14px;border-radius:14px;background:rgba(0,0,0,.18);font-weight:700;font-size:.92rem}
+.sl-btns{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
+.sl-go{display:inline-flex;align-items:center;gap:8px;height:48px;padding:0 24px;border-radius:99px;border:0;cursor:pointer;font:800 1rem 'Prompt','Sarabun',sans-serif;color:#422006;background:linear-gradient(135deg,#fef08a,#fbbf24);box-shadow:0 10px 24px rgba(0,0,0,.22);transition:.2s}
+.sl-go:hover{transform:translateY(-2px) scale(1.02)}
+.sl-go svg{width:18px;height:18px;transition:.2s}.sl-go:hover svg{transform:translateX(4px)}
+.sl-more{display:inline-flex;align-items:center;height:48px;padding:0 20px;border-radius:99px;border:1.5px solid rgba(255,255,255,.55);background:rgba(255,255,255,.1);color:#fff;font-weight:700;cursor:pointer;font-family:inherit;font-size:.95rem}
+.sl-more:hover{background:rgba(255,255,255,.2)}
+.sl-art{position:relative;z-index:1;display:grid;place-items:center;height:100%}
+.sl-orb{position:relative;width:min(230px,38vw);aspect-ratio:1;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 35% 30%,rgba(255,255,255,.45),rgba(255,255,255,.08) 60%);
+  box-shadow:inset 0 0 0 2px rgba(255,255,255,.3),0 20px 60px rgba(0,0,0,.25)}
+.sl-orb .big{font-size:min(110px,17vw);line-height:1;filter:drop-shadow(0 12px 18px rgba(0,0,0,.3));transform:scale(.6) rotate(-12deg);opacity:0;transition:transform .9s cubic-bezier(.3,1.5,.5,1),opacity .5s}
+.slide.on .sl-orb .big{transform:none;opacity:1;animation:bob 4s 1s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(-10px) rotate(3deg)}}
+.sl-orb .sp{position:absolute;font-size:1.4rem;opacity:0}
+.slide.on .sl-orb .sp{animation:orbitE 7s linear infinite}
+.sl-orb .sp:nth-of-type(2){animation-delay:-2.3s!important}.sl-orb .sp:nth-of-type(3){animation-delay:-4.6s!important}
+@keyframes orbitE{0%{opacity:.95;transform:rotate(0) translateX(clamp(90px,15vw,135px)) rotate(0)}100%{opacity:.95;transform:rotate(360deg) translateX(clamp(90px,15vw,135px)) rotate(-360deg)}}
+.car-nav{position:absolute;top:50%;transform:translateY(-50%);z-index:3;width:44px;height:44px;border-radius:50%;border:1px solid rgba(255,255,255,.4);background:rgba(0,0,0,.2);color:#fff;display:grid;place-items:center;cursor:pointer;backdrop-filter:blur(6px);transition:.2s}
+.car-nav:hover{background:rgba(0,0,0,.35);transform:translateY(-50%) scale(1.08)}
+.car-nav svg{width:20px;height:20px}
+.car-nav.prev{left:12px}.car-nav.next{right:12px}
+.car-foot{position:absolute;left:0;right:0;bottom:0;z-index:3;display:flex;align-items:center;justify-content:center;gap:8px;padding:0 0 16px}
+.dot{width:10px;height:10px;border-radius:99px;border:0;background:rgba(255,255,255,.45);cursor:pointer;transition:.35s;padding:0}
+.dot.on{width:34px;background:#fff}
+.car-prog{position:absolute;left:0;top:0;height:4px;z-index:3;background:linear-gradient(90deg,#fef08a,#fbbf24);width:0}
+.car-prog.run{animation:prog var(--dur) linear forwards}
+.car.paused .car-prog.run{animation-play-state:paused}
+@keyframes prog{to{width:100%}}
+.car-chips{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding:12px 2px 2px}
+.car-chips::-webkit-scrollbar{display:none}
+.cc{flex:none;display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 14px;border-radius:99px;cursor:pointer;font:700 .85rem inherit;font-family:inherit;transition:.25s;
+  border:1.5px solid color-mix(in srgb,var(--c) 35%,transparent);background:color-mix(in srgb,var(--c) 9%,var(--card));color:color-mix(in srgb,var(--c) 78%,var(--ink))}
+[data-theme="dark"] .cc{color:color-mix(in srgb,var(--c) 55%,#fff)}
+.cc.on{background:var(--c);color:#fff;border-color:transparent;transform:translateY(-2px);box-shadow:0 8px 18px color-mix(in srgb,var(--c) 40%,transparent)}
+@media(max-width:760px){.slide{grid-template-columns:1fr;padding:26px 22px 54px;min-height:0;text-align:center}.sl-txt p{margin:0 auto}.sl-btns{justify-content:center}.sl-art{order:-1}.sl-orb{width:150px}.sl-orb .big{font-size:76px}.car-nav{display:none}
+  @keyframes orbitE{0%{opacity:.95;transform:rotate(0) translateX(88px) rotate(0)}100%{opacity:.95;transform:rotate(360deg) translateX(88px) rotate(-360deg)}}}
+
 /* ================= APP VIEW ================= */
 .appview{position:fixed;inset:var(--bar-h) 0 0 0}
 .chips{position:absolute;top:0;left:0;right:0;height:var(--chips-h);z-index:5;display:flex;align-items:center;gap:9px;padding:0 18px;overflow-x:auto;scrollbar-width:none;
@@ -382,6 +444,22 @@ body.focus .exit-focus{display:inline-flex}
 <!-- ================= HOME ================= -->
 <main class="home" id="home">
   <div class="wrap">
+    <section class="invite" id="invite">
+      <div class="inv-h rv">
+        <span class="kick">🌍 Green Hospital</span>
+        <h1 class="disp">วันนี้ท่าน<span class="g">ช่วยลดโลกร้อน</span>ได้อย่างไรบ้าง?</h1>
+        <p>เชิญมาร่วมโครงการกับ<b>โรงพยาบาลสีเขียว</b>ของเรา — เลือกโครงการ แล้วกดเข้าร่วมได้ทันที</p>
+      </div>
+      <div class="car rv" id="car" aria-roledescription="carousel" aria-label="โครงการที่ท่านร่วมได้">
+        <div class="car-prog" id="carProg"></div>
+        <div class="car-track" id="carTrack"></div>
+        <button class="car-nav prev" id="carPrev" aria-label="ก่อนหน้า"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+        <button class="car-nav next" id="carNext" aria-label="ถัดไป"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></button>
+        <div class="car-foot" id="carDots"></div>
+      </div>
+      <div class="car-chips" id="carChips"></div>
+    </section>
+
     <div class="hello rv">
       <div>
         <h1 class="disp"><span class="wave">👋</span> สวัสดี <span id="hName">ผู้ร่วมโครงการ</span></h1>
@@ -721,6 +799,58 @@ body.focus .exit-focus{display:inline-flex}
   /* reveal */
   var io = 'IntersectionObserver' in window ? new IntersectionObserver(function (es) { es.forEach(function (x) { if (x.isIntersecting) { x.target.classList.add('in'); io.unobserve(x.target); } }); }, { root: $('home'), threshold: .1 }) : null;
   document.querySelectorAll('.rv').forEach(function (el, i) { el.style.transitionDelay = (i * 70) + 'ms'; io ? io.observe(el) : el.classList.add('in'); });
+
+
+  /* ---------------- invite carousel ---------------- */
+  var SLIDES = [
+    { page: 'frytofly',  action: 'form',    e: '🛢️', sp: ['💧', '✨', '🍳'], tag: 'ทอดไม่ทิ้ง', h: 'น้ำมันทอดเหลือ อย่าเทลงท่อ', p: 'นำน้ำมันพืชใช้แล้วจากบ้านมาบริจาค สะสมแต้มรับรางวัล ลดน้ำเสียและกลายเป็นพลังงานสะอาด', im: '🌍 น้ำมัน 1 ลิตร ลด CO₂ ได้ราว 2.5 กก.', go: 'บริจาคน้ำมัน' },
+    { page: 'paperless', action: '',        e: '📄', sp: ['💻', '🌳', '📱'], tag: 'Paperless', h: 'ลดกระดาษ เปลี่ยนเป็นดิจิทัล', p: 'เปลี่ยนงานเอกสารในหน่วยงานเป็นระบบอิเล็กทรอนิกส์ ทุกแผ่นที่ไม่พิมพ์คือต้นไม้ที่ยังยืนต้น', im: '🌳 กระดาษ 8,333 แผ่น = ต้นไม้ 1 ต้น', go: 'ดูผลหน่วยงาน' },
+    { page: 'cartridge', action: 'form',    e: '🖨️', sp: ['♻️', '⚡', '🔋'], tag: 'ตลับหมึกเก่าเราขอ', h: 'ตลับหมึกหมดแล้ว ส่งมาที่เรา', p: 'อย่าทิ้งปนขยะทั่วไป ส่งตลับหมึกใช้แล้วเข้าโครงการ ลดขยะอันตรายและได้รายได้กลับคืน', im: '☣️ ลดขยะอันตรายทุกตลับ', go: 'ส่งตลับหมึก' },
+    { page: 'calendar',  action: 'form',    e: '📅', sp: ['⠿', '🤲', '💛'], tag: 'ปฏิทินเก่าเราขอ', h: 'ปฏิทินเก่า กลายเป็นอักษรเบรลล์', p: 'บริจาคปฏิทินตั้งโต๊ะที่ใช้แล้ว เพื่อทำสื่อการเรียนรู้ให้ผู้พิการทางสายตา', im: '🤝 ได้ทั้งลดขยะและแบ่งปัน', go: 'บริจาคปฏิทิน' },
+    { page: 'share',     action: 'form',    e: '♻️', sp: ['📎', '✏️', '📦'], tag: 'คัดแยก แบ่งปัน', h: 'ของเหลือใช้ อาจเป็นของที่ใครต้องการ', p: 'ส่งวัสดุสำนักงานที่เกินจำเป็นเข้าคลังแบ่งปัน ให้หน่วยงานอื่นเบิกใช้แทนการซื้อใหม่', im: '💰 ประหยัดงบ ลดการผลิตใหม่', go: 'ส่งของแบ่งปัน' },
+    { page: 'em',        action: 'request', e: '🧪', sp: ['🥬', '🍌', '💧'], tag: 'น้ำยา EM', h: 'เศษอาหาร กลายเป็นน้ำยา EM', p: 'โรงพยาบาลหมักขยะเปียกเป็นน้ำยา EM — ลงทะเบียนขอรับไปใช้ดับกลิ่น บำบัดน้ำเสีย รดต้นไม้', im: '🌱 ลดขยะเปียกที่ต้องฝังกลบ', go: 'ขอรับน้ำยา EM' },
+    { page: 'compost',   action: 'request', e: '🪴', sp: ['🍂', '🌿', '🌾'], tag: 'ปุ๋ยหมักใบไม้', h: 'ใบไม้ร่วง กลายเป็นปุ๋ยชั้นดี', p: 'ใบไม้และเศษหญ้าในโรงพยาบาลถูกหมักเป็นปุ๋ยอินทรีย์ — ลงทะเบียนขอรับไปบำรุงต้นไม้ได้', im: '🔥 ไม่ต้องเผา ลดหมอกควัน', go: 'ขอรับปุ๋ยหมัก' },
+    { page: 'kitchen',   action: '',        e: '🍳', sp: ['✈️', '🛢️', '☁️'], tag: 'จากครัวสู่ท้องฟ้า', h: 'น้ำมันจากครัว สู่เชื้อเพลิงอากาศยาน', p: 'น้ำมันทอดใช้แล้วจากครัวโรงพยาบาลถูกส่งต่อเพื่อผลิตเชื้อเพลิงอากาศยานยั่งยืน (SAF)', im: '✈️ เปลี่ยนของเสียเป็นพลังงาน', go: 'ดูรอบการส่ง' }
+  ];
+  var car = $('car'), track = $('carTrack'), slideIdx = 0, carTimer = null, CAR_MS = 5500, reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var arrow = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
+  track.innerHTML = SLIDES.map(function (x, i) {
+    var c = (byPage[x.page] || {}).c || '#16a34a';
+    return '<article class="slide' + (i === 0 ? ' on' : '') + '" style="--c:' + c + '" aria-roledescription="slide" aria-label="' + (i + 1) + ' / ' + SLIDES.length + '">' +
+      '<span class="ring1"></span><span class="ring2"></span>' +
+      '<div class="sl-txt"><span class="sl-tag">' + x.e + ' ' + x.tag + '</span><h2 class="disp">' + x.h + '</h2><p>' + x.p + '</p><span class="sl-impact">' + x.im + '</span>' +
+      '<div class="sl-btns"><button class="sl-go" data-go="' + i + '">' + x.go + ' ' + arrow + '</button><button class="sl-more" data-more="' + i + '">รายละเอียดโครงการ</button></div></div>' +
+      '<div class="sl-art"><div class="sl-orb"><span class="big">' + x.e + '</span>' + x.sp.map(function (q) { return '<span class="sp">' + q + '</span>'; }).join('') + '</div></div></article>';
+  }).join('');
+  $('carDots').innerHTML = SLIDES.map(function (x, i) { return '<button class="dot' + (i === 0 ? ' on' : '') + '" data-dot="' + i + '" aria-label="สไลด์ ' + (i + 1) + '"></button>'; }).join('');
+  $('carChips').innerHTML = SLIDES.map(function (x, i) { var c = (byPage[x.page] || {}).c; return '<button class="cc' + (i === 0 ? ' on' : '') + '" style="--c:' + c + '" data-dot="' + i + '">' + x.e + ' ' + x.tag + '</button>'; }).join('');
+  function goSlide(i, user) {
+    slideIdx = (i + SLIDES.length) % SLIDES.length;
+    track.style.transform = 'translateX(-' + (slideIdx * 100) + '%)';
+    track.querySelectorAll('.slide').forEach(function (el, k) { el.classList.toggle('on', k === slideIdx); });
+    document.querySelectorAll('#carDots .dot, #carChips .cc').forEach(function (el) { el.classList.toggle('on', Number(el.dataset.dot) === slideIdx); });
+    var chip = document.querySelector('#carChips .cc.on'), cw = $('carChips'); if (chip) cw.scrollTo({ left: chip.offsetLeft - cw.clientWidth / 2 + chip.clientWidth / 2, behavior: 'smooth' });
+    restartCar();
+  }
+  function restartCar() {
+    clearTimeout(carTimer); var pg = $('carProg'); pg.classList.remove('run'); void pg.offsetWidth;
+    if (reduce) return;
+    pg.style.setProperty('--dur', CAR_MS + 'ms'); pg.classList.add('run');
+    carTimer = setTimeout(function () { if (!car.classList.contains('paused') && !$('home').classList.contains('hidden')) goSlide(slideIdx + 1); else restartCar(); }, CAR_MS);
+  }
+  $('carPrev').onclick = function () { goSlide(slideIdx - 1, true); };
+  $('carNext').onclick = function () { goSlide(slideIdx + 1, true); };
+  document.addEventListener('click', function (e) {
+    var d = e.target.closest('[data-dot]'); if (d && (d.closest('#carDots') || d.closest('#carChips'))) return goSlide(Number(d.dataset.dot), true);
+    var g = e.target.closest('[data-go]'); if (g) { var s1 = SLIDES[Number(g.dataset.go)]; return openApp(s1.page, s1.action); }
+    var m = e.target.closest('[data-more]'); if (m) return openApp(SLIDES[Number(m.dataset.more)].page);
+  });
+  car.addEventListener('mouseenter', function () { car.classList.add('paused'); });
+  car.addEventListener('mouseleave', function () { car.classList.remove('paused'); });
+  var sx = null;
+  car.addEventListener('pointerdown', function (e) { sx = e.clientX; });
+  car.addEventListener('pointerup', function (e) { if (sx === null) return; var dx = e.clientX - sx; sx = null; if (Math.abs(dx) > 50) goSlide(slideIdx + (dx < 0 ? 1 : -1), true); });
+  restartCar();
 
   /* ---------------- start ---------------- */
   renderCards();

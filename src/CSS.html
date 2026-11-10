@@ -1646,4 +1646,69 @@
 .theme-cp .emsb-stock span:last-child{background:#6b8e3a !important}
 
 /* ==== COMPOST-CSS-END ==== */
+
+/* ===== คำขอรับน้ำยา EM / ปุ๋ยหมัก ===== */
+.rq-btn{background:linear-gradient(135deg,#f59e0b,#ea580c)!important;border-color:transparent!important;color:#fff!important}
+.rq-types{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:4px 0 6px}
+.rq-types label{display:flex;align-items:center;justify-content:center;gap:6px;padding:10px 8px;border:1.5px solid #dfe5dc;border-radius:12px;cursor:pointer;font-weight:600;text-align:center;transition:.15s;margin:0}
+.rq-types label input{position:absolute;opacity:0;pointer-events:none;width:0}
+.rq-types label.on{border-color:#16a34a;background:#ecfdf3;color:#166534;box-shadow:0 0 0 3px rgba(22,163,74,.12)}
+@media(max-width:520px){.rq-types{grid-template-columns:1fr}}
+.rq-done{text-align:center}
+.rq-done-ic{font-size:2.6rem;line-height:1}
+.rq-done h3{margin:8px 0 4px}
+.rq-code{display:inline-block;margin:6px 0 10px;padding:10px 22px;border-radius:14px;background:#ecfdf3;border:2px dashed #16a34a;color:#166534;font-size:1.6rem;font-weight:800;letter-spacing:.12em}
+.rq-info{border:1px solid #dfe5dc;border-radius:14px;padding:14px 16px;margin:10px 0;background:#fafcf9}
+.rq-info-h{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin-bottom:10px;font-size:1.15rem}
+.rq-info-g{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:.95rem}
+.rq-info-g span{color:#6b7280}
+.rq-thanks{margin:12px 0 0;padding:10px 12px;border-radius:10px;background:#ecfdf3;color:#166534;font-weight:600}
+.rqs{display:inline-block;padding:3px 10px;border-radius:99px;font-size:.8rem;font-weight:700;white-space:nowrap}
+.rqs-wait{background:#fef3c7;color:#92400e}
+.rqs-recv{background:#dbeafe;color:#1e40af}
+.rqs-done{background:#dcfce7;color:#166534}
+.rqs-cancel{background:#f3f4f6;color:#6b7280}
+.rq-tabs{display:flex;flex-wrap:wrap;gap:6px}
+.rq-tab{border:1px solid #dfe5dc;background:#fff;border-radius:99px;padding:5px 12px;font:inherit;font-size:.82rem;font-weight:600;cursor:pointer;color:#374151}
+.rq-tab i{font-style:normal;margin-left:4px;padding:0 7px;border-radius:99px;background:#f3f4f6;font-size:.75rem}
+.rq-tab.on{background:#16a34a;border-color:#16a34a;color:#fff}
+.rq-tab.on i{background:rgba(255,255,255,.25)}
+.rq-panel tr.rq-hl td{background:#fffbeb}
+.fs-preview{margin:14px 0 4px}
+.fs-bar{position:relative;height:10px;border-radius:99px;background:linear-gradient(90deg,#bbf7d0,#22c55e);margin:26px 10px 10px}
+.fs-bar i{position:absolute;top:-4px;width:4px;height:18px;border-radius:3px;background:#166534;transform:translateX(-2px)}
+.fs-bar i em{position:absolute;top:-20px;left:50%;transform:translateX(-50%);font-style:normal;font-size:.75rem;font-weight:700;color:#166534;white-space:nowrap}
+.fs-bar i.end{background:#ea580c}.fs-bar i.end em{color:#ea580c}
+
+/* ===== วัตถุดิบเข้า-ออกรายเดือน ===== */
+.rb-head{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-start;justify-content:space-between;margin-bottom:12px}
+.rb-head h4{margin:0 0 4px}.rb-head p{margin:0;font-size:.86rem;max-width:640px}
+.rb-tools{display:flex;gap:8px;align-items:center}.rb-tools select{width:auto;margin:0}
+.rb-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+.rb-kpi{border:1px solid #e5e7eb;border-radius:14px;padding:12px 14px;background:#fff}
+.rb-kpi span{display:block;font-size:.82rem;color:#6b7280;font-weight:600}
+.rb-kpi b{display:block;font-size:1.45rem;line-height:1.25}
+.rb-kpi em{font-style:normal;font-size:.78rem;color:#6b7280}
+.rb-kpi.in{border-color:#bbf7d0;background:#f0fdf4}.rb-kpi.in b{color:#15803d}
+.rb-kpi.out{border-color:#fed7aa;background:#fff7ed}.rb-kpi.out b{color:#c2410c}
+.rb-kpi.bal{border-color:#bfdbfe;background:#eff6ff}.rb-kpi.bal b{color:#1d4ed8}
+.rb-kpi.neg{border-color:#fecaca;background:#fef2f2}.rb-kpi.neg b{color:#b91c1c}
+@media(max-width:720px){.rb-kpis{grid-template-columns:repeat(2,1fr)}}
+.rb-chart{display:grid;grid-template-columns:repeat(12,1fr);gap:6px;height:150px;align-items:end;padding:8px 4px 0;border-bottom:1px solid #e5e7eb}
+.rb-col{display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end}
+.rb-col.fut{opacity:.4}
+.rb-pair{flex:1;width:100%;display:flex;gap:2px;align-items:flex-end;justify-content:center}
+.rb-pair i{width:42%;max-width:16px;border-radius:4px 4px 0 0;min-height:1px;transition:height .6s}
+.rb-pair i.in,.rb-legend i.in{background:linear-gradient(180deg,#4ade80,#16a34a)}
+.rb-pair i.out,.rb-legend i.out{background:linear-gradient(180deg,#fdba74,#ea580c)}
+.rb-col small{font-size:.7rem;color:#6b7280;margin-top:4px}
+.rb-legend{display:flex;gap:16px;justify-content:center;margin:8px 0 12px;font-size:.82rem;color:#4b5563}
+.rb-legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+.rb-table .rb-in{color:#15803d}.rb-table .rb-out{color:#c2410c}
+.rb-table tr.rb-fut td{opacity:.45}
+.rb-table tr.rb-neg td{background:#fef2f2}
+.rb-negtxt{color:#b91c1c;font-weight:600}
+.rb-table tfoot td{border-top:2px solid #d1d5db;background:#f9fafb}
+.rb-pct{display:inline-block;width:46px;height:6px;border-radius:99px;background:#e5e7eb;vertical-align:middle;overflow:hidden}
+.rb-pct i{display:block;height:100%;background:linear-gradient(90deg,#22c55e,#0d9488)}
 </style>

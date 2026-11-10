@@ -148,7 +148,9 @@ function setupSheets() {
     'ShareWithdrawals': ['WithdrawalID', 'WithdrawDate', 'Category', 'ItemName', 'Quantity', 'Unit', 'UnitPrice', 'DepartmentName', 'ItemID', 'Note', 'RecordedByName', 'CreatedAt'],
     'ShareDepartments': ['DepartmentID', 'DepartmentName', 'SortOrder', 'IsActive'],
     'ShareStockLog': ['LogID', 'Timestamp', 'ItemID', 'ItemName', 'Action', 'QtyBefore', 'QtyAfter', 'By', 'Note'],
-    'PortalVisits': PORTAL_VISIT_HEADERS
+    'PortalVisits': PORTAL_VISIT_HEADERS,
+    'ProductRequests': PREQ_HEADERS,
+    'RawMaterialMonthly': RAW_HEADERS
   };
 
   const ss = getSS();
@@ -459,6 +461,8 @@ function doGet(e) {
   // รองรับลิงก์ตรงเข้าฟอร์มแคมเปญ เช่น .../exec?page=frytofly&action=form
   template.initialPage = params.page || '';
   template.initialAction = params.action || '';
+  template.initialRid = String(params.rid || '').slice(0, 40);
+  template.initialToken = String(params.t || '').slice(0, 64);
   template.webAppUrl = ScriptApp.getService().getUrl() || '';
   return template.evaluate()
     .setTitle('ระบบติดตามโครงการสิ่งแวดล้อมโรงพยาบาล')
@@ -6128,6 +6132,10 @@ function portalParticipation_(code, name) {
   const shr = readRowsIfSheet_('ShareSubmissions').filter(r => byName(r.SubmitterName));
   add('share', 'คัดแยก แบ่งปัน', shr, 'Quantity', 'รายการ', 'SubmitDate');
 
+  const rq = readRowsIfSheet_(SHEET_PRODUCT_REQ).filter(r => r.Status !== PREQ_CANCEL && ((code && String(r.StaffCode || '').trim() === code) || byName(r.FullName)));
+  add('em', 'ขอรับน้ำยา EM', rq.filter(r => r.Project === 'em'), 'Quantity', 'ลิตร', 'CreatedAt');
+  add('compost', 'ขอรับปุ๋ยหมักใบไม้', rq.filter(r => r.Project === 'compost'), 'Quantity', 'กก.', 'CreatedAt');
+
   return out;
 }
 
@@ -7092,3 +7100,309 @@ function cpApplyLog_(o, by) {
 
 
 // ==== COMPOST-END ====
+
+// ============================================================================================
+// คำขอรับน้ำยา EM / ปุ๋ยหมักใบไม้ (ลงทะเบียนผ่านลิงก์ → ผู้ขอยืนยันว่าได้รับ → ผู้ดูแลระบบยืนยัน + ส่งอีเมล)
+//  สถานะ: รอรับของ → ผู้ขอยืนยันรับแล้ว → ผู้ดูแลยืนยันแล้ว (หักสต็อก + ส่งอีเมล) | ยกเลิก
+//  ผู้ขอ: เจ้าหน้าที่ (รหัส 7 หลัก + ชื่อ-นามสกุล + E-mail) | บุคคลภายนอก (ชื่อ + โทร + E-mail) | บริษัทภายนอก (บริษัท + ผู้ติดต่อ + โทร + E-mail)
+// ============================================================================================
+const SHEET_PRODUCT_REQ = 'ProductRequests';
+const PREQ_HEADERS = ['RequestID', 'RequestCode', 'Project', 'CreatedAt', 'RequesterType', 'StaffCode', 'FullName', 'Organization', 'Phone', 'Email',
+  'Quantity', 'Unit', 'Purpose', 'Place', 'WantedDate', 'Note', 'Token', 'Status', 'ReceivedAt', 'ConfirmedQty', 'AdminBy', 'AdminAt', 'UsageID',
+  'EmailSentAt', 'CancelReason'];
+const PREQ_WAIT = 'รอรับของ', PREQ_RECEIVED = 'ผู้ขอยืนยันรับแล้ว', PREQ_DONE = 'ผู้ดูแลยืนยันแล้ว', PREQ_CANCEL = 'ยกเลิก';
+const PREQ_TYPES = ['เจ้าหน้าที่', 'บุคคลภายนอก', 'บริษัทภายนอก'];
+const PREQ_CFG = {
+  em:      { label: 'น้ำยา EM', full: 'น้ำยา EM จากเศษอาหาร', unit: 'ลิตร', page: 'em', prefix: 'EM', usage: SHEET_EM_USAGE, qty: 'Liters', usageId: 'EMU' },
+  compost: { label: 'ปุ๋ยหมัก', full: 'ปุ๋ยหมักจากขยะใบไม้', unit: 'กก.', page: 'compost', prefix: 'CP', usage: SHEET_CP_USAGE, qty: 'Kg', usageId: 'CPU' }
+};
+function preqCfg_(project) {
+  const c = PREQ_CFG[project];
+  if (!c) throw new Error('โครงการนี้ไม่มีการลงทะเบียนขอรับ');
+  return c;
+}
+function preqStock_(project) { return project === 'em' ? emStockLiters_() : cpStockKg_(); }
+function preqSync_(project) { try { project === 'em' ? syncEmLinkedProject_() : syncCpLinkedProject_(); } catch (e) {} }
+function preqEnsure_(project) {
+  if (project === 'em') ensureEmSheets_(); else ensureCpSheets_();
+  ensureSheet_(SHEET_PRODUCT_REQ, PREQ_HEADERS);
+}
+function preqEmailOk_(v) { return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(String(v || '').trim()); }
+function preqLink_(r) {
+  return (ScriptApp.getService().getUrl() || '') + '?page=' + preqCfg_(r.Project).page + '&action=receive&rid=' + encodeURIComponent(r.RequestID) + '&t=' + encodeURIComponent(r.Token);
+}
+function preqWho_(r) { return r.RequesterType === 'บริษัทภายนอก' ? (r.Organization + (r.FullName ? ' (' + r.FullName + ')' : '')) : r.FullName; }
+function preqHtmlEsc_(v) { return String(v == null ? '' : v).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c])); }
+function preqMail_(to, subject, lines, link, linkText) {
+  if (!preqEmailOk_(to)) return false;
+  try {
+    const body = lines.map(l => '<p style="margin:0 0 10px">' + l + '</p>').join('') +
+      (link ? '<p style="margin:18px 0"><a href="' + link + '" style="background:#16a34a;color:#fff;padding:11px 20px;border-radius:10px;text-decoration:none;font-weight:bold">' + preqHtmlEsc_(linkText) + '</a></p>' : '');
+    MailApp.sendEmail({ to: String(to).trim(), subject: subject, htmlBody:
+      '<div style="font-family:Tahoma,sans-serif;font-size:15px;color:#1f2937;max-width:560px">' + body +
+      '<p style="color:#6b7280;font-size:13px;margin-top:24px">อีเมลนี้ส่งอัตโนมัติจากระบบติดตามโครงการสิ่งแวดล้อมโรงพยาบาล</p></div>' });
+    return true;
+  } catch (e) { Logger.log('ส่งอีเมลไม่สำเร็จ: ' + e); return false; }
+}
+function preqPublic_(r) {
+  const c = preqCfg_(r.Project);
+  return { RequestID: r.RequestID, RequestCode: r.RequestCode, Project: r.Project, ProjectLabel: c.full, Unit: r.Unit || c.unit, CreatedAt: r.CreatedAt ? toIsoDateTime_(r.CreatedAt) : '',
+    RequesterType: r.RequesterType, Who: preqWho_(r), Quantity: Number(r.Quantity) || 0, ConfirmedQty: Number(r.ConfirmedQty) || 0, Purpose: r.Purpose || '', Place: r.Place || '',
+    WantedDate: toIsoDate_(r.WantedDate), Status: r.Status || PREQ_WAIT, ReceivedAt: r.ReceivedAt ? toIsoDateTime_(r.ReceivedAt) : '', AdminAt: r.AdminAt ? toIsoDateTime_(r.AdminAt) : '' };
+}
+function preqFindRow_(rid) {
+  const f = findRowById_(SHEET_PRODUCT_REQ, 'RequestID', rid);
+  if (!f) return null;
+  const o = {}; f.headers.forEach((h, i) => { o[h] = f.values[i]; });
+  return { f: f, r: o };
+}
+function preqSet_(f, obj) {
+  const sh = getSheet_(SHEET_PRODUCT_REQ);
+  Object.keys(obj).forEach(k => { const c = f.headers.indexOf(k); if (c !== -1) sh.getRange(f.rowIndex, c + 1).setValue(obj[k]); });
+  invalidateReadCache_();
+}
+
+/** ลิงก์ฟอร์มลงทะเบียนขอรับ (สำหรับแชร์/QR Code) */
+function getProductRequestFormLink(project) {
+  return (ScriptApp.getService().getUrl() || '') + '?page=' + preqCfg_(project).page + '&action=request';
+}
+
+/** สาธารณะ: ลงทะเบียนขอรับน้ำยา EM / ปุ๋ยหมัก */
+function submitProductRequest(data) {
+  data = data || {};
+  if (String(data.website || '').trim()) return { ok: true }; // honeypot
+  const project = String(data.Project || ''), c = preqCfg_(project);
+  const type = String(data.RequesterType || '');
+  if (PREQ_TYPES.indexOf(type) === -1) throw new Error('กรุณาเลือกประเภทผู้ขอ');
+  const clip = (v, n) => String(v == null ? '' : v).replace(/\s+/g, ' ').trim().slice(0, n);
+  const staff = clip(data.StaffCode, 7), name = clip(data.FullName, 120), org = clip(data.Organization, 150), phone = clip(data.Phone, 30), email = clip(data.Email, 120);
+  if (type === 'เจ้าหน้าที่' && !/^\d{7}$/.test(staff)) throw new Error('รหัสเจ้าหน้าที่ต้องเป็นตัวเลข 7 หลัก');
+  if (type === 'บริษัทภายนอก' && !org) throw new Error('กรุณากรอกชื่อบริษัท');
+  if (name.length < 3) throw new Error(type === 'บริษัทภายนอก' ? 'กรุณากรอกชื่อผู้ติดต่อ' : 'กรุณากรอกชื่อ-นามสกุล');
+  if (type !== 'เจ้าหน้าที่' && !/^[0-9+\-\s()]{9,}$/.test(phone)) throw new Error('กรุณากรอกเบอร์โทรศัพท์ให้ถูกต้อง');
+  if (!preqEmailOk_(email)) throw new Error('กรุณากรอก E-mail ให้ถูกต้อง');
+  const qty = emNum_(data.Quantity, 'ปริมาณที่ขอรับ');
+  if (!(qty > 0)) throw new Error('กรุณาระบุปริมาณที่ขอรับ (' + c.unit + ')');
+  if (qty > 100000) throw new Error('ปริมาณมากผิดปกติ กรุณาตรวจสอบอีกครั้ง');
+  const purpose = clip(data.Purpose, 200);
+  if (!purpose) throw new Error('กรุณาระบุวัตถุประสงค์ในการนำไปใช้');
+  const wanted = data.WantedDate ? emDate_(data.WantedDate, 'วันที่ต้องการรับ') : '';
+
+  const out = withShareLock_(() => {
+    preqEnsure_(project);
+    const rows = readRowsIfSheet_(SHEET_PRODUCT_REQ);
+    if (rows.filter(r => r.Status === PREQ_WAIT || r.Status === PREQ_RECEIVED).length >= 300) throw new Error('มีคำขอค้างจำนวนมาก กรุณาติดต่อผู้ดูแลโครงการ');
+    const stock = preqStock_(project);
+    if (qty > stock + 1e-9) throw new Error('ขณะนี้' + c.label + ' คงเหลือ ' + round2_(stock) + ' ' + c.unit + ' ไม่พอตามที่ขอ กรุณาลดปริมาณ');
+    const alpha = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
+    let code; do { code = c.prefix + '-'; for (let i = 0; i < 5; i++) code += alpha.charAt(Math.floor(Math.random() * alpha.length)); } while (rows.some(r => r.RequestCode === code));
+    const row = { RequestID: newId_('RQ'), RequestCode: code, Project: project, CreatedAt: new Date(), RequesterType: type, StaffCode: type === 'เจ้าหน้าที่' ? staff : '',
+      FullName: name, Organization: type === 'บริษัทภายนอก' ? org : '', Phone: phone, Email: email, Quantity: qty, Unit: c.unit, Purpose: purpose,
+      Place: clip(data.Place, 150), WantedDate: wanted, Note: clip(data.Note, 300), Token: Utilities.getUuid().replace(/-/g, ''), Status: PREQ_WAIT };
+    appendByHeaders_(SHEET_PRODUCT_REQ, row);
+    return row;
+  });
+  const link = preqLink_(out);
+  const mailed = preqMail_(out.Email, '[' + c.full + '] ลงทะเบียนขอรับเรียบร้อย — รหัสคำขอ ' + out.RequestCode, [
+    'เรียน ' + preqHtmlEsc_(preqWho_(out)),
+    'ระบบได้รับคำขอรับ<b>' + c.label + ' ' + out.Quantity + ' ' + c.unit + '</b> ของท่านแล้ว รหัสคำขอ <b>' + out.RequestCode + '</b>',
+    'เมื่อท่านได้รับของแล้ว กรุณากดปุ่มด้านล่างเพื่อยืนยันการรับ จากนั้นผู้ดูแลโครงการจะยืนยันอีกครั้งและแจ้งผลทางอีเมลนี้'
+  ], link, '✅ ยืนยันว่าได้รับแล้ว');
+  return { ok: true, requestId: out.RequestID, code: out.RequestCode, link: link, mailed: mailed };
+}
+
+/** สาธารณะ: ดูคำขอจากลิงก์ส่วนตัว (rid + token) หรือจากรหัสคำขอ + E-mail/เบอร์โทร/รหัสเจ้าหน้าที่ */
+function getProductRequestForReceive(q) {
+  q = q || {};
+  ensureSheet_(SHEET_PRODUCT_REQ, PREQ_HEADERS);
+  const rows = readRowsIfSheet_(SHEET_PRODUCT_REQ);
+  let r = null;
+  if (q.rid && q.token) r = rows.find(x => x.RequestID === q.rid && String(x.Token) === String(q.token));
+  else if (q.code && q.contact) {
+    const code = String(q.code).trim().toUpperCase(), ct = String(q.contact).replace(/\s+/g, '').toLowerCase();
+    r = rows.find(x => String(x.RequestCode).toUpperCase() === code &&
+      [x.Email, x.Phone, x.StaffCode].some(v => v && String(v).replace(/\s+/g, '').toLowerCase() === ct));
+  }
+  if (!r) throw new Error('ไม่พบคำขอ — ตรวจสอบรหัสคำขอและ E-mail / เบอร์โทร / รหัสเจ้าหน้าที่ อีกครั้ง');
+  return Object.assign(preqPublic_(r), { token: r.Token });
+}
+
+/** สาธารณะ: ผู้ขอกดยืนยันว่าได้รับของแล้ว */
+function confirmProductReceived(rid, token) {
+  return withShareLock_(() => {
+    const x = preqFindRow_(rid);
+    if (!x || String(x.r.Token) !== String(token || '')) throw new Error('ลิงก์ไม่ถูกต้องหรือหมดอายุ');
+    const st = x.r.Status || PREQ_WAIT;
+    if (st === PREQ_CANCEL) throw new Error('คำขอนี้ถูกยกเลิกแล้ว');
+    if (st === PREQ_WAIT) preqSet_(x.f, { Status: PREQ_RECEIVED, ReceivedAt: new Date() });
+    return Object.assign(preqPublic_(preqFindRow_(rid).r), { ok: true });
+  });
+}
+
+/** ผู้ดูแลระบบ: รายการคำขอทั้งหมดของโครงการ (ใหม่สุดก่อน) */
+function getProductRequests(departmentId, pin, project) {
+  assertAuthorized_(departmentId, pin);
+  preqCfg_(project);
+  ensureSheet_(SHEET_PRODUCT_REQ, PREQ_HEADERS);
+  return readRowsIfSheet_(SHEET_PRODUCT_REQ).filter(r => r.RequestID && r.Project === project)
+    .map(r => Object.assign(preqPublic_(r), { FullName: r.FullName, Organization: r.Organization, StaffCode: String(r.StaffCode || ''), Phone: r.Phone || '', Email: r.Email || '',
+      Note: r.Note || '', AdminBy: r.AdminBy || '', CancelReason: r.CancelReason || '', EmailSentAt: r.EmailSentAt ? toIsoDateTime_(r.EmailSentAt) : '' }))
+    .sort((a, b) => String(b.CreatedAt).localeCompare(String(a.CreatedAt))).slice(0, 300);
+}
+
+/** ผู้ดูแลระบบ: ยืนยันว่าส่งมอบแล้ว → บันทึกการนำไปใช้ (หักสต็อก) + ส่งอีเมลแจ้งผู้ขอ */
+function adminConfirmProductRequest(departmentId, pin, rid, qty) {
+  const auth = assertAuthorized_(departmentId, pin);
+  const res = withShareLock_(() => {
+    const x = preqFindRow_(rid);
+    if (!x) throw new Error('ไม่พบคำขอ');
+    const r = x.r, c = preqCfg_(r.Project);
+    if (r.Status === PREQ_DONE) throw new Error('คำขอนี้ยืนยันไปแล้ว');
+    if (r.Status === PREQ_CANCEL) throw new Error('คำขอนี้ถูกยกเลิกแล้ว');
+    const q = qty === undefined || qty === null || qty === '' ? Number(r.Quantity) : emNum_(qty, 'ปริมาณที่ส่งมอบ');
+    if (!(q > 0)) throw new Error('ปริมาณที่ส่งมอบต้องมากกว่า 0');
+    preqEnsure_(r.Project);
+    const stock = preqStock_(r.Project);
+    if (q > stock + 1e-9) throw new Error(c.label + ' คงเหลือไม่พอ (คงเหลือ ' + round2_(stock) + ' ' + c.unit + ')');
+    const now = new Date(), uid = newId_(c.usageId), usage = { UsageID: uid, BatchID: '', UsageDate: r.ReceivedAt || now, Place: r.Place || (r.RequesterType === 'เจ้าหน้าที่' ? 'ภายในโรงพยาบาล' : 'ภายนอกโรงพยาบาล'),
+      UsedBy: preqWho_(r) + (r.StaffCode ? ' (' + r.StaffCode + ')' : ''), Purpose: r.Purpose || '', Note: 'จากคำขอ ' + r.RequestCode + ' • ' + r.RequesterType,
+      RecordedBy: auth.departmentName, CreatedAt: now, VerifyStatus: VERIFY_OK, VerifiedBy: auth.departmentName, VerifiedAt: now };
+    usage[c.qty] = q;
+    appendByHeaders_(c.usage, usage);
+    preqSet_(x.f, { Status: PREQ_DONE, ConfirmedQty: q, AdminBy: auth.departmentName, AdminAt: now, UsageID: uid, ReceivedAt: r.ReceivedAt || now });
+    return { r: r, c: c, q: q, f: x.f };
+  });
+  const r = res.r, c = res.c;
+  const mailed = preqMail_(r.Email, '[' + c.full + '] ยืนยันการรับ' + c.label + ' — รหัสคำขอ ' + r.RequestCode, [
+    'เรียน ' + preqHtmlEsc_(preqWho_(r)),
+    'ผู้ดูแลโครงการ <b>' + c.full + '</b> ยืนยันแล้วว่าท่านได้รับ<b>' + c.label + ' ' + res.q + ' ' + c.unit + '</b> เรียบร้อย',
+    'รหัสคำขอ: <b>' + r.RequestCode + '</b>' + (r.Purpose ? '<br>วัตถุประสงค์: ' + preqHtmlEsc_(r.Purpose) : ''),
+    'ขอบคุณที่ร่วมนำผลผลิตจากโครงการสิ่งแวดล้อมของโรงพยาบาลไปใช้ประโยชน์ 🌱'
+  ]);
+  if (mailed) withShareLock_(() => preqSet_(res.f, { EmailSentAt: new Date() }));
+  preqSync_(r.Project);
+  return { ok: true, mailed: mailed };
+}
+
+/** ผู้ดูแลระบบ: ยกเลิกคำขอ */
+function adminCancelProductRequest(departmentId, pin, rid, reason) {
+  const auth = assertAuthorized_(departmentId, pin);
+  return withShareLock_(() => {
+    const x = preqFindRow_(rid);
+    if (!x) throw new Error('ไม่พบคำขอ');
+    if (x.r.Status === PREQ_DONE) throw new Error('คำขอนี้ยืนยันส่งมอบแล้ว ยกเลิกไม่ได้ (ลบรายการการใช้ในประวัติแทน)');
+    preqSet_(x.f, { Status: PREQ_CANCEL, CancelReason: String(reason || '').slice(0, 200), AdminBy: auth.departmentName, AdminAt: new Date() });
+    return { ok: true };
+  });
+}
+
+// ----------------------------- ตั้งค่ารอบการหมัก (ตามเกณฑ์) จากหน้าเว็บ -----------------------------
+const FERMENT_SETTING_KEYS = ['Stage1Days', 'Stage2Days', 'ReadyDays', 'CheckIntervalDays'];
+function saveFermentSettings(departmentId, pin, project, values) {
+  assertAuthorized_(departmentId, pin);
+  preqCfg_(project);
+  values = values || {};
+  const v = {};
+  FERMENT_SETTING_KEYS.forEach(k => {
+    const n = Math.round(Number(values[k]));
+    if (!(n >= 1 && n <= 365)) throw new Error('จำนวนวันต้องอยู่ระหว่าง 1–365 วัน');
+    v[k] = n;
+  });
+  if (!(v.Stage1Days < v.Stage2Days && v.Stage2Days < v.ReadyDays)) throw new Error('ต้องเรียงจากน้อยไปมาก: ระยะที่ 1 < ระยะที่ 2 < ครบกำหนด');
+  if (v.CheckIntervalDays > v.ReadyDays) throw new Error('ระยะตรวจต้องไม่เกินจำนวนวันครบกำหนด');
+  const sheet = project === 'em' ? SHEET_EM_SETTINGS : SHEET_CP_SETTINGS;
+  if (project === 'em') ensureEmSettingsSeeded_(); else ensureCpSettingsSeeded_();
+  return withShareLock_(() => {
+    const sh = getSheet_(sheet), vals = sh.getDataRange().getValues();
+    FERMENT_SETTING_KEYS.forEach(k => {
+      let row = -1;
+      for (let r = 1; r < vals.length; r++) if (vals[r][0] === k) { row = r + 1; break; }
+      if (row === -1) sh.appendRow([k, v[k]]); else sh.getRange(row, 2).setValue(v[k]);
+    });
+    invalidateReadCache_();
+    preqSync_(project);
+    return { ok: true, settings: v };
+  });
+}
+
+// ============================================================================================
+// วัตถุดิบเข้า-ออกรายเดือน (น้ำยา EM: ขยะเปียก / ปุ๋ยหมัก: ใบไม้ เศษหญ้า กิ่งไม้)
+//  เข้า  = ปริมาณที่ผู้ดูแลระบบบันทึกว่ามีในระบบแต่ละเดือน (ชีต RawMaterialMonthly)
+//  ออก  = วัตถุดิบที่นำไปหมักจริง: ปริมาณตั้งต้นของรอบ → เดือนที่เริ่มหมัก, การเติมวัตถุดิบ (ยืนยันแล้ว) → เดือนที่เติม
+//  คงเหลือยกไป = คงเหลือยกมา + เข้า − ออก (รอบที่ยกเลิกไม่นับ)
+// ============================================================================================
+const SHEET_RAW_MONTHLY = 'RawMaterialMonthly';
+const RAW_HEADERS = ['Key', 'Project', 'Year', 'Month', 'InKg', 'Note', 'UpdatedBy', 'UpdatedAt'];
+const RAW_CFG = {
+  em:      { label: 'ขยะเปียก (เศษอาหาร ผัก ผลไม้ เนื้อสัตว์)', batches: () => SHEET_EM_BATCHES, logs: () => SHEET_EM_LOGS, cancel: () => EM_STATUS_CANCEL, add: () => EM_LOG_ADD,
+             kg: o => (Number(o.FoodKg) || 0) + (Number(o.FruitVegKg) || 0) + (Number(o.MeatKg) || 0) },
+  compost: { label: 'ใบไม้ เศษหญ้า กิ่งไม้', batches: () => SHEET_CP_BATCHES, logs: () => SHEET_CP_LOGS, cancel: () => CP_STATUS_CANCEL, add: () => CP_LOG_ADD,
+             kg: o => (Number(o.DryKg) || 0) + (Number(o.FreshKg) || 0) + (Number(o.BranchKg) || 0) }
+};
+function rawCfg_(project) { const c = RAW_CFG[project]; if (!c) throw new Error('โครงการนี้ไม่มีบัญชีวัตถุดิบ'); return c; }
+function rawYm_(v) { const s = toIsoDate_(v); return s ? s.slice(0, 7) : ''; }
+
+/** ปริมาณวัตถุดิบที่นำไปหมักจริง แยกตามเดือน { 'YYYY-MM': kg } */
+function rawUsedByMonth_(project) {
+  const c = rawCfg_(project), out = {};
+  const put = (ym, kg) => { if (ym && kg > 0) out[ym] = round2_((out[ym] || 0) + kg); };
+  const adds = readRowsIfSheet_(c.logs()).filter(l => l.LogType === c.add() && l.BatchID && String(l.VerifyStatus || '') === VERIFY_OK);
+  readRowsIfSheet_(c.batches()).filter(b => b.BatchID && b.Status !== c.cancel()).forEach(b => {
+    const mine = adds.filter(l => l.BatchID === b.BatchID);
+    const addKg = mine.reduce((s, l) => s + c.kg(l), 0);
+    put(rawYm_(b.StartDate), Math.max(0, c.kg(b) - addKg));
+    mine.forEach(l => put(rawYm_(l.LogDate), c.kg(l)));
+  });
+  return out;
+}
+
+/** บัญชีวัตถุดิบเข้า-ออกรายเดือนของปี (ค.ศ.) — เปิดดูได้ทุกคน */
+function getRawBalance(project, year) {
+  const c = rawCfg_(project);
+  year = Number(year) || new Date().getFullYear();
+  ensureSheet_(SHEET_RAW_MONTHLY, RAW_HEADERS);
+  const ins = {}, notes = {};
+  readRowsIfSheet_(SHEET_RAW_MONTHLY).filter(r => r.Project === project).forEach(r => {
+    const ym = Number(r.Year) + '-' + String(Number(r.Month)).padStart(2, '0');
+    ins[ym] = round2_(Number(r.InKg) || 0); notes[ym] = r.Note || '';
+  });
+  const used = rawUsedByMonth_(project);
+  const allYm = Object.keys(ins).concat(Object.keys(used));
+  const years = allYm.map(k => Number(k.slice(0, 4))).concat([new Date().getFullYear()]).filter((y, i, a) => a.indexOf(y) === i).sort((a, b) => b - a);
+  // ยอดยกมาต้นปี = สะสมก่อนปีนี้
+  const before = k => k < year + '-01';
+  let carry = round2_(allYm.filter((k, i, a) => a.indexOf(k) === i && before(k)).reduce((s, k) => s + (ins[k] || 0) - (used[k] || 0), 0));
+  const opening = carry, nowYm = toIsoDate_(new Date()).slice(0, 7);
+  const months = [];
+  for (let m = 1; m <= 12; m++) {
+    const ym = year + '-' + String(m).padStart(2, '0'), i = ins[ym] || 0, u = used[ym] || 0;
+    const open = carry; carry = round2_(carry + i - u);
+    months.push({ month: m, ym: ym, opening: open, inKg: i, usedKg: u, closing: carry, hasIn: Object.prototype.hasOwnProperty.call(ins, ym), note: notes[ym] || '', future: ym > nowYm,
+      usePct: (open + i) > 0 ? Math.round(u / (open + i) * 100) : null });
+  }
+  const tIn = round2_(months.reduce((s, x) => s + x.inKg, 0)), tUsed = round2_(months.reduce((s, x) => s + x.usedKg, 0));
+  return { ok: true, project: project, label: c.label, year: year, years: years, opening: opening, months: months,
+    totals: { inKg: tIn, usedKg: tUsed, closing: carry, usePct: (opening + tIn) > 0 ? Math.round(tUsed / (opening + tIn) * 100) : null } };
+}
+
+/** ผู้ดูแลระบบ: บันทึก/แก้ไขปริมาณวัตถุดิบที่มีในระบบของเดือน (kg ว่าง = ลบรายการเดือนนั้น) */
+function saveRawMonthly(departmentId, pin, project, year, month, kg, note) {
+  const auth = assertAuthorized_(departmentId, pin);
+  rawCfg_(project);
+  year = Math.round(Number(year)); month = Math.round(Number(month));
+  if (!(year >= 2000 && year <= 2100) || !(month >= 1 && month <= 12)) throw new Error('เดือน/ปีไม่ถูกต้อง');
+  const empty = kg === '' || kg === null || kg === undefined;
+  const v = empty ? 0 : Number(kg);
+  if (!empty && !(v >= 0 && v < 1e7)) throw new Error('ปริมาณ (กก.) ไม่ถูกต้อง');
+  const key = project + '-' + year + '-' + String(month).padStart(2, '0');
+  return withShareLock_(() => {
+    ensureSheet_(SHEET_RAW_MONTHLY, RAW_HEADERS);
+    const f = findRowById_(SHEET_RAW_MONTHLY, 'Key', key);
+    if (empty) { if (f) getSheet_(SHEET_RAW_MONTHLY).deleteRow(f.rowIndex); invalidateReadCache_(); return { ok: true, deleted: true }; }
+    const row = { Key: key, Project: project, Year: year, Month: month, InKg: round2_(v), Note: String(note || '').slice(0, 200), UpdatedBy: auth.departmentName, UpdatedAt: new Date() };
+    if (f) { const sh = getSheet_(SHEET_RAW_MONTHLY); f.headers.forEach((h, i) => { if (h in row) sh.getRange(f.rowIndex, i + 1).setValue(row[h]); }); }
+    else appendByHeaders_(SHEET_RAW_MONTHLY, row);
+    invalidateReadCache_();
+    return { ok: true };
+  });
+}

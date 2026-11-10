@@ -1184,6 +1184,19 @@
               <a id="emQrDownload" download="น้ำยา-EM-บันทึกการใช้-QRcode.png" class="btn btn-outline" style="margin-top:8px;">⬇️ ดาวน์โหลด QR Code</a>
             </div>
           </div>
+          <div class="shr-link-item">
+            <h5>🙋 ลงทะเบียนขอรับน้ำยา EM (เจ้าหน้าที่ / บุคคลภายนอก / บริษัท)</h5>
+            <p class="muted">ผู้ขอกรอกข้อมูลและ E-mail → ได้รับรหัสคำขอและลิงก์ยืนยันรับของ → ผู้ดูแลระบบยืนยันอีกครั้งและระบบส่งอีเมลแจ้งผล</p>
+            <div class="ftf-share-link-box">
+              <input type="text" id="rqLinkInput-em" readonly>
+              <button class="btn btn-primary" data-rq-copy="em">📋 คัดลอก</button>
+            </div>
+            <p class="muted hidden" id="rqCopyConfirm-em">✅ คัดลอกลิงก์แล้ว</p>
+            <div class="ftf-qr-box">
+              <img id="rqQrImg-em" alt="QR Code ลงทะเบียนขอรับน้ำยา EM" width="160" height="160">
+              <a id="rqQrDownload-em" download="ขอรับน้ำยา EM-QRcode.png" class="btn btn-outline" style="margin-top:8px;">⬇️ ดาวน์โหลด QR Code</a>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -1193,6 +1206,7 @@
       <div id="emUseConfirm" class="ftf-confirm-banner hidden"></div>
       <div class="vf-pending-note hidden" id="vfNote-emuse"></div>
       <section class="vf-panel admin-only hidden" id="vfPanel-emuse"></section>
+      <section class="vf-panel rq-panel admin-only hidden" id="rqPanel-em"></section>
 
       <section class="toolbar em-toolbar">
         <button class="btn btn-primary admin-only hidden" id="btnEmAddBatch">+ เริ่มหมักรอบใหม่</button>
@@ -1200,6 +1214,9 @@
         <button class="btn btn-primary" id="btnEmLogForm">📝 บันทึกการหมักประจำวัน</button>
         <button class="btn btn-primary" id="btnEmUseForm">💧 บันทึกการนำน้ำยา EM ไปใช้</button>
         <button class="btn btn-outline" id="btnEmShareLink">🔗 ลิงก์ &amp; QR Code</button>
+        <button class="btn btn-primary rq-btn" data-rq-open="em">🙋 ลงทะเบียนขอรับน้ำยา EM</button>
+        <button class="btn btn-outline" data-rq-receive="em">📦 ยืนยันว่าได้รับแล้ว</button>
+        <button class="btn btn-outline admin-only hidden" data-ferm-settings="em">⚙️ ตั้งค่ารอบการหมัก</button>
         <span style="flex:1;"></span>
         <button class="btn btn-outline" id="btnEmExcel">📊 ส่งออก Excel</button>
         <button class="btn btn-primary" id="btnEmPdf">📄 ส่งออกรายงาน PDF (A4 แนวนอน)</button>
@@ -1210,12 +1227,14 @@
         <button class="pj-subtab" data-sub="batches">🧪 รอบการหมัก <span class="shr-count" id="emCntBatches"></span></button>
         <button class="pj-subtab" data-sub="weekly">🗓️ รายงานทุก 7 วัน</button>
         <button class="pj-subtab" data-sub="usage">💧 การนำไปใช้ &amp; คงเหลือ</button>
+        <button class="pj-subtab" data-sub="balance">⚖️ ขยะเปียกเข้า-ออก</button>
       </nav>
 
       <div id="emPaneOverview"></div>
       <div id="emPaneBatches" class="hidden"></div>
       <div id="emPaneWeekly" class="hidden"></div>
       <div id="emPaneUsage" class="hidden"></div>
+      <div id="emPaneBalance" class="hidden"></div>
     </main>
   </div><!-- /tabEM -->
 
@@ -1280,6 +1299,19 @@
               <a id="cpQrDownload" download="ปุ๋ยหมัก-CP-บันทึกการใช้-QRcode.png" class="btn btn-outline" style="margin-top:8px;">⬇️ ดาวน์โหลด QR Code</a>
             </div>
           </div>
+          <div class="shr-link-item">
+            <h5>🙋 ลงทะเบียนขอรับปุ๋ยหมัก (เจ้าหน้าที่ / บุคคลภายนอก / บริษัท)</h5>
+            <p class="muted">ผู้ขอกรอกข้อมูลและ E-mail → ได้รับรหัสคำขอและลิงก์ยืนยันรับของ → ผู้ดูแลระบบยืนยันอีกครั้งและระบบส่งอีเมลแจ้งผล</p>
+            <div class="ftf-share-link-box">
+              <input type="text" id="rqLinkInput-compost" readonly>
+              <button class="btn btn-primary" data-rq-copy="compost">📋 คัดลอก</button>
+            </div>
+            <p class="muted hidden" id="rqCopyConfirm-compost">✅ คัดลอกลิงก์แล้ว</p>
+            <div class="ftf-qr-box">
+              <img id="rqQrImg-compost" alt="QR Code ลงทะเบียนขอรับปุ๋ยหมัก" width="160" height="160">
+              <a id="rqQrDownload-compost" download="ขอรับปุ๋ยหมัก-QRcode.png" class="btn btn-outline" style="margin-top:8px;">⬇️ ดาวน์โหลด QR Code</a>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -1289,6 +1321,7 @@
       <div id="cpUseConfirm" class="ftf-confirm-banner hidden"></div>
       <div class="vf-pending-note hidden" id="vfNote-cpuse"></div>
       <section class="vf-panel admin-only hidden" id="vfPanel-cpuse"></section>
+      <section class="vf-panel rq-panel admin-only hidden" id="rqPanel-compost"></section>
 
       <section class="toolbar em-toolbar">
         <button class="btn btn-primary admin-only hidden" id="btnCpAddBatch">+ เริ่มหมักรอบใหม่</button>
@@ -1296,6 +1329,9 @@
         <button class="btn btn-primary" id="btnCpLogForm">📝 บันทึกการหมักประจำวัน</button>
         <button class="btn btn-primary" id="btnCpUseForm">💧 บันทึกการนำปุ๋ยหมักไปใช้</button>
         <button class="btn btn-outline" id="btnCpShareLink">🔗 ลิงก์ &amp; QR Code</button>
+        <button class="btn btn-primary rq-btn" data-rq-open="compost">🙋 ลงทะเบียนขอรับปุ๋ยหมัก</button>
+        <button class="btn btn-outline" data-rq-receive="compost">📦 ยืนยันว่าได้รับแล้ว</button>
+        <button class="btn btn-outline admin-only hidden" data-ferm-settings="compost">⚙️ ตั้งค่ารอบการหมัก</button>
         <span style="flex:1;"></span>
         <button class="btn btn-outline" id="btnCpExcel">📊 ส่งออก Excel</button>
         <button class="btn btn-primary" id="btnCpPdf">📄 ส่งออกรายงาน PDF (A4 แนวนอน)</button>
@@ -1306,12 +1342,14 @@
         <button class="pj-subtab" data-sub="batches">🌱 รอบการหมัก <span class="shr-count" id="cpCntBatches"></span></button>
         <button class="pj-subtab" data-sub="weekly">🗓️ รายงานทุก 7 วัน</button>
         <button class="pj-subtab" data-sub="usage">💧 การนำไปใช้ &amp; คงเหลือ</button>
+        <button class="pj-subtab" data-sub="balance">⚖️ วัตถุดิบเข้า-ออก</button>
       </nav>
 
       <div id="cpPaneOverview"></div>
       <div id="cpPaneBatches" class="hidden"></div>
       <div id="cpPaneWeekly" class="hidden"></div>
       <div id="cpPaneUsage" class="hidden"></div>
+      <div id="cpPaneBalance" class="hidden"></div>
     </main>
   </div><!-- /tabCP -->
 
@@ -1750,7 +1788,7 @@
     <div class="emm-grid3">
       <div><label>จำนวนถัง *</label><input type="number" id="embBarrels" min="1" step="1"></div>
       <div><label>ขนาดถัง (ลิตร/ถัง)</label><input type="number" id="embBarrelL" min="1" step="any"></div>
-      <div><label>หมักกี่วันจึงครบกำหนด</label><input type="number" id="embReadyDays" min="1" step="1" placeholder="ค่าเริ่มต้น"></div>
+      <div><label>จำนวนวันหมักของรอบนี้ (ตามจริง)</label><input type="number" id="embReadyDays" min="1" step="1" placeholder="ค่าเริ่มต้น"></div>
     </div>
     <label>น้ำยา EM ที่คาดว่าจะได้ (ลิตร) <small class="muted">เว้นว่าง = คำนวณอัตโนมัติ</small></label>
     <input type="number" id="embExpected" min="0" step="any">
@@ -1834,6 +1872,97 @@
     <div class="modal-actions"><button class="btn btn-outline" data-close>ยกเลิก</button><button class="btn btn-primary" id="emlSave">ส่งข้อมูล</button></div>
   </div>
 
+  <div class="modal hidden" id="modalRawIn">
+    <h3 id="rawTitle">⚖️ บันทึกวัตถุดิบเข้าประจำเดือน</h3>
+    <p class="muted" style="margin-top:0" id="rawHint"></p>
+    <div class="grid2">
+      <div><label>เดือน *</label><select id="rawMonth"></select></div>
+      <div><label>ปี (พ.ศ.) *</label><select id="rawYear"></select></div>
+    </div>
+    <label>ปริมาณที่มีในระบบเดือนนี้ (กก.) *</label>
+    <input type="number" id="rawKg" min="0" step="any" placeholder="เช่น 1250">
+    <p class="muted" style="margin:4px 0 0;font-size:.85rem">เว้นว่างแล้วกดบันทึก = ลบรายการของเดือนนั้น</p>
+    <label>หมายเหตุ / แหล่งที่มา</label>
+    <input type="text" id="rawNote" maxlength="200" placeholder="เช่น จากรายงานขยะเปียกงานโภชนาการ">
+    <p class="error hidden" id="rawError"></p>
+    <div class="modal-actions"><button class="btn btn-outline" data-close>ยกเลิก</button><button class="btn btn-primary" id="rawSave">บันทึก</button></div>
+  </div>
+
+  <!-- ===== คำขอรับน้ำยา EM / ปุ๋ยหมัก ===== -->
+  <div class="modal hidden" id="modalRqForm">
+    <h3 id="rqfTitle">🙋 ลงทะเบียนขอรับ</h3>
+    <p class="emu-stock" id="rqfStock"></p>
+    <label>ผู้ขอเป็น *</label>
+    <div class="rq-types" id="rqfTypes">
+      <label><input type="radio" name="rqType" value="เจ้าหน้าที่" checked><span>👩‍⚕️ เจ้าหน้าที่</span></label>
+      <label><input type="radio" name="rqType" value="บุคคลภายนอก"><span>🧑 บุคคลภายนอก</span></label>
+      <label><input type="radio" name="rqType" value="บริษัทภายนอก"><span>🏢 บริษัทภายนอก</span></label>
+    </div>
+    <div class="rq-only-staff"><label>รหัสเจ้าหน้าที่ (7 หลัก) *</label><input type="text" id="rqfStaff" inputmode="numeric" maxlength="12" placeholder="ตัวเลข 7 หลัก" autocomplete="off"></div>
+    <div class="rq-only-org hidden"><label>ชื่อบริษัท / หน่วยงาน *</label><input type="text" id="rqfOrg" maxlength="150"></div>
+    <label id="rqfNameLbl">ชื่อ - นามสกุล *</label>
+    <input type="text" id="rqfName" maxlength="120" autocomplete="name">
+    <div class="grid2">
+      <div class="rq-only-ext hidden"><label>เบอร์โทรศัพท์ *</label><input type="tel" id="rqfPhone" maxlength="30" autocomplete="tel" placeholder="08x-xxx-xxxx"></div>
+      <div><label>E-mail * <small class="muted">(รับลิงก์ยืนยันและผลการรับ)</small></label><input type="email" id="rqfEmail" maxlength="120" autocomplete="email" placeholder="name@example.com"></div>
+    </div>
+    <div class="grid2">
+      <div><label id="rqfQtyLbl">ปริมาณที่ขอรับ *</label><input type="number" id="rqfQty" min="0" step="any"></div>
+      <div><label>วันที่ต้องการรับ</label><input type="date" id="rqfDate"></div>
+    </div>
+    <label>นำไปใช้เพื่อ *</label>
+    <input type="text" id="rqfPurpose" maxlength="200" placeholder="เช่น รดต้นไม้ บำบัดน้ำเสีย ดับกลิ่น">
+    <label>สถานที่ที่นำไปใช้</label>
+    <input type="text" id="rqfPlace" maxlength="150" placeholder="เช่น สวนหน้าอาคาร / ชื่อหมู่บ้าน">
+    <label>หมายเหตุ</label>
+    <input type="text" id="rqfNote" maxlength="300">
+    <input type="text" id="rqfWebsite" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;opacity:0;height:0;width:0;">
+    <p class="error hidden" id="rqfError"></p>
+    <div class="modal-actions"><button class="btn btn-outline" data-close>ยกเลิก</button><button class="btn btn-primary" id="rqfSave">ส่งคำขอ</button></div>
+  </div>
+
+  <div class="modal hidden" id="modalRqDone">
+    <div class="rq-done">
+      <div class="rq-done-ic">✅</div>
+      <h3>ลงทะเบียนเรียบร้อยแล้ว</h3>
+      <p>รหัสคำขอของท่าน</p>
+      <div class="rq-code" id="rqdCode"></div>
+      <p class="muted" id="rqdMail"></p>
+      <p><b>เมื่อได้รับของแล้ว</b> กดลิงก์ในอีเมล หรือกดปุ่ม "ยืนยันว่าได้รับแล้ว" ในหน้าโครงการ แล้วกรอกรหัสคำขอนี้</p>
+      <div class="ftf-share-link-box"><input type="text" id="rqdLink" readonly><button class="btn btn-outline" id="rqdCopy">📋 คัดลอกลิงก์</button></div>
+    </div>
+    <div class="modal-actions"><button class="btn btn-primary" data-close>ปิด</button></div>
+  </div>
+
+  <div class="modal hidden" id="modalRqReceive">
+    <h3>📦 ยืนยันว่าได้รับของแล้ว</h3>
+    <div id="rqrLookup">
+      <p class="muted" style="margin-top:0">กรอกรหัสคำขอ และ E-mail หรือเบอร์โทร หรือรหัสเจ้าหน้าที่ ที่ใช้ตอนลงทะเบียน</p>
+      <div class="grid2">
+        <div><label>รหัสคำขอ *</label><input type="text" id="rqrCode" maxlength="12" placeholder="เช่น EM-AB12C" style="text-transform:uppercase" autocomplete="off"></div>
+        <div><label>E-mail / เบอร์โทร / รหัสเจ้าหน้าที่ *</label><input type="text" id="rqrContact" maxlength="120" autocomplete="off"></div>
+      </div>
+      <div class="modal-actions" style="justify-content:flex-start"><button class="btn btn-primary" id="rqrFind">🔎 ค้นหาคำขอ</button></div>
+    </div>
+    <div id="rqrInfo" class="rq-info hidden"></div>
+    <p class="error hidden" id="rqrError"></p>
+    <div class="modal-actions"><button class="btn btn-outline" data-close>ปิด</button><button class="btn btn-primary hidden" id="rqrConfirm">✅ ยืนยันว่าได้รับแล้ว</button></div>
+  </div>
+
+  <div class="modal hidden" id="modalFermSettings">
+    <h3 id="fsTitle">⚙️ ตั้งค่ารอบการหมัก</h3>
+    <p class="muted" style="margin-top:0">จำนวนวัน <b>ตามเกณฑ์</b> ใช้กับทุกรอบที่ไม่ได้กำหนดเอง — ถ้ารอบไหนใช้เวลาจริงต่างจากเกณฑ์ ให้แก้ "จำนวนวันหมักของรอบนี้ (ตามจริง)" ในหน้าแก้ไขรอบนั้น</p>
+    <div class="grid2">
+      <div><label>ระยะที่ 1 (วัน)</label><input type="number" id="fsStage1" min="1" max="365" step="1"></div>
+      <div><label>ระยะที่ 2 (วัน)</label><input type="number" id="fsStage2" min="1" max="365" step="1"></div>
+      <div><label>ครบกำหนด ตามเกณฑ์ (วัน) *</label><input type="number" id="fsReady" min="1" max="365" step="1"></div>
+      <div><label>ตรวจทุก ๆ (วัน)</label><input type="number" id="fsCheck" min="1" max="365" step="1"></div>
+    </div>
+    <div class="fs-preview" id="fsPreview"></div>
+    <p class="error hidden" id="fsError"></p>
+    <div class="modal-actions"><button class="btn btn-outline" data-close>ยกเลิก</button><button class="btn btn-primary" id="fsSave">บันทึก</button></div>
+  </div>
+
   <div class="modal hidden" id="modalEmUseForm">
     <h3>💧 บันทึกการนำน้ำยา EM ไปใช้</h3>
     <p class="emu-stock" id="emufStock"></p>
@@ -1906,7 +2035,7 @@
     <h4 class="emm-h">🪴 การหมัก (PROCESS)</h4>
     <div class="emm-grid3">
       <div><label>จำนวนกอง *</label><input type="number" id="cpbPiles" min="1" step="1"></div>
-      <div><label>หมักกี่วันจึงครบกำหนด</label><input type="number" id="cpbReadyDays" min="1" step="1" placeholder="ค่าเริ่มต้น"></div>
+      <div><label>จำนวนวันหมักของรอบนี้ (ตามจริง)</label><input type="number" id="cpbReadyDays" min="1" step="1" placeholder="ค่าเริ่มต้น"></div>
     </div>
     <label>ปุ๋ยหมักที่คาดว่าจะได้ (กก.) <small class="muted">เว้นว่าง = คำนวณอัตโนมัติ</small></label>
     <input type="number" id="cpbExpected" min="0" step="any">
@@ -2335,6 +2464,8 @@
     // ค่าจาก query string ของลิงก์ ใช้เปิดแท็บ/ฟอร์มโดยตรง
     var INITIAL_PAGE = "<?= initialPage ?>";
     var INITIAL_ACTION = "<?= initialAction ?>";
+    var INITIAL_RID = "<?= initialRid ?>";
+    var INITIAL_TOKEN = "<?= initialToken ?>";
     var WEBAPP_URL = "<?= webAppUrl ?>";
   </script>
   <?!= include('JS'); ?>
