@@ -1,6 +1,6 @@
 {
   "name": "hospital-eco-tracker",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "description": "ระบบติดตามโครงการสิ่งแวดล้อมโรงพยาบาล — Google Apps Script + Google Sheets",
   "private": true,
   "license": "MIT",

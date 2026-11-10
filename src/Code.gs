@@ -147,7 +147,8 @@ function setupSheets() {
     'ShareSubmissions': ['SubmissionID', 'SubmitDate', 'DepartmentName', 'SubmitterName', 'Position', 'UsageStatus', 'ItemName', 'Category', 'Quantity', 'Unit', 'Note', 'Status', 'LinkedItemID', 'ReviewedBy', 'ReviewedAt', 'CreatedAt'],
     'ShareWithdrawals': ['WithdrawalID', 'WithdrawDate', 'Category', 'ItemName', 'Quantity', 'Unit', 'UnitPrice', 'DepartmentName', 'ItemID', 'Note', 'RecordedByName', 'CreatedAt'],
     'ShareDepartments': ['DepartmentID', 'DepartmentName', 'SortOrder', 'IsActive'],
-    'ShareStockLog': ['LogID', 'Timestamp', 'ItemID', 'ItemName', 'Action', 'QtyBefore', 'QtyAfter', 'By', 'Note']
+    'ShareStockLog': ['LogID', 'Timestamp', 'ItemID', 'ItemName', 'Action', 'QtyBefore', 'QtyAfter', 'By', 'Note'],
+    'PortalVisits': PORTAL_VISIT_HEADERS
   };
 
   const ss = getSS();
@@ -6090,6 +6091,82 @@ function integKeyOk_(key) {
   let d = 0; for (let i = 0; i < real.length; i++) d |= real.charCodeAt(i) ^ k.charCodeAt(i);
   return d === 0;
 }
+// ============================================================================================
+// หน้าเว็บ GitHub Pages (Portal): บันทึกการเข้าใช้งานด้วยรหัสเจ้าหน้าที่ 7 หลัก + ชื่อ-นามสกุล
+// และสรุปว่าบุคคลนั้นร่วมโครงการอะไรบ้าง (แสดงเฉพาะชื่อโครงการ จำนวนครั้ง และยอดรวม — ไม่ส่งเบอร์โทร/ช่องทางติดต่อ)
+// ============================================================================================
+const SHEET_PORTAL_VISITS = 'PortalVisits';
+const PORTAL_VISIT_HEADERS = ['VisitID', 'Timestamp', 'StaffCode', 'StaffName', 'Page', 'Device'];
+
+/** ตัดคำนำหน้าและช่องว่างส่วนเกิน เพื่อเทียบชื่อ-นามสกุล */
+function portalNormName_(v) {
+  return String(v || '')
+    .replace(/^\s*(นางสาว|นาง|นาย|น\.ส\.|ด\.ช\.|ด\.ญ\.|ดร\.|Mr\.?|Mrs\.?|Ms\.?|Miss)\s*/i, '')
+    .replace(/\s+/g, ' ').trim().toLowerCase();
+}
+
+/** สรุปการร่วมโครงการของบุคคลจากรหัส (ถ้ามี) หรือชื่อ-นามสกุลที่ตรงกัน */
+function portalParticipation_(code, name) {
+  const nn = portalNormName_(name);
+  const byName = v => !!nn && portalNormName_(v) === nn;
+  const out = [];
+  const add = (key, label, rows, qtyField, unit, dateField) => {
+    if (!rows.length) return;
+    const qty = qtyField ? round2_(rows.reduce((s, r) => s + (Number(r[qtyField]) || 0), 0)) : null;
+    const last = rows.map(r => toIsoDate_(r[dateField])).filter(Boolean).sort().pop() || '';
+    out.push({ key: key, label: label, count: rows.length, amount: qty, unit: unit || '', lastDate: last });
+  };
+
+  const ftf = readRowsIfSheet_(SHEET_FTF_LOG)
+    .filter(r => (code && String(r.StaffCode || '').trim() === code) || byName(r.StaffName));
+  add('frytofly', 'ทอดไม่ทิ้ง', ftf, 'Quantity', 'แกลลอน', 'Timestamp');
+
+  const calDon = readRowsIfSheet_('CalendarDonations').filter(r => byName(r.DonorName));
+  const calSub = readRowsIfSheet_('CalendarSubmissions').filter(r => byName(r.DonorName));
+  add('calendar', 'ปฏิทินเก่าเราขอ', calDon.concat(calSub.map(r => ({ DonationDate: r.SubmitDate }))), 'WeightKg', 'กก.', 'DonationDate');
+
+  const shr = readRowsIfSheet_('ShareSubmissions').filter(r => byName(r.SubmitterName));
+  add('share', 'คัดแยก แบ่งปัน', shr, 'Quantity', 'รายการ', 'SubmitDate');
+
+  return out;
+}
+
+function portalCheckin_(params) {
+  const code = String(params.code || '').trim();
+  const name = String(params.name || '').replace(/\s+/g, ' ').trim().slice(0, 100);
+  if (!/^\d{7}$/.test(code)) return { ok: false, error: 'รหัสเจ้าหน้าที่ต้องเป็นตัวเลข 7 หลัก' };
+  if (name.length < 3) return { ok: false, error: 'กรุณากรอกชื่อ-นามสกุล' };
+
+  ensureSheet_(SHEET_PORTAL_VISITS, PORTAL_VISIT_HEADERS);
+  const before = readRowsIfSheet_(SHEET_PORTAL_VISITS).filter(r => String(r.StaffCode || '').trim() === code);
+  if (String(params.log || '1') !== '0') {
+    appendByHeaders_(SHEET_PORTAL_VISITS, {
+      VisitID: newId_('PV'), Timestamp: new Date(), StaffCode: code, StaffName: name,
+      Page: String(params.page || '').slice(0, 40), Device: String(params.device || '').slice(0, 20)
+    });
+  }
+  const times = before.map(r => toIsoDate_(r.Timestamp)).filter(Boolean).sort();
+  return {
+    ok: true, staffCode: code, name: name,
+    visits: { count: before.length + 1, first: times[0] || toIsoDate_(new Date()) },
+    projects: portalParticipation_(code, name)
+  };
+}
+
+/** ตัวเลขสรุปรายงานสิ่งแวดล้อมสำหรับหน้าแรก (ไม่มีข้อมูลส่วนบุคคล) */
+function portalImpact_() {
+  const s = getEnvironmentalImpactSummary();
+  return {
+    ok: true, generatedAt: new Date().toISOString(),
+    overview: s.overview,
+    paperless: { sheets: s.paperless.totalSheetsReduced, trees: s.paperless.treesSaved, co2Kg: s.paperless.co2SavedKg },
+    fryToFly: { liters: s.fryToFly.totalLiters, participants: s.fryToFly.totalParticipants, co2Kg: s.fryToFly.co2SavedKg },
+    cartridge: { contributed: s.cartridge.totalContributed, co2Kg: s.cartridge.co2AvoidedKg },
+    share: { withdrawals: s.share.withdrawalCount, value: s.share.withdrawalValue, co2Kg: s.share.co2SavedKg },
+    calendar: { kg: s.calendar.totalKg, trees: s.calendar.treesSaved, donors: s.calendar.donors }
+  };
+}
+
 function jsonOut_(obj) {
   return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(ContentService.MimeType.JSON);
 }
@@ -6114,6 +6191,9 @@ function handleApiGet_(params) {
   try {
     const api = String(params.api || '');
     if (api === 'ping') return jsonOut_({ ok: true, system: 'environment-project-tracker', time: new Date().toISOString(), keyConfigured: !!integKey_() });
+    // หน้าเว็บ GitHub Pages (สาธารณะ ไม่ต้องใช้คีย์)
+    if (api === 'portalImpact') return jsonOut_(portalImpact_());
+    if (api === 'portalCheckin') return jsonOut_(portalCheckin_(params));
     if (!integKeyOk_(params.key)) return jsonOut_({ ok: false, error: 'unauthorized' });
     if (api === 'summary') {
       const exp = exposedProjects_();
