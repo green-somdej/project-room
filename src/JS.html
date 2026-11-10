@@ -1647,6 +1647,7 @@ function applyInitialRouteFromLink(){
     }
   }
   if (INITIAL_PAGE === 'kitchen') switchTab('kitchen');
+  if (['paperless', 'envreport', 'archive', 'projects'].indexOf(INITIAL_PAGE) !== -1) switchTab(INITIAL_PAGE);
   if (INITIAL_PAGE === 'compost'){ switchTab('compost'); if (INITIAL_ACTION === 'use') setTimeout(openCpUseForm, 400); if (INITIAL_ACTION === 'log') setTimeout(openCpLogForm, 400); }
   if (INITIAL_PAGE === 'em'){ switchTab('em'); if (INITIAL_ACTION === 'use') setTimeout(openEmUseForm, 400); if (INITIAL_ACTION === 'log') setTimeout(openEmLogForm, 400); }
   if (INITIAL_PAGE === 'calendar'){

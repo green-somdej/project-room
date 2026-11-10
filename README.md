@@ -83,6 +83,9 @@ npx clasp create --type webapp --title "Hospital Eco Tracker" --rootDir src
 npm run push && npm run deploy
 ```
 
+### เปิดระบบผ่านหน้า GitHub Pages
+หน้า `https://green-somdej.github.io/project-room/` แสดงระบบจริงให้ใช้งานได้ทันที เมื่อใส่ลิงก์ Web App (`…/exec`) ใน [`docs/config.js`](docs/config.js) ที่ `APP_URL` · ลิงก์ตรงเข้าโครงการใช้ได้ เช่น `…/project-room/?page=paperless`
+
 > ⚠️ `clasp create` จะสร้าง `.clasp.json` ซึ่งถูก `.gitignore` ไว้แล้ว — ห้าม commit Script ID ของระบบจริง
 
 ## 🔐 ความปลอดภัย

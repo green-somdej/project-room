@@ -2,683 +2,290 @@
 <html lang="th" data-theme="light">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Hospital Eco Tracker — ระบบติดตามโครงการสิ่งแวดล้อมโรงพยาบาล</title>
-<meta name="description" content="ระบบติดตามโครงการสิ่งแวดล้อมโรงพยาบาลแบบครบวงจร 8 แคมเปญ บน Google Apps Script + Google Sheets — ไม่มีค่าเซิร์ฟเวอร์ ติดตั้งได้ใน 10 นาที">
-<meta property="og:title" content="Hospital Eco Tracker">
-<meta property="og:description" content="Track every green initiative in your hospital — 8 campaigns, one dashboard, zero servers.">
-<meta property="og:type" content="website">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Green Somdej · ระบบติดตามโครงการสิ่งแวดล้อมโรงพยาบาล</title>
+<meta name="description" content="ระบบติดตามโครงการสิ่งแวดล้อมโรงพยาบาล 8 แคมเปญ — ทอดไม่ทิ้ง Paperless ตลับหมึก ปฏิทินเก่า คัดแยก แบ่งปัน น้ำยา EM ปุ๋ยหมัก">
+<meta name="theme-color" content="#0f3d26">
+<meta property="og:title" content="Green Somdej · Hospital Eco Tracker">
+<meta property="og:description" content="ระบบติดตามโครงการสิ่งแวดล้อมโรงพยาบาล 8 แคมเปญในที่เดียว">
 <meta property="og:image" content="https://green-somdej.github.io/project-room/assets/social-preview.png">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Sarabun:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700;800&family=Inter:wght@500;600;700;800&display=swap" rel="stylesheet">
 <script>
-  // กำหนดธีมก่อนวาดหน้า เพื่อไม่ให้หน้าจอวูบ
-  (function () {
-    try {
-      var t = localStorage.getItem('theme') || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-      var l = localStorage.getItem('lang') || 'th';
-      document.documentElement.dataset.theme = t;
-      document.documentElement.lang = l;
-    } catch (e) {}
-  })();
+  try { document.documentElement.dataset.theme = localStorage.getItem('shellTheme') || 'light'; } catch (e) {}
 </script>
+<script src="config.js"></script>
 <style>
 :root{
-  --bg:#f6faf7; --bg-2:#ffffff; --surface:#ffffff; --surface-2:#f0f6f2;
-  --ink:#0f1f17; --ink-2:#3b4a41; --ink-3:#6a7a70; --line:#dce8e0;
-  --brand:#16a34a; --brand-600:#15803d; --brand-700:#166534; --brand-soft:#dcfce7;
-  --accent:#f59e0b; --accent-soft:#fef3c7;
-  --shadow:0 1px 2px rgba(15,31,23,.05),0 8px 24px rgba(15,31,23,.07);
-  --shadow-lg:0 2px 4px rgba(15,31,23,.06),0 24px 60px rgba(15,31,23,.14);
-  --radius:18px; --radius-sm:12px;
-  --grid:rgba(22,163,74,.07);
+  --bar-h:64px; --chips-h:52px;
+  --bg:#f3f7f4; --bar:rgba(255,255,255,.82); --ink:#0f1f17; --ink-2:#4a5a50; --line:#dfe9e2;
+  --brand:#16a34a; --brand-2:#0d9488; --soft:#e7f7ed; --chip:#ffffff;
+  --shadow:0 1px 2px rgba(15,31,23,.05),0 10px 30px rgba(15,31,23,.08);
 }
 [data-theme="dark"]{
-  --bg:#07110b; --bg-2:#0b1a12; --surface:#0e2017; --surface-2:#12281d;
-  --ink:#ecf6ef; --ink-2:#b4c6ba; --ink-3:#7f9487; --line:#1d3528;
-  --brand:#34d399; --brand-600:#10b981; --brand-700:#6ee7b7; --brand-soft:rgba(52,211,153,.12);
-  --accent:#fbbf24; --accent-soft:rgba(251,191,36,.12);
-  --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.35);
-  --shadow-lg:0 2px 4px rgba(0,0,0,.5),0 24px 60px rgba(0,0,0,.55);
-  --grid:rgba(52,211,153,.06);
+  --bg:#06100a; --bar:rgba(9,22,15,.82); --ink:#e9f7ee; --ink-2:#9fb5a7; --line:#1b3226;
+  --brand:#34d399; --brand-2:#2dd4bf; --soft:rgba(52,211,153,.12); --chip:#0d1f16;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 30px rgba(0,0,0,.4);
 }
 *{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth;scroll-padding-top:84px}
-body{font-family:'Inter','Sarabun',system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.65;-webkit-font-smoothing:antialiased;overflow-x:hidden}
-html[lang="th"] body{font-family:'Sarabun','Inter',system-ui,sans-serif}
+html,body{height:100%}
+body{font-family:'Sarabun','Inter',system-ui,sans-serif;background:var(--bg);color:var(--ink);overflow:hidden;-webkit-font-smoothing:antialiased}
 a{color:inherit;text-decoration:none}
-img,svg{max-width:100%;display:block}
-.wrap{width:min(1180px,92%);margin-inline:auto}
-.th,.en{display:none}
-html[lang="th"] .th{display:inline}
-html[lang="en"] .en{display:inline}
-html[lang="th"] .th.b,html[lang="en"] .en.b{display:block}
-code,pre,.mono{font-family:'JetBrains Mono',ui-monospace,monospace}
+button{font-family:inherit}
+svg{display:block}
 
-/* ---------- NAV ---------- */
-.nav{position:fixed;inset:0 0 auto 0;z-index:50;backdrop-filter:saturate(1.6) blur(14px);-webkit-backdrop-filter:saturate(1.6) blur(14px);background:color-mix(in srgb,var(--bg) 78%,transparent);border-bottom:1px solid transparent;transition:border-color .25s}
-.nav.scrolled{border-bottom-color:var(--line)}
-.nav .wrap{display:flex;align-items:center;gap:28px;height:68px}
-.logo{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:-.02em;font-size:1.05rem}
-.logo i{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#22c55e,#0d9488);display:grid;place-items:center;box-shadow:0 6px 16px rgba(22,163,74,.35)}
-.logo i svg{width:20px;height:20px}
-.links{display:flex;gap:26px;margin-left:auto;font-size:.92rem;font-weight:500;color:var(--ink-2)}
-.links a:hover{color:var(--brand)}
-.tools{display:flex;align-items:center;gap:8px}
-.chip{border:1px solid var(--line);background:var(--surface);color:var(--ink-2);height:38px;min-width:38px;padding:0 12px;border-radius:999px;font:600 .8rem inherit;font-family:inherit;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;transition:.2s}
-.chip:hover{border-color:var(--brand);color:var(--brand)}
-.chip svg{width:17px;height:17px}
+/* ---------- top bar ---------- */
+.bar{position:fixed;inset:0 0 auto 0;height:var(--bar-h);z-index:30;display:flex;align-items:center;gap:14px;padding:0 18px;
+  background:var(--bar);backdrop-filter:saturate(1.6) blur(16px);-webkit-backdrop-filter:saturate(1.6) blur(16px);border-bottom:1px solid var(--line)}
+.bar::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;background:linear-gradient(90deg,#22c55e,#0d9488,#f59e0b,#22c55e);background-size:300% 100%;animation:flow 8s linear infinite;opacity:.85}
+@keyframes flow{to{background-position:300% 0}}
+.brand{display:flex;align-items:center;gap:11px;min-width:0}
+.logo{flex:none;width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,#22c55e,#0d9488);display:grid;place-items:center;box-shadow:0 6px 18px rgba(22,163,74,.35)}
+.logo svg{width:21px;height:21px}
+.brand-t{min-width:0;line-height:1.2}
+.brand-t b{display:block;font-family:'Inter','Sarabun',sans-serif;font-weight:800;letter-spacing:-.01em;font-size:1rem}
+.brand-t span{display:block;font-size:.78rem;color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.live{display:inline-flex;align-items:center;gap:6px;margin-left:6px;padding:3px 10px;border-radius:99px;background:var(--soft);color:var(--brand);font-size:.72rem;font-weight:700;white-space:nowrap}
+.live i{width:7px;height:7px;border-radius:50%;background:currentColor;box-shadow:0 0 0 0 currentColor;animation:ping 2s infinite}
+@keyframes ping{0%{box-shadow:0 0 0 0 rgba(34,197,94,.5)}100%{box-shadow:0 0 0 8px rgba(34,197,94,0)}}
+.actions{margin-left:auto;display:flex;gap:6px;align-items:center}
+.ib{height:38px;min-width:38px;padding:0 12px;border-radius:11px;border:1px solid var(--line);background:var(--chip);color:var(--ink-2);display:inline-flex;align-items:center;justify-content:center;gap:7px;font-weight:600;font-size:.85rem;cursor:pointer;transition:.2s}
+.ib:hover{color:var(--brand);border-color:var(--brand);transform:translateY(-1px)}
+.ib svg{width:18px;height:18px}
+.ib.primary{background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff;border-color:transparent;box-shadow:0 6px 16px rgba(22,163,74,.3)}
+.ib.primary:hover{color:#fff}
 [data-theme="dark"] .i-sun{display:block}[data-theme="dark"] .i-moon{display:none}
 [data-theme="light"] .i-sun{display:none}[data-theme="light"] .i-moon{display:block}
-.btn{display:inline-flex;align-items:center;gap:9px;height:46px;padding:0 22px;border-radius:999px;font-weight:700;font-size:.95rem;border:1px solid transparent;cursor:pointer;transition:.2s;font-family:inherit}
-.btn svg{width:18px;height:18px}
-.btn-primary{background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff;box-shadow:0 8px 22px rgba(22,163,74,.35)}
-.btn-primary:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(22,163,74,.45)}
-.btn-ghost{background:var(--surface);border-color:var(--line);color:var(--ink)}
-.btn-ghost:hover{border-color:var(--brand);color:var(--brand);transform:translateY(-2px)}
-.nav .btn{height:38px;padding:0 16px;font-size:.85rem}
-@media(max-width:860px){.links{display:none}.nav .wrap{gap:12px}.tools{margin-left:auto}}
+.lbl{display:inline}
+@media(max-width:900px){.lbl{display:none}.ib{padding:0 10px}.live{display:none}}
+@media(max-width:520px){.brand-t span{display:none}.hide-sm{display:none}}
 
-/* ---------- HERO ---------- */
-.hero{position:relative;padding:150px 0 90px;isolation:isolate}
-.hero::before{content:"";position:absolute;inset:0;z-index:-2;background:
-  radial-gradient(900px 500px at 12% -10%,rgba(34,197,94,.20),transparent 60%),
-  radial-gradient(800px 480px at 95% 10%,rgba(245,158,11,.14),transparent 60%),
-  radial-gradient(700px 500px at 60% 110%,rgba(13,148,136,.16),transparent 60%)}
-.hero::after{content:"";position:absolute;inset:0;z-index:-1;background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:44px 44px;mask-image:radial-gradient(ellipse 80% 70% at 50% 25%,#000 30%,transparent 75%);-webkit-mask-image:radial-gradient(ellipse 80% 70% at 50% 25%,#000 30%,transparent 75%)}
-.hero-grid{display:grid;grid-template-columns:1.02fr 1fr;gap:56px;align-items:center}
-.badge{display:inline-flex;align-items:center;gap:8px;padding:6px 14px 6px 8px;border-radius:999px;background:var(--brand-soft);color:var(--brand-700);font-weight:600;font-size:.82rem;border:1px solid color-mix(in srgb,var(--brand) 25%,transparent)}
-.badge b{background:var(--brand);color:#fff;border-radius:999px;padding:2px 9px;font-size:.72rem;letter-spacing:.04em}
-[data-theme="dark"] .badge b{color:#052e1b}
-h1{font-size:clamp(2.3rem,5.2vw,4rem);line-height:1.08;letter-spacing:-.035em;font-weight:800;margin:20px 0 20px}
-html[lang="th"] h1{line-height:1.22;letter-spacing:-.015em;font-size:clamp(2rem,4.3vw,3.35rem)}
-.nw{white-space:nowrap}
-.grad{background:linear-gradient(100deg,#16a34a 0%,#0d9488 55%,#f59e0b 120%);-webkit-background-clip:text;background-clip:text;color:transparent}
-.lead{font-size:1.14rem;color:var(--ink-2);max-width:560px}
-.cta{display:flex;flex-wrap:wrap;gap:12px;margin:32px 0 30px}
-.trust{display:flex;flex-wrap:wrap;gap:8px 18px;color:var(--ink-3);font-size:.85rem;font-weight:500}
-.trust>span{display:inline-flex;align-items:center;gap:6px}
-.trust svg{width:16px;height:16px;color:var(--brand)}
-@media(max-width:980px){.hero-grid{grid-template-columns:1fr}.hero{padding-top:120px}}
+/* ---------- campaign chips ---------- */
+.chips{position:fixed;top:var(--bar-h);left:0;right:0;height:var(--chips-h);z-index:25;display:flex;align-items:center;gap:8px;padding:0 18px;
+  overflow-x:auto;scrollbar-width:none;background:var(--bar);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;display:inline-flex;align-items:center;gap:7px;height:34px;padding:0 14px;border-radius:99px;border:1px solid var(--line);background:var(--chip);
+  color:var(--ink-2);font-weight:600;font-size:.86rem;cursor:pointer;transition:.2s;white-space:nowrap}
+.chip:hover{border-color:color-mix(in srgb,var(--c,var(--brand)) 60%,var(--line));color:var(--ink);transform:translateY(-1px)}
+.chip.on{background:var(--c,var(--brand));border-color:transparent;color:#fff;box-shadow:0 6px 16px color-mix(in srgb,var(--c,var(--brand)) 35%,transparent)}
+.chip .e{font-size:1rem;line-height:1}
+.chips-note{flex:none;margin-left:auto;padding-left:10px;font-size:.75rem;color:var(--ink-2);white-space:nowrap}
+@media(max-width:900px){.chips-note{display:none}}
 
-/* dashboard mock */
-.mock{position:relative;border-radius:22px;background:var(--surface);border:1px solid var(--line);box-shadow:var(--shadow-lg);overflow:hidden;transform:perspective(1600px) rotateY(-6deg) rotateX(2deg);transition:transform .6s}
-.mock:hover{transform:perspective(1600px) rotateY(0) rotateX(0)}
-.mock-bar{display:flex;align-items:center;gap:7px;padding:12px 16px;background:var(--surface-2);border-bottom:1px solid var(--line)}
-.mock-bar i{width:11px;height:11px;border-radius:50%;background:#ef4444}.mock-bar i:nth-child(2){background:#f59e0b}.mock-bar i:nth-child(3){background:#22c55e}
-.mock-bar span{margin-left:12px;font-size:.72rem;color:var(--ink-3);background:var(--bg);border:1px solid var(--line);border-radius:999px;padding:2px 14px;flex:1;max-width:260px;font-family:'JetBrains Mono',monospace}
-.mock-body{display:grid;grid-template-columns:150px 1fr;min-height:360px}
-.mock-side{padding:14px 10px;border-right:1px solid var(--line);background:var(--surface-2);font-size:.72rem;display:grid;gap:4px;align-content:start}
-.mock-side div{padding:7px 10px;border-radius:8px;color:var(--ink-2);display:flex;gap:8px;align-items:center;white-space:nowrap}
-.mock-side div.on{background:var(--brand-soft);color:var(--brand-700);font-weight:700}
-.mock-side small{font-size:.62rem;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-3);padding:10px 10px 2px;font-weight:700}
-.mock-main{padding:16px}
-.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.kpi{border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:var(--bg-2)}
-.kpi small{display:block;font-size:.65rem;color:var(--ink-3);font-weight:600}
-.kpi b{font-size:1.25rem;letter-spacing:-.02em;display:block;line-height:1.3}
-.kpi em{font-style:normal;font-size:.65rem;color:var(--brand);font-weight:700}
-.chart{margin-top:12px;border:1px solid var(--line);border-radius:12px;padding:12px;background:var(--bg-2)}
-.chart h6{font-size:.7rem;color:var(--ink-2);margin-bottom:8px;font-weight:700}
-.bars{display:flex;align-items:flex-end;gap:7px;height:96px}
-.bars i{flex:1;border-radius:5px 5px 2px 2px;background:linear-gradient(180deg,#22c55e,#0d9488);transform-origin:bottom;animation:grow 1.1s cubic-bezier(.2,.8,.2,1) both}
-.bars i:nth-child(odd){background:linear-gradient(180deg,#fbbf24,#f59e0b)}
-@keyframes grow{from{transform:scaleY(.05);opacity:.3}}
-.gantt{margin-top:12px;display:grid;gap:6px}
-.gantt div{display:grid;grid-template-columns:92px 1fr;gap:8px;align-items:center;font-size:.64rem;color:var(--ink-2)}
-.gantt span{height:9px;border-radius:99px;background:var(--surface-2);position:relative;overflow:hidden}
-.gantt span::after{content:"";position:absolute;inset:0 auto 0 0;width:var(--w);background:var(--c);border-radius:99px;animation:fill 1.4s .3s cubic-bezier(.2,.8,.2,1) both}
-@keyframes fill{from{width:0}}
-.float{position:absolute;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:10px 14px;box-shadow:var(--shadow-lg);font-size:.78rem;display:flex;gap:10px;align-items:center;animation:bob 6s ease-in-out infinite}
-.float b{display:block;font-size:.95rem;line-height:1.2}
-.float .ic{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;font-size:1.05rem;background:var(--brand-soft)}
-.f1{left:-22px;bottom:34px}.f2{right:18px;top:-22px;animation-delay:-2.5s}
-@keyframes bob{50%{transform:translateY(-8px)}}
-.note{margin-top:10px;font-size:.72rem;color:var(--ink-3);text-align:center}
-@media(max-width:980px){.mock{transform:none}.f1{left:6px}.f2{right:6px}}
-@media(max-width:560px){.mock-body{grid-template-columns:1fr}.mock-side{display:none}.float{display:none}}
+/* ---------- app frame ---------- */
+.stage{position:fixed;left:0;right:0;bottom:0;top:calc(var(--bar-h) + var(--chips-h));background:var(--bg)}
+.stage iframe{width:100%;height:100%;border:0;display:block;background:#fff;opacity:0;transition:opacity .5s}
+.stage.ready iframe{opacity:1}
+body.focus .bar,body.focus .chips{transform:translateY(-120%)}
+body.focus .stage{top:0}
+.bar,.chips,.stage{transition:transform .35s cubic-bezier(.2,.8,.2,1),top .35s cubic-bezier(.2,.8,.2,1)}
+.exit-focus{position:fixed;right:14px;top:12px;z-index:40;display:none}
+body.focus .exit-focus{display:inline-flex}
 
-/* ---------- STATS ---------- */
-.stats{padding:10px 0 70px}
-.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow)}
-.stat{background:var(--surface);padding:28px 24px;text-align:center}
-.stat b{display:block;font-size:2.4rem;font-weight:800;letter-spacing:-.03em;line-height:1.1;color:var(--brand)}
-.stat span{font-size:.88rem;color:var(--ink-3);font-weight:500}
-@media(max-width:760px){.stats-grid{grid-template-columns:repeat(2,1fr)}}
+/* ---------- splash / loader ---------- */
+.splash{position:absolute;inset:0;display:grid;place-items:center;padding:24px;z-index:5;
+  background:radial-gradient(700px 400px at 20% 0,rgba(34,197,94,.14),transparent 60%),radial-gradient(600px 400px at 90% 100%,rgba(245,158,11,.10),transparent 60%),var(--bg);transition:opacity .5s,visibility .5s}
+.stage.ready .splash{opacity:0;visibility:hidden}
+.card{width:min(520px,100%);text-align:center}
+.orb{position:relative;width:108px;height:108px;margin:0 auto 26px}
+.orb::before,.orb::after{content:"";position:absolute;inset:0;border-radius:50%;border:3px solid transparent;border-top-color:var(--brand);border-right-color:var(--brand-2);animation:spin 1.1s linear infinite}
+.orb::after{inset:12px;border-top-color:#f59e0b;border-right-color:transparent;border-left-color:#f59e0b;animation-duration:1.7s;animation-direction:reverse}
+.orb div{position:absolute;inset:26px;border-radius:50%;background:linear-gradient(135deg,#22c55e,#0d9488);display:grid;place-items:center;box-shadow:0 10px 30px rgba(22,163,74,.35);animation:breathe 2.2s ease-in-out infinite}
+.orb svg{width:28px;height:28px}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes breathe{50%{transform:scale(1.08)}}
+.card h1{font-size:clamp(1.3rem,3vw,1.7rem);letter-spacing:-.01em;margin-bottom:6px}
+.card p{color:var(--ink-2)}
+.tip{margin-top:22px;min-height:48px;padding:12px 16px;border-radius:14px;background:var(--chip);border:1px solid var(--line);box-shadow:var(--shadow);font-size:.92rem;color:var(--ink-2);transition:opacity .35s}
+.bar-prog{margin:18px auto 0;width:220px;height:5px;border-radius:99px;background:var(--line);overflow:hidden}
+.bar-prog i{display:block;height:100%;width:40%;border-radius:99px;background:linear-gradient(90deg,#22c55e,#0d9488);animation:slide 1.3s ease-in-out infinite}
+@keyframes slide{0%{transform:translateX(-110%)}100%{transform:translateX(260%)}}
+.slow{display:none;margin-top:18px}
+.slow.show{display:block}
+.slow .ib{margin:6px 4px 0}
 
-/* ---------- SECTIONS ---------- */
-section.s{padding:96px 0}
-section.alt{background:var(--bg-2);border-block:1px solid var(--line)}
-.eyebrow{font-size:.8rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--brand)}
-.h2{font-size:clamp(1.8rem,3.4vw,2.7rem);letter-spacing:-.03em;line-height:1.18;font-weight:800;margin:10px 0 14px}
-html[lang="th"] .h2{line-height:1.3;letter-spacing:-.01em}
-.sub{color:var(--ink-2);max-width:660px;font-size:1.05rem}
-.head{margin-bottom:46px}
-.head.center{text-align:center}.head.center .sub{margin-inline:auto}
+/* ---------- setup screen (no APP_URL) ---------- */
+.setup{position:absolute;inset:0;overflow:auto;display:none;place-items:center;padding:28px;z-index:6;background:var(--bg)}
+.setup.show{display:grid}
+.setup .box{width:min(640px,100%);background:var(--chip);border:1px solid var(--line);border-radius:22px;padding:30px;box-shadow:var(--shadow)}
+.setup h2{font-size:1.35rem;margin-bottom:6px}
+.setup ol{margin:16px 0 0 20px;display:grid;gap:8px;color:var(--ink-2)}
+.setup code{background:var(--soft);color:var(--brand);padding:2px 7px;border-radius:6px;font-size:.88em;word-break:break-all}
+.setup{justify-items:center}.setup .box{min-width:0}
+.setup .row{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
 
-/* project cards */
-.pgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
-.pc{position:relative;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:24px;transition:.3s;overflow:hidden}
-.pc::before{content:"";position:absolute;inset:0 0 auto 0;height:3px;background:var(--c)}
-.pc::after{content:"";position:absolute;width:160px;height:160px;border-radius:50%;background:var(--c);opacity:.07;right:-50px;top:-50px;transition:.4s}
-.pc:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg);border-color:color-mix(in srgb,var(--c) 45%,var(--line))}
-.pc:hover::after{transform:scale(1.7);opacity:.11}
-.pc .e{width:50px;height:50px;border-radius:14px;display:grid;place-items:center;font-size:1.55rem;background:color-mix(in srgb,var(--c) 14%,transparent);margin-bottom:16px}
-.pc h3{font-size:1.06rem;letter-spacing:-.01em;line-height:1.35;margin-bottom:6px}
-.pc p{color:var(--ink-2);font-size:.9rem;line-height:1.6}
-.pc .tag{display:inline-block;margin-top:14px;font-size:.72rem;font-weight:700;padding:3px 10px;border-radius:99px;background:color-mix(in srgb,var(--c) 13%,transparent);color:var(--c)}
-[data-theme="light"] .pc .tag{color:color-mix(in srgb,var(--c) 70%,#000)}
-@media(max-width:1060px){.pgrid{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:560px){.pgrid{grid-template-columns:1fr}}
-
-/* features bento */
-.bento{display:grid;grid-template-columns:repeat(6,1fr);gap:18px}
-.bc{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:28px;transition:.3s;position:relative;overflow:hidden}
-.bc:hover{border-color:color-mix(in srgb,var(--brand) 50%,var(--line));box-shadow:var(--shadow)}
-.bc.w2{grid-column:span 2}.bc.w3{grid-column:span 3}.bc.w4{grid-column:span 4}
-.bc .ic{width:44px;height:44px;border-radius:12px;background:var(--brand-soft);color:var(--brand);display:grid;place-items:center;margin-bottom:16px}
-.bc .ic svg{width:22px;height:22px}
-.bc h3{font-size:1.1rem;margin-bottom:8px;letter-spacing:-.01em}
-.bc p{color:var(--ink-2);font-size:.93rem}
-.bc ul{margin-top:12px;list-style:none;display:grid;gap:6px;font-size:.88rem;color:var(--ink-2)}
-.bc li::before{content:"✓";color:var(--brand);font-weight:800;margin-right:8px}
-.bc.dark{background:linear-gradient(135deg,#0f3d26,#0b2b1c);color:#e9fff3;border-color:transparent}
-.bc.dark p,.bc.dark li{color:#b6dcc6}.bc.dark .ic{background:rgba(255,255,255,.1);color:#86efac}
-@media(max-width:900px){.bento{grid-template-columns:repeat(2,1fr)}.bc.w2,.bc.w3,.bc.w4{grid-column:span 2}}
-@media(max-width:560px){.bento{grid-template-columns:1fr}.bc.w2,.bc.w3,.bc.w4{grid-column:auto}}
-
-/* roles */
-.roles{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
-.role{padding:26px;border-radius:var(--radius);border:1px solid var(--line);background:var(--surface)}
-.role .k{font-size:.74rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
-.role h3{margin:6px 0 10px;font-size:1.15rem}
-.role li{list-style:none;color:var(--ink-2);font-size:.9rem;padding:5px 0;border-top:1px dashed var(--line)}
-.role li:first-of-type{border-top:0}
-@media(max-width:820px){.roles{grid-template-columns:1fr}}
-
-/* architecture */
-.arch{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:30px;box-shadow:var(--shadow)}
-.arch svg{width:100%;height:auto}
-.arch text{font-family:'Inter','Sarabun',sans-serif}
-.node{fill:var(--surface-2);stroke:var(--line);stroke-width:1.5}
-.node.g{fill:var(--brand-soft);stroke:var(--brand)}
-.node.a{fill:var(--accent-soft);stroke:var(--accent)}
-.t1{fill:var(--ink);font-size:15px;font-weight:700}
-.t2{fill:var(--ink-3);font-size:12px}
-.edge{stroke:var(--ink-3);stroke-width:1.6;fill:none;stroke-dasharray:5 5;animation:dash 1.2s linear infinite}
-@keyframes dash{to{stroke-dashoffset:-20}}
-
-/* impact */
-.impact{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:stretch}
-.formula{background:#07130d;color:#c8f7dc;border-radius:var(--radius);padding:28px;font-size:.84rem;line-height:1.9;border:1px solid #14432b;box-shadow:var(--shadow-lg)}
-.formula .c{color:#5b8a70}.formula b{color:#fbbf24;font-weight:500}
-.formula .hd{display:flex;gap:6px;margin-bottom:14px}.formula .hd i{width:10px;height:10px;border-radius:50%;background:#2c4a3a}
-.imp-list{display:grid;gap:14px}
-.imp{display:flex;gap:16px;align-items:flex-start;padding:18px 20px;border:1px solid var(--line);border-radius:var(--radius-sm);background:var(--surface)}
-.imp .e{font-size:1.6rem;line-height:1}
-.imp h4{font-size:1rem;margin-bottom:2px}.imp p{font-size:.88rem;color:var(--ink-2)}
-@media(max-width:900px){.impact{grid-template-columns:minmax(0,1fr)}}
-.impact>*{min-width:0}.formula{overflow-x:auto}
-
-/* quick start */
-.steps{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;counter-reset:s}
-.step{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:26px 26px 26px 78px;position:relative;counter-increment:s}
-.step::before{content:counter(s);position:absolute;left:24px;top:24px;width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,#22c55e,#0d9488);color:#fff;font-weight:800;display:grid;place-items:center}
-.step h3{font-size:1.05rem;margin-bottom:6px}
-.step p{color:var(--ink-2);font-size:.92rem}
-.step code.inline,.faq code{background:var(--surface-2);border:1px solid var(--line);padding:1px 7px;border-radius:6px;font-size:.82em}
-.term{margin-top:30px;border-radius:var(--radius);background:#07130d;border:1px solid #14432b;overflow:hidden;box-shadow:var(--shadow-lg)}
-.term-h{display:flex;align-items:center;gap:7px;padding:12px 16px;background:#0b1f15;border-bottom:1px solid #14432b}
-.term-h i{width:11px;height:11px;border-radius:50%;background:#2c4a3a}
-.term-h span{margin-left:8px;color:#6f9a83;font-size:.76rem;font-family:'JetBrains Mono',monospace}
-.term-h button{margin-left:auto;background:#12352a;color:#9be3bd;border:1px solid #1c5a3f;border-radius:8px;padding:5px 12px;font:600 .75rem 'Inter',sans-serif;cursor:pointer}
-.term-h button:hover{background:#17432f}
-.term pre{padding:20px 22px;color:#c8f7dc;font-size:.84rem;line-height:1.85;overflow-x:auto}
-.term .p{color:#5b8a70}.term .k{color:#fbbf24}
-@media(max-width:820px){.steps{grid-template-columns:1fr}}
-
-/* tech */
-.tech{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
-.tech span{padding:9px 18px;border-radius:999px;background:var(--surface);border:1px solid var(--line);font-weight:600;font-size:.9rem;color:var(--ink-2);display:inline-flex;gap:8px;align-items:center}
-
-/* faq */
-.faq{max-width:820px;margin-inline:auto;display:grid;gap:12px}
-.faq details{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-sm);padding:0 22px;transition:.2s}
-.faq details[open]{border-color:color-mix(in srgb,var(--brand) 50%,var(--line));box-shadow:var(--shadow)}
-.faq summary{cursor:pointer;list-style:none;padding:18px 0;font-weight:700;display:flex;justify-content:space-between;gap:16px;align-items:center}
-.faq summary::-webkit-details-marker{display:none}
-.faq summary::after{content:"+";font-size:1.4rem;color:var(--brand);transition:.2s;font-weight:500}
-.faq details[open] summary::after{transform:rotate(45deg)}
-.faq details p{padding:0 0 20px;color:var(--ink-2);font-size:.94rem}
-
-/* CTA + footer */
-.final{margin:0 0 96px}
-.final-box{position:relative;border-radius:28px;padding:64px 40px;text-align:center;color:#fff;background:linear-gradient(135deg,#15803d,#0d9488 60%,#0f766e);overflow:hidden;box-shadow:var(--shadow-lg)}
-.final-box::before{content:"";position:absolute;inset:0;background:radial-gradient(500px 300px at 85% 0,rgba(251,191,36,.35),transparent 60%),radial-gradient(400px 300px at 0 100%,rgba(255,255,255,.14),transparent 60%)}
-.final-box>*{position:relative}
-.final-box h2{font-size:clamp(1.7rem,3.2vw,2.5rem);letter-spacing:-.02em;line-height:1.25;margin-bottom:12px}
-.final-box p{opacity:.9;max-width:560px;margin:0 auto 28px}
-.final-box .btn-light{background:#fff;color:#14532d}
-.final-box .btn-light:hover{transform:translateY(-2px)}
-.final-box .btn-line{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.35);color:#fff}
-footer{border-top:1px solid var(--line);padding:40px 0;color:var(--ink-3);font-size:.88rem}
-footer .wrap{display:flex;flex-wrap:wrap;gap:18px;justify-content:space-between;align-items:center}
-footer nav{display:flex;gap:22px}
-footer a:hover{color:var(--brand)}
-
-/* reveal */
-.rv{opacity:0;transform:translateY(22px);transition:opacity .7s,transform .7s cubic-bezier(.2,.8,.2,1)}
-.rv.in{opacity:1;transform:none}
-@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.rv{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
 
-<!-- ============ NAV ============ -->
-<header class="nav" id="nav">
-  <div class="wrap">
-    <a class="logo" href="#top" aria-label="Hospital Eco Tracker">
-      <i><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg></i>
-      Hospital Eco Tracker
-    </a>
-    <nav class="links">
-      <a href="#projects"><span class="th">โครงการ</span><span class="en">Campaigns</span></a>
-      <a href="#features"><span class="th">ฟีเจอร์</span><span class="en">Features</span></a>
-      <a href="#architecture"><span class="th">สถาปัตยกรรม</span><span class="en">Architecture</span></a>
-      <a href="#quickstart"><span class="th">เริ่มใช้งาน</span><span class="en">Quick start</span></a>
-      <a href="#faq">FAQ</a>
-    </nav>
-    <div class="tools">
-      <button class="chip" id="langBtn" aria-label="Switch language"><span class="th">EN</span><span class="en">ไทย</span></button>
-      <button class="chip" id="themeBtn" aria-label="Toggle theme">
-        <svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
-        <svg class="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
-      </button>
-      <a class="btn btn-primary" href="https://github.com/green-somdej/project-room" target="_blank" rel="noopener">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.6 22.4c.6.1.8-.3.8-.6v-2c-3.2.7-3.9-1.5-3.9-1.5-.5-1.3-1.3-1.7-1.3-1.7-1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.8-1.6-2.6-.3-5.3-1.3-5.3-5.7 0-1.3.5-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.2 1.2a11 11 0 0 1 5.8 0c2.2-1.5 3.2-1.2 3.2-1.2.6 1.6.2 2.8.1 3.1.8.8 1.2 1.8 1.2 3.1 0 4.4-2.7 5.4-5.3 5.7.4.4.8 1.1.8 2.2v3.2c0 .3.2.7.8.6A11.5 11.5 0 0 0 12 .5z"/></svg>
-        <span>GitHub</span>
-      </a>
-    </div>
+<header class="bar">
+  <a class="brand" href="./" aria-label="หน้าแรก">
+    <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg></span>
+    <span class="brand-t"><b id="orgName">Green Somdej</b><span id="appName">ระบบติดตามโครงการสิ่งแวดล้อมโรงพยาบาล</span></span>
+    <span class="live" id="live"><i></i>ออนไลน์</span>
+  </a>
+  <div class="actions">
+    <button class="ib" id="reloadBtn" title="โหลดใหม่"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg></button>
+    <button class="ib hide-sm" id="focusBtn" title="เต็มจอ"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3M21 8V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3M16 21h3a2 2 0 0 0 2-2v-3"/></svg><span class="lbl">เต็มจอ</span></button>
+    <button class="ib" id="themeBtn" title="สลับธีม">
+      <svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      <svg class="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+    </button>
+    <a class="ib hide-sm" href="about.html" title="เกี่ยวกับโครงการ"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg><span class="lbl">เกี่ยวกับ</span></a>
+    <a class="ib primary" id="newTab" href="#" target="_blank" rel="noopener" title="เปิดในแท็บใหม่"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M10 14 21 3M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg><span class="lbl">แท็บใหม่</span></a>
   </div>
 </header>
 
-<main id="top">
-<!-- ============ HERO ============ -->
-<section class="hero">
-  <div class="wrap hero-grid">
-    <div>
-      <span class="badge"><b>v1.0</b><span class="th">โอเพนซอร์ส • MIT License</span><span class="en">Open source • MIT License</span></span>
-      <h1>
-        <span class="th">ติดตามทุกโครงการ<br><span class="grad nw">สิ่งแวดล้อมโรงพยาบาล</span><br>ในที่เดียว</span>
-        <span class="en">Every green initiative<br>in your hospital,<br><span class="grad">tracked in one place.</span></span>
-      </h1>
-      <p class="lead">
-        <span class="th">แดชบอร์ดครบวงจร 8 แคมเปญ ตั้งแต่ทอดไม่ทิ้ง Paperless ตลับหมึก ไปจนถึงปุ๋ยหมักและน้ำยา EM พร้อมรายงานต้นไม้ และ CO₂ ที่ลดได้ — ทำงานบน Google Sheets ไม่ต้องมีเซิร์ฟเวอร์ ไม่มีค่าใช้จ่ายรายเดือน</span>
-        <span class="en">An all-in-one dashboard for 8 campaigns — from used-oil collection and paperless to ink cartridges, compost and EM — with trees-saved and CO₂ reports. Runs on Google Sheets: no servers, no monthly fees.</span>
-      </p>
-      <div class="cta">
-        <a class="btn btn-primary" href="#quickstart">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-          <span class="th">เริ่มติดตั้งใน 10 นาที</span><span class="en">Deploy in 10 minutes</span>
-        </a>
-        <a class="btn btn-ghost" href="https://github.com/green-somdej/project-room" target="_blank" rel="noopener">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.1 8.3 22 9.3 17 14.1 18.2 21 12 17.8 5.8 21 7 14.1 2 9.3 8.9 8.3 12 2"/></svg>
-          <span class="th">ดูซอร์สโค้ด</span><span class="en">View source</span>
-        </a>
-      </div>
-      <div class="trust">
-        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><span class="th">ไม่ต้องมีเซิร์ฟเวอร์</span><span class="en">Serverless</span></span>
-        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><span class="th">ข้อมูลอยู่ใน Google ของคุณเอง</span><span class="en">Your data stays in your Google account</span></span>
-        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><span class="th">ใช้งานบนมือถือได้</span><span class="en">Mobile friendly</span></span>
-      </div>
-    </div>
+<nav class="chips" id="chips" aria-label="เลือกโครงการ"></nav>
 
-    <div style="position:relative">
-      <div class="mock" aria-hidden="true">
-        <div class="mock-bar"><i></i><i></i><i></i><span>script.google.com/…/exec</span></div>
-        <div class="mock-body">
-          <div class="mock-side">
-            <small class="th">ภาพรวม</small><small class="en">Overview</small>
-            <div class="on">📊 <span class="th">ภาพรวมโครงการ</span><span class="en">Overview</span></div>
-            <small class="th">โครงการ</small><small class="en">Campaigns</small>
-            <div>🛢️ <span class="th">ทอดไม่ทิ้ง</span><span class="en">Fry to Fly</span></div>
-            <div>📄 Paperless</div>
-            <div>🖨️ <span class="th">ตลับหมึก</span><span class="en">Cartridges</span></div>
-            <div>♻️ <span class="th">คัดแยก แบ่งปัน</span><span class="en">Share</span></div>
-            <div>🧪 <span class="th">น้ำยา EM</span><span class="en">EM</span></div>
-            <div>🌳 <span class="th">รายงาน</span><span class="en">Impact</span></div>
-          </div>
-          <div class="mock-main">
-            <div class="kpis">
-              <div class="kpi"><small><span class="th">โครงการทั้งหมด</span><span class="en">Projects</span></small><b>12</b><em>▲ 3</em></div>
-              <div class="kpi"><small><span class="th">ความคืบหน้าเฉลี่ย</span><span class="en">Avg. progress</span></small><b>68%</b><em>▲ 8%</em></div>
-              <div class="kpi"><small><span class="th">ต้นไม้เทียบเท่า</span><span class="en">Trees equiv.</span></small><b>214</b><em>🌳</em></div>
-            </div>
-            <div class="chart">
-              <h6><span class="th">สรุปรายเดือน</span><span class="en">Monthly summary</span></h6>
-              <div class="bars">
-                <i style="height:38%;animation-delay:.05s"></i><i style="height:52%;animation-delay:.1s"></i><i style="height:44%;animation-delay:.15s"></i><i style="height:66%;animation-delay:.2s"></i><i style="height:58%;animation-delay:.25s"></i><i style="height:78%;animation-delay:.3s"></i><i style="height:70%;animation-delay:.35s"></i><i style="height:92%;animation-delay:.4s"></i><i style="height:84%;animation-delay:.45s"></i><i style="height:100%;animation-delay:.5s"></i>
-              </div>
-            </div>
-            <div class="chart gantt">
-              <h6 style="margin:0"><span class="th">ไทม์ไลน์โครงการ</span><span class="en">Project timeline</span></h6>
-              <div><b>Paperless</b><span style="--w:82%;--c:#3b82f6"></span></div>
-              <div><b><span class="th">ทอดไม่ทิ้ง</span><span class="en">Fry to Fly</span></b><span style="--w:64%;--c:#f59e0b"></span></div>
-              <div><b><span class="th">ปุ๋ยหมัก</span><span class="en">Compost</span></b><span style="--w:47%;--c:#65a30d"></span></div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="float f1"><div class="ic">🌳</div><div><small class="th">ลด CO₂ ได้</small><small class="en">CO₂ avoided</small><b>2.4 ตัน/t</b></div></div>
-      <div class="float f2"><div class="ic">📄</div><div><small class="th">กระดาษที่ลดได้</small><small class="en">Paper saved</small><b>48,000 <span class="th">แผ่น</span><span class="en">sheets</span></b></div></div>
-      <p class="note"><span class="th">ภาพประกอบ — ตัวเลขเป็นข้อมูลตัวอย่างเพื่อการสาธิตเท่านั้น</span><span class="en">Illustration — figures are sample data for demonstration only.</span></p>
-    </div>
-  </div>
-</section>
-
-<!-- ============ STATS ============ -->
-<section class="stats">
-  <div class="wrap rv">
-    <div class="stats-grid">
-      <div class="stat"><b data-count="8">0</b><span class="th">แคมเปญสิ่งแวดล้อม</span><span class="en">Environmental campaigns</span></div>
-      <div class="stat"><b data-count="38">0</b><span class="th">ชีตฐานข้อมูล</span><span class="en">Sheet tables</span></div>
-      <div class="stat"><b data-count="280" data-suffix="+">0</b><span class="th">ฟังก์ชันฝั่งเซิร์ฟเวอร์</span><span class="en">Backend functions</span></div>
-      <div class="stat"><b data-count="18000" data-suffix="+">0</b><span class="th">บรรทัดโค้ด</span><span class="en">Lines of code</span></div>
-    </div>
-  </div>
-</section>
-
-<!-- ============ PROJECTS ============ -->
-<section class="s" id="projects">
-  <div class="wrap">
-    <div class="head center rv">
-      <div class="eyebrow"><span class="th">8 แคมเปญ ในระบบเดียว</span><span class="en">8 campaigns, 1 system</span></div>
-      <h2 class="h2"><span class="th">ทุกโครงการ มีหน้าของตัวเอง<br>แต่ข้อมูลเชื่อมถึงกัน</span><span class="en">Each campaign gets its own space,<br>all feeding one picture</span></h2>
-      <p class="sub"><span class="th">แต่ละแคมเปญมีสีประจำ แบบฟอร์มสาธารณะ และแดชบอร์ดเฉพาะ แล้วสรุปรวมเป็นภาพรวมเดียวในหน้าโครงการหลัก</span><span class="en">Every campaign has its own color theme, public form and dashboard — then rolls up into a single overview.</span></p>
-    </div>
-    <div class="pgrid">
-      <article class="pc rv" style="--c:#d97706"><div class="e">🛢️</div><h3><span class="th">ทอดไม่ทิ้ง</span><span class="en">Fry to Fly</span></h3><p><span class="th">รับบริจาคน้ำมันพืชใช้แล้วจากบุคลากร สะสมแต้ม จัดอันดับผู้ร่วมกิจกรรม และระดับสมาชิก ทอง/เงิน/ทองแดง</span><span class="en">Collect used cooking oil from staff, earn points, climb the leaderboard and membership tiers.</span></p><span class="tag"><span class="th">แต้มสะสม • Leaderboard</span><span class="en">Points • Leaderboard</span></span></article>
-      <article class="pc rv" style="--c:#2563eb"><div class="e">📄</div><h3>Paperless</h3><p><span class="th">แต่ละหน่วยงานบันทึกจำนวนเรื่องที่เปลี่ยนเป็นอิเล็กทรอนิกส์ และจำนวนแผ่นกระดาษที่ลดได้ พร้อมรายงานรายเดือน</span><span class="en">Departments log the paper processes they've digitized and the sheets saved, with monthly reports.</span></p><span class="tag"><span class="th">PIN รายหน่วยงาน</span><span class="en">Per-department PIN</span></span></article>
-      <article class="pc rv" style="--c:#7c3aed"><div class="e">🖨️</div><h3><span class="th">ตลับหมึกเก่าเราขอ</span><span class="en">Old Cartridges</span></h3><p><span class="th">รวบรวมตลับหมึกใช้แล้ว ส่งจำหน่ายเป็นรอบ คำนวณรายได้และมูลค่าที่ประหยัดจากค่าทำลายขยะอันตราย</span><span class="en">Collect spent cartridges, sell in rounds, and calculate revenue plus avoided hazardous-waste disposal cost.</span></p><span class="tag"><span class="th">สถานะ • รอบจำหน่าย</span><span class="en">Status • Sale rounds</span></span></article>
-      <article class="pc rv" style="--c:#ea580c"><div class="e">🍳</div><h3><span class="th">จากครัวสู่ท้องฟ้า</span><span class="en">Kitchen to Sky</span></h3><p><span class="th">ฝ่ายโภชนาการส่งน้ำมันทอดใช้แล้วให้ผู้รับซื้อเป็นรอบ บันทึกปริมาณ (ลิตร/ปี๊บ) และราคาแต่ละรอบ</span><span class="en">Nutrition dept. ships used frying oil in rounds — volume (liters / cans) and price per round.</span></p><span class="tag"><span class="th">รอบส่ง • ทะเบียนผู้รับซื้อ</span><span class="en">Shipments • Buyer registry</span></span></article>
-      <article class="pc rv" style="--c:#0891b2"><div class="e">📅</div><h3><span class="th">ปฏิทินเก่าเราขอ</span><span class="en">Old Calendars</span></h3><p><span class="th">รับบริจาคปฏิทินเก่าเพื่อจัดทำอักษรเบรลล์ให้ผู้พิการทางสายตา นับเป็นน้ำหนักต่อรอบและต่อผู้บริจาค</span><span class="en">Donated calendars become Braille materials for the visually impaired — tracked by weight per round and donor.</span></p><span class="tag"><span class="th">อักษรเบรลล์ • ฟอร์มสาธารณะ</span><span class="en">Braille • Public form</span></span></article>
-      <article class="pc rv" style="--c:#16a34a"><div class="e">♻️</div><h3><span class="th">คัดแยก แบ่งปัน</span><span class="en">Sort &amp; Share</span></h3><p><span class="th">นำวัสดุสำนักงานที่เกินจำเป็นกลับมาแบ่งปันข้ามหน่วยงาน ตรวจรับเข้าคลัง บันทึกการเบิก และสต็อกคงเหลือ</span><span class="en">Redistribute surplus office supplies across departments with review, stock and withdrawal records.</span></p><span class="tag"><span class="th">คลังพัสดุ • ตรวจรับ</span><span class="en">Inventory • Review</span></span></article>
-      <article class="pc rv" style="--c:#0d9488"><div class="e">🧪</div><h3><span class="th">น้ำยา EM จากเศษอาหาร</span><span class="en">EM from Food Waste</span></h3><p><span class="th">หมักเศษอาหาร ผักผลไม้ เนื้อสัตว์ เป็นน้ำยา EM ตามรอบ 7 / 15 / 45 วัน ติดตามสต็อกและการนำไปใช้</span><span class="en">Ferment food scraps into EM over 7 / 15 / 45-day cycles; track stock and usage.</span></p><span class="tag"><span class="th">รอบหมัก • QR Code</span><span class="en">Batches • QR code</span></span></article>
-      <article class="pc rv" style="--c:#65a30d"><div class="e">🪴</div><h3><span class="th">ปุ๋ยหมักจากขยะใบไม้</span><span class="en">Leaf Compost</span></h3><p><span class="th">นำใบไม้ เศษหญ้า กิ่งไม้ในพื้นที่โรงพยาบาลมาหมักเป็นปุ๋ย ติดตามกองหมักและการนำไปใช้ประโยชน์</span><span class="en">Turn leaves, grass and trimmings from hospital grounds into compost; track piles and usage.</span></p><span class="tag"><span class="th">กองหมัก • บันทึกประจำวัน</span><span class="en">Piles • Daily log</span></span></article>
-    </div>
-  </div>
-</section>
-
-<!-- ============ FEATURES ============ -->
-<section class="s alt" id="features">
-  <div class="wrap">
-    <div class="head rv">
-      <div class="eyebrow"><span class="th">ฟีเจอร์</span><span class="en">Features</span></div>
-      <h2 class="h2"><span class="th">ทุกอย่างที่ทีมสิ่งแวดล้อมต้องใช้</span><span class="en">Everything an environmental team needs</span></h2>
-      <p class="sub"><span class="th">ออกแบบจากการใช้งานจริงในโรงพยาบาล ตั้งแต่การติดตามงานรายเดือนไปจนถึงรายงานผลกระทบเชิงปริมาณ</span><span class="en">Built from real hospital workflows — from monthly project tracking to quantified impact reporting.</span></p>
-    </div>
-    <div class="bento">
-      <div class="bc w4 rv">
-        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg></div>
-        <h3><span class="th">แดชบอร์ดภาพรวม + Gantt Timeline</span><span class="en">Overview dashboard + Gantt timeline</span></h3>
-        <p><span class="th">KPI ความคืบหน้า สัดส่วนตามประเภทและสถานะ ไทม์ไลน์รายปี พร้อมรายการโครงการที่ล่าช้าและต้องเร่งติดตามแบบอัตโนมัติ</span><span class="en">Progress KPIs, breakdowns by category and status, a yearly timeline, and an auto-generated list of delayed projects needing attention.</span></p>
-        <ul>
-          <li><span class="th">บันทึกประวัติความคืบหน้าและขั้นตอนของแต่ละโครงการ</span><span class="en">Per-project progress history and stages</span></li>
-          <li><span class="th">คลังโครงการที่แล้วเสร็จ (Archive)</span><span class="en">Archive for completed projects</span></li>
-          <li><span class="th">ส่งออกรายงานเป็น Excel</span><span class="en">Excel export</span></li>
-        </ul>
-      </div>
-      <div class="bc w2 dark rv">
-        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
-        <h3><span class="th">สิทธิ์การเข้าถึงที่ปลอดภัย</span><span class="en">Safe access control</span></h3>
-        <p><span class="th">PIN เก็บเป็นแฮช SHA-256 ผู้ดูแลระบบกำหนดได้จากชีตโดยไม่ต้องแก้โค้ด</span><span class="en">PINs stored as SHA-256 hashes; admin rights are set in a sheet, no code edits.</span></p>
-      </div>
-      <div class="bc w2 rv">
-        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 10 10"/><path d="M12 6v6l4 2"/></svg></div>
-        <h3><span class="th">สรุปรายเดือน/ปี/สะสม</span><span class="en">Monthly · yearly · cumulative</span></h3>
-        <p><span class="th">รวมตัวเลขทุกโครงการ เลือกปี เลือกเดือน แล้วดูผลได้ทันที</span><span class="en">All campaigns rolled up — pick a year or month and see results instantly.</span></p>
-      </div>
-      <div class="bc w2 rv">
-        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><path d="M14 14h3v3h-3zM20 14v.01M14 20h.01M20 20v.01"/></svg></div>
-        <h3><span class="th">ฟอร์มสาธารณะ + QR Code</span><span class="en">Public forms + QR codes</span></h3>
-        <p><span class="th">แชร์ลิงก์หรือพิมพ์ QR ให้บุคลากรกรอกข้อมูลได้ทันที ไม่ต้องใช้ PIN</span><span class="en">Share a link or print a QR so staff can submit without a PIN.</span></p>
-      </div>
-      <div class="bc w2 rv">
-        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
-        <h3><span class="th">ผู้ช่วยตอบคำถามอัตโนมัติ</span><span class="en">Built-in Q&amp;A assistant</span></h3>
-        <p><span class="th">ตอบคำถามเรื่องโครงการ วิธีเข้าร่วม และสถิติ ถ้าตอบไม่ได้ส่งต่ออีเมลถึงเจ้าหน้าที่ — และปฏิเสธการขอ PIN เสมอ</span><span class="en">Answers about campaigns, how to join and stats; escalates to staff by email, and always refuses PIN requests.</span></p>
-      </div>
-      <div class="bc w3 rv">
-        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14.9A7 7 0 1 1 15.7 8h1.8a4.5 4.5 0 0 1 2.5 8.2"/><path d="M12 12v9M8 17l4 4 4-4"/></svg></div>
-        <h3><span class="th">REST API เชื่อมระบบอื่น</span><span class="en">REST API for integrations</span></h3>
-        <p><span class="th">ดึงสรุปตัวเลขเป็น JSON ด้วย API Key หรือรับข้อมูลปริมาณเศษอาหารจากระบบอื่นเข้ามาเปรียบเทียบกับที่นำมาหมักจริง</span><span class="en">Pull JSON summaries with an API key, or push food-waste volumes from other systems to compare against what's actually fermented.</span></p>
-      </div>
-      <div class="bc w3 rv">
-        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></svg></div>
-        <h3><span class="th">Responsive ใช้ได้ทุกอุปกรณ์</span><span class="en">Fully responsive</span></h3>
-        <p><span class="th">เมนูด้านข้างปรับเป็นแถบบนมือถือ ตารางและกราฟปรับตามหน้าจอ เหมาะกับเจ้าหน้าที่ที่บันทึกข้อมูลหน้างาน</span><span class="en">Sidebar adapts on mobile; tables and charts reflow — ideal for staff logging data on the floor.</span></p>
+<main class="stage" id="stage">
+  <div class="splash" id="splash">
+    <div class="card">
+      <div class="orb"><div><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg></div></div>
+      <h1 id="loadTitle">กำลังเปิดระบบ…</h1>
+      <p>เชื่อมต่อข้อมูลล่าสุดจาก Google Sheets</p>
+      <div class="bar-prog"><i></i></div>
+      <div class="tip" id="tip"></div>
+      <div class="slow" id="slow">
+        <p>ใช้เวลานานกว่าปกติ อาจเป็นเพราะเครือข่ายหรือเบราว์เซอร์บล็อกการแสดงผลแบบฝัง</p>
+        <button class="ib" onclick="loadApp(currentPage,currentAction)">ลองอีกครั้ง</button>
+        <a class="ib primary" id="slowNewTab" href="#" target="_blank" rel="noopener">เปิดในแท็บใหม่</a>
       </div>
     </div>
   </div>
-</section>
 
-<!-- ============ ROLES ============ -->
-<section class="s" id="roles">
-  <div class="wrap">
-    <div class="head center rv">
-      <div class="eyebrow"><span class="th">ผู้ใช้งาน</span><span class="en">Roles</span></div>
-      <h2 class="h2"><span class="th">สามระดับสิทธิ์ ชัดเจน ปลอดภัย</span><span class="en">Three clear access levels</span></h2>
-    </div>
-    <div class="roles">
-      <div class="role rv"><div class="k"><span class="th">สาธารณะ</span><span class="en">Public</span></div><h3><span class="th">บุคลากรทั่วไป</span><span class="en">All staff</span></h3><ul><li><span class="th">ดูภาพรวมและแดชบอร์ดทุกโครงการ</span><span class="en">View every dashboard</span></li><li><span class="th">ส่งตลับหมึก / ปฏิทิน / วัสดุเข้าโครงการผ่านฟอร์ม</span><span class="en">Submit via public forms</span></li><li><span class="th">ถามผู้ช่วยอัตโนมัติ</span><span class="en">Ask the assistant</span></li></ul></div>
-      <div class="role rv"><div class="k"><span class="th">PIN หน่วยงาน</span><span class="en">Department PIN</span></div><h3><span class="th">ผู้ประสานงานหน่วยงาน</span><span class="en">Department coordinator</span></h3><ul><li><span class="th">บันทึกยอด Paperless ของหน่วยงานตนเอง</span><span class="en">Log own Paperless numbers</span></li><li><span class="th">อัปเดตความคืบหน้าโครงการที่รับผิดชอบ</span><span class="en">Update progress logs</span></li><li><span class="th">ดูรายงานสรุปเฉพาะหน่วยงาน</span><span class="en">Department-level reports</span></li></ul></div>
-      <div class="role rv"><div class="k">Admin</div><h3><span class="th">ผู้ดูแลระบบ</span><span class="en">Administrator</span></h3><ul><li><span class="th">เพิ่ม/แก้ไข/ลบ/เก็บถาวรโครงการ</span><span class="en">Manage projects &amp; archive</span></li><li><span class="th">บันทึกรอบจำหน่าย ตรวจรับของ จัดการสต็อก</span><span class="en">Sales rounds, stock, reviews</span></li><li><span class="th">ตั้งค่าค่าคงที่สิ่งแวดล้อมและ API</span><span class="en">Impact constants &amp; API keys</span></li></ul></div>
-    </div>
-  </div>
-</section>
-
-<!-- ============ ARCHITECTURE ============ -->
-<section class="s alt" id="architecture">
-  <div class="wrap">
-    <div class="head center rv">
-      <div class="eyebrow"><span class="th">สถาปัตยกรรม</span><span class="en">Architecture</span></div>
-      <h2 class="h2"><span class="th">เรียบง่าย ไม่มีเซิร์ฟเวอร์ให้ดูแล</span><span class="en">Simple by design — nothing to host</span></h2>
-      <p class="sub"><span class="th">Google Apps Script เป็นทั้งเว็บเซิร์ฟเวอร์และ API ส่วน Google Sheets เป็นฐานข้อมูลที่ทีมงานเปิดดูและแก้ไขได้โดยตรง</span><span class="en">Apps Script is both web server and API; Google Sheets is a database your team can open and edit directly.</span></p>
-    </div>
-    <div class="arch rv">
-      <svg viewBox="0 0 1000 330" role="img" aria-label="Architecture diagram">
-        <defs><marker id="ar" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0 0 10 5 0 10z" fill="var(--ink-3)"/></marker></defs>
-        <rect class="node" x="20" y="105" width="190" height="120" rx="16"/>
-        <text class="t1" x="115" y="150" text-anchor="middle">Browser</text>
-        <text class="t2" x="115" y="174" text-anchor="middle">Index · CSS · JS</text>
-        <text class="t2" x="115" y="194" text-anchor="middle">google.script.run</text>
-
-        <rect class="node g" x="330" y="60" width="250" height="210" rx="16"/>
-        <text class="t1" x="455" y="98" text-anchor="middle">Apps Script Web App</text>
-        <text class="t2" x="455" y="120" text-anchor="middle">Code.gs · doGet / doPost</text>
-        <rect class="node" x="350" y="140" width="100" height="42" rx="10"/><text class="t2" x="400" y="166" text-anchor="middle">Auth · PIN</text>
-        <rect class="node" x="460" y="140" width="100" height="42" rx="10"/><text class="t2" x="510" y="166" text-anchor="middle">8 Modules</text>
-        <rect class="node" x="350" y="194" width="100" height="42" rx="10"/><text class="t2" x="400" y="220" text-anchor="middle">Cache · Lock</text>
-        <rect class="node" x="460" y="194" width="100" height="42" rx="10"/><text class="t2" x="510" y="220" text-anchor="middle">REST API</text>
-
-        <rect class="node a" x="720" y="40" width="260" height="110" rx="16"/>
-        <text class="t1" x="850" y="84" text-anchor="middle">Google Sheets</text>
-        <text class="t2" x="850" y="108" text-anchor="middle">38 tables · human-readable DB</text>
-
-        <rect class="node" x="720" y="180" width="124" height="90" rx="16"/>
-        <text class="t1" x="782" y="222" text-anchor="middle">Drive</text><text class="t2" x="782" y="244" text-anchor="middle">Photos</text>
-        <rect class="node" x="856" y="180" width="124" height="90" rx="16"/>
-        <text class="t1" x="918" y="222" text-anchor="middle">Gmail</text><text class="t2" x="918" y="244" text-anchor="middle">Q&amp;A escalation</text>
-
-        <path class="edge" d="M210 165 H330" marker-end="url(#ar)"/>
-        <path class="edge" d="M580 120 H720" marker-end="url(#ar)"/>
-        <path class="edge" d="M580 225 H720" marker-end="url(#ar)"/>
-        <text class="t2" x="270" y="155" text-anchor="middle">RPC</text>
-        <text class="t2" x="650" y="110" text-anchor="middle">read / write</text>
-      </svg>
-    </div>
-  </div>
-</section>
-
-<!-- ============ IMPACT ============ -->
-<section class="s" id="impact">
-  <div class="wrap">
-    <div class="head rv">
-      <div class="eyebrow"><span class="th">รายงานผลกระทบ</span><span class="en">Impact reporting</span></div>
-      <h2 class="h2"><span class="th">เปลี่ยนตัวเลขกิจกรรม<br>ให้เป็นต้นไม้และ CO₂</span><span class="en">Turn activity into trees and CO₂</span></h2>
-      <p class="sub"><span class="th">ค่าแปลงทั้งหมดเป็นค่าประมาณทั่วไป และปรับแก้ได้ในชีต EnvironmentalSettings โดยไม่ต้องแก้โค้ด เพื่ออ้างอิงตามมาตรฐานที่โรงพยาบาลเลือกใช้</span><span class="en">All conversion factors are general estimates, editable in the EnvironmentalSettings sheet without touching code.</span></p>
-    </div>
-    <div class="impact">
-      <div class="formula rv">
-        <div class="hd"><i></i><i></i><i></i></div>
-<pre><span class="c">// ค่าเริ่มต้น (แก้ได้ในชีต / defaults, editable in sheet)</span>
-paper  : A4 <b>8,333</b> sheets  = 1 tree
-paper  : <b>0.0046</b> kg CO₂ / sheet
-oil    : <b>2.5</b>  kg CO₂ / liter reused
-toner  : <b>2</b>    kg CO₂ / kg recycled
-tree   : absorbs <b>20</b> kg CO₂ / year
-
-<span class="c">// → รวมเป็น "ต้นไม้เทียบเท่า"</span>
-treesEquivalent = totalCO2Avoided / 20</pre>
-      </div>
-      <div class="imp-list">
-        <div class="imp rv"><div class="e">📄</div><div><h4><span class="th">กระดาษที่ลดได้</span><span class="en">Paper avoided</span></h4><p><span class="th">แปลงจำนวนแผ่นเป็นต้นไม้ที่ไม่ต้องตัดและ CO₂ ที่ไม่ปล่อย</span><span class="en">Sheets → trees uncut and CO₂ not emitted.</span></p></div></div>
-        <div class="imp rv"><div class="e">🛢️</div><div><h4><span class="th">น้ำมันใช้แล้ว</span><span class="en">Used cooking oil</span></h4><p><span class="th">คำนวณจากลิตรที่รวบรวมได้ แทนการทิ้งลงท่อหรือพื้นดิน</span><span class="en">Liters collected instead of drained or dumped.</span></p></div></div>
-        <div class="imp rv"><div class="e">🖨️</div><div><h4><span class="th">ตลับหมึก</span><span class="en">Ink cartridges</span></h4><p><span class="th">น้ำหนักตลับต่อหน่วย และมูลค่าที่ประหยัดจากค่าทำลายขยะอันตราย</span><span class="en">Unit weight, plus disposal cost avoided.</span></p></div></div>
+  <div class="setup" id="setup">
+    <div class="box">
+      <h2>⚙️ ยังไม่ได้เชื่อมต่อระบบ</h2>
+      <p style="color:var(--ink-2)">หน้านี้จะแสดงระบบจริงเมื่อใส่ลิงก์ Web App ของ Apps Script ในไฟล์ <code>docs/config.js</code></p>
+      <ol>
+        <li>ใน Apps Script ไปที่ <b>Deploy → Manage deployments</b> แล้วคัดลอก <b>Web app URL</b> (ลงท้ายด้วย <code>/exec</code>)</li>
+        <li>เปิดไฟล์ <code>docs/config.js</code> บน GitHub แล้วกดปุ่มดินสอ ✏️</li>
+        <li>วางลิงก์ใน <code>APP_URL: ''</code> เช่น <code>APP_URL: 'https://script.google.com/macros/s/…/exec'</code></li>
+        <li>กด <b>Commit changes</b> รอ 1–2 นาที แล้วรีเฟรชหน้านี้</li>
+      </ol>
+      <div class="row">
+        <a class="ib primary" href="https://github.com/green-somdej/project-room/edit/main/docs/config.js" target="_blank" rel="noopener">แก้ไข config.js บน GitHub</a>
+        <a class="ib" href="about.html">ดูหน้าแนะนำโครงการ</a>
       </div>
     </div>
   </div>
-</section>
 
-<!-- ============ QUICK START ============ -->
-<section class="s alt" id="quickstart">
-  <div class="wrap">
-    <div class="head center rv">
-      <div class="eyebrow"><span class="th">เริ่มต้นใช้งาน</span><span class="en">Quick start</span></div>
-      <h2 class="h2"><span class="th">ติดตั้งได้เองใน 10 นาที</span><span class="en">Up and running in 10 minutes</span></h2>
-      <p class="sub"><span class="th">ต้องการเพียงบัญชี Google — ใช้ clasp (CLI) หรือคัดลอกไฟล์วางใน Apps Script ก็ได้</span><span class="en">All you need is a Google account — use clasp (CLI) or paste files into the Apps Script editor.</span></p>
-    </div>
-    <div class="steps">
-      <div class="step rv"><h3><span class="th">สร้างสเปรดชีต + Apps Script</span><span class="en">Create a Sheet + Apps Script</span></h3><p><span class="th">สร้าง Google Sheet ใหม่ แล้วเปิด <code class="inline">Extensions → Apps Script</code></span><span class="en">Create a new Google Sheet, then open <code class="inline">Extensions → Apps Script</code>.</span></p></div>
-      <div class="step rv"><h3><span class="th">นำโค้ดเข้า</span><span class="en">Add the code</span></h3><p><span class="th">คัดลอก <code class="inline">src/</code> ทั้ง 4 ไฟล์ (Code.gs, Index, CSS, JS) หรือใช้ <code class="inline">clasp push</code> ตามคำสั่งด้านล่าง</span><span class="en">Copy the four files in <code class="inline">src/</code> (Code.gs, Index, CSS, JS) or use <code class="inline">clasp push</code> below.</span></p></div>
-      <div class="step rv"><h3><span class="th">รัน setupSheets() หนึ่งครั้ง</span><span class="en">Run setupSheets() once</span></h3><p><span class="th">ระบบสร้างชีตและหัวคอลัมน์ทั้งหมด พร้อมหน่วยงานตัวอย่าง จากนั้น <b>เปลี่ยน PIN เริ่มต้นทันที</b> ด้วย <code class="inline">generatePinHash()</code></span><span class="en">Creates every sheet and header plus a sample department. Then <b>change the default PIN immediately</b> with <code class="inline">generatePinHash()</code>.</span></p></div>
-      <div class="step rv"><h3><span class="th">Deploy เป็น Web App</span><span class="en">Deploy as Web App</span></h3><p><span class="th">เลือก Execute as <i>Me</i>, Who has access <i>Anyone</i> แล้วแชร์ลิงก์ <code class="inline">/exec</code> ให้บุคลากร</span><span class="en">Execute as <i>Me</i>, access <i>Anyone</i>, then share the <code class="inline">/exec</code> link with staff.</span></p></div>
-    </div>
-    <div class="term rv">
-      <div class="term-h"><i></i><i></i><i></i><span>terminal</span><button id="copyBtn" type="button"><span class="th">คัดลอก</span><span class="en">Copy</span></button></div>
-<pre id="cmd"><span class="p">$</span> git clone https://github.com/green-somdej/project-room.git
-<span class="p">$</span> cd project-room && npm install
-<span class="p">$</span> npx clasp login
-<span class="p">$</span> npx clasp create --type webapp --title "Hospital Eco Tracker" --rootDir src
-<span class="p">$</span> npm run push <span class="p">   # อัปโหลดโค้ด / upload code</span>
-<span class="p">$</span> npm run deploy <span class="p"> # สร้าง Web App / create web app</span></pre>
-    </div>
-  </div>
-</section>
-
-<!-- ============ TECH ============ -->
-<section class="s" style="padding:70px 0">
-  <div class="wrap">
-    <div class="head center rv" style="margin-bottom:28px"><div class="eyebrow"><span class="th">สร้างด้วย</span><span class="en">Built with</span></div></div>
-    <div class="tech rv">
-      <span>⚙️ Google Apps Script (V8)</span><span>📊 Google Sheets</span><span>🧩 HtmlService</span><span>🎨 Vanilla JS + CSS</span><span>📁 Drive</span><span>✉️ MailApp</span><span>📦 SheetJS</span><span>🔐 SHA-256</span><span>🛠️ clasp + GitHub Actions</span>
-    </div>
-  </div>
-</section>
-
-<!-- ============ FAQ ============ -->
-<section class="s alt" id="faq">
-  <div class="wrap">
-    <div class="head center rv"><div class="eyebrow">FAQ</div><h2 class="h2"><span class="th">คำถามที่พบบ่อย</span><span class="en">Frequently asked questions</span></h2></div>
-    <div class="faq">
-      <details class="rv"><summary><span class="th">มีค่าใช้จ่ายไหม?</span><span class="en">Does it cost anything?</span></summary><p><span class="th">ไม่มีค่าเซิร์ฟเวอร์ ใช้โควตาฟรีของบัญชี Google (หรือ Google Workspace ขององค์กร) ซอร์สโค้ดเป็น MIT License ใช้และปรับแก้ได้อย่างอิสระ</span><span class="en">No hosting cost — it runs on your Google account's free quotas (or your Google Workspace). The code is MIT-licensed.</span></p></details>
-      <details class="rv"><summary><span class="th">ข้อมูลผู้ป่วยหรือข้อมูลส่วนบุคคลอยู่ที่ไหน?</span><span class="en">Where is data stored? Is any patient data involved?</span></summary><p><span class="th">ระบบนี้ไม่เกี่ยวข้องกับข้อมูลผู้ป่วย เก็บเฉพาะข้อมูลกิจกรรมสิ่งแวดล้อม ข้อมูลทั้งหมดอยู่ใน Google Sheets ของคุณเอง ไม่ได้อยู่ในรีโปนี้ ควรตรวจสอบนโยบายข้อมูลส่วนบุคคล (PDPA) ของหน่วยงานก่อนเก็บชื่อ/เบอร์โทรผู้เข้าร่วมกิจกรรม</span><span class="en">The system holds only environmental-activity data — no patient records. All data lives in your own Google Sheet, never in this repo. Review your organisation's data-protection policy before collecting names or phone numbers.</span></p></details>
-      <details class="rv"><summary><span class="th">PIN เริ่มต้นคืออะไร และต้องทำอย่างไร?</span><span class="en">What is the default PIN?</span></summary><p><span class="th">ข้อมูลตัวอย่างใช้ PIN <code>123456</code> ซึ่งเป็นค่าสำหรับทดลองเท่านั้น ต้องเปลี่ยนก่อนเปิดใช้งานจริง ดูขั้นตอนใน SECURITY.md</span><span class="en">Sample setup uses PIN <code>123456</code> for trials only. Change it before going live — see SECURITY.md.</span></p></details>
-      <details class="rv"><summary><span class="th">ปรับแต่งชื่อโรงพยาบาลหรือเพิ่มโครงการใหม่ได้ไหม?</span><span class="en">Can I rebrand it or add campaigns?</span></summary><p><span class="th">ได้ ชื่อระบบอยู่ใน Index.html และ doGet() ส่วนโครงการใหม่ทำตามโครงสร้างโมดูลเดิม (ชีต + ฟังก์ชัน + แท็บ + ธีมสี) อ่านแนวทางใน CONTRIBUTING.md</span><span class="en">Yes. Titles live in Index.html and doGet(); new campaigns follow the existing module pattern (sheets + functions + tab + color theme) — see CONTRIBUTING.md.</span></p></details>
-      <details class="rv"><summary><span class="th">รองรับผู้ใช้พร้อมกันได้กี่คน?</span><span class="en">How many concurrent users?</span></summary><p><span class="th">เหมาะกับโรงพยาบาลหนึ่งแห่ง ระบบมีแคชและ LockService ลดการอ่าน/เขียนชนกัน แต่ยังอยู่ภายใต้โควตาของ Apps Script ที่ Google กำหนด</span><span class="en">Designed for a single hospital. Caching and LockService reduce read/write collisions, but Apps Script quotas still apply.</span></p></details>
-    </div>
-  </div>
-</section>
-
-<!-- ============ FINAL CTA ============ -->
-<section class="s final" style="padding-bottom:0;margin-top:96px">
-  <div class="wrap">
-    <div class="final-box rv">
-      <h2><span class="th">พร้อมให้ทุกโครงการสีเขียว<br>มองเห็นผลลัพธ์แล้วหรือยัง?</span><span class="en">Ready to make every green<br>initiative visible?</span></h2>
-      <p><span class="th">ดาวน์โหลดโค้ดทั้งหมดฟรี ปรับแต่งให้เข้ากับโรงพยาบาลของคุณ และร่วมพัฒนาไปด้วยกัน</span><span class="en">Get the full source for free, adapt it to your hospital, and help improve it.</span></p>
-      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
-        <a class="btn btn-light" href="https://github.com/green-somdej/project-room" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.6 22.4c.6.1.8-.3.8-.6v-2c-3.2.7-3.9-1.5-3.9-1.5-.5-1.3-1.3-1.7-1.3-1.7-1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.8-1.6-2.6-.3-5.3-1.3-5.3-5.7 0-1.3.5-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.2 1.2a11 11 0 0 1 5.8 0c2.2-1.5 3.2-1.2 3.2-1.2.6 1.6.2 2.8.1 3.1.8.8 1.2 1.8 1.2 3.1 0 4.4-2.7 5.4-5.3 5.7.4.4.8 1.1.8 2.2v3.2c0 .3.2.7.8.6A11.5 11.5 0 0 0 12 .5z"/></svg><span class="th">ไปที่ GitHub</span><span class="en">Open on GitHub</span></a>
-        <a class="btn btn-line" href="https://github.com/green-somdej/project-room/issues/new/choose" target="_blank" rel="noopener"><span class="th">แจ้งปัญหา / เสนอฟีเจอร์</span><span class="en">Report an issue / suggest a feature</span></a>
-      </div>
-    </div>
-  </div>
-</section>
+  <iframe id="app" title="ระบบติดตามโครงการสิ่งแวดล้อมโรงพยาบาล" allow="clipboard-write; fullscreen" referrerpolicy="strict-origin-when-cross-origin"></iframe>
 </main>
 
-<footer>
-  <div class="wrap">
-    <div>© <span id="yr">2026</span> Hospital Eco Tracker · MIT License</div>
-    <nav>
-      <a href="https://github.com/green-somdej/project-room" target="_blank" rel="noopener">GitHub</a>
-      <a href="https://github.com/green-somdej/project-room/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener">Contributing</a>
-      <a href="https://github.com/green-somdej/project-room/blob/main/SECURITY.md" target="_blank" rel="noopener">Security</a>
-      <a href="https://github.com/green-somdej/project-room/blob/main/CHANGELOG.md" target="_blank" rel="noopener">Changelog</a>
-    </nav>
-  </div>
-</footer>
+<button class="ib primary exit-focus" id="exitFocus"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v3a2 2 0 0 1-2 2H3M21 8h-3a2 2 0 0 1-2-2V3M3 16h3a2 2 0 0 1 2 2v3M16 21v-3a2 2 0 0 1 2-2h3"/></svg>ออกจากเต็มจอ</button>
 
 <script>
 (function () {
-  var root = document.documentElement;
-  document.getElementById('yr').textContent = new Date().getFullYear();
+  var CFG = window.ECO_CONFIG || {};
+  var APP_URL = String(CFG.APP_URL || '').trim();
+  var CAMPAIGNS = [
+    { page: '',          e: '📊', t: 'ภาพรวม',            c: '#16a34a' },
+    { page: 'frytofly',  e: '🛢️', t: 'ทอดไม่ทิ้ง',        c: '#d97706' },
+    { page: 'paperless', e: '📄', t: 'Paperless',         c: '#2563eb' },
+    { page: 'cartridge', e: '🖨️', t: 'ตลับหมึก',          c: '#7c3aed' },
+    { page: 'kitchen',   e: '🍳', t: 'จากครัวสู่ท้องฟ้า', c: '#ea580c' },
+    { page: 'calendar',  e: '📅', t: 'ปฏิทินเก่า',        c: '#0891b2' },
+    { page: 'share',     e: '♻️', t: 'คัดแยก แบ่งปัน',    c: '#059669' },
+    { page: 'em',        e: '🧪', t: 'น้ำยา EM',          c: '#0d9488' },
+    { page: 'compost',   e: '🪴', t: 'ปุ๋ยหมักใบไม้',     c: '#65a30d' },
+    { page: 'envreport', e: '🌳', t: 'รายงานสิ่งแวดล้อม', c: '#15803d' }
+  ];
+  var TIPS = [
+    '🌳 กระดาษ A4 ประมาณ 8,333 แผ่น เทียบเท่าต้นไม้ 1 ต้น',
+    '🛢️ น้ำมันใช้แล้ว 1 ลิตรที่นำกลับมาใช้ ช่วยลด CO₂ ได้ราว 2.5 กก.',
+    '🖨️ ตลับหมึกเก่าทุกตลับ = ขยะอันตรายที่ไม่ต้องจ่ายค่าทำลาย',
+    '📅 ปฏิทินเก่าของคุณกลายเป็นสื่ออักษรเบรลล์ให้ผู้พิการทางสายตา',
+    '🧪 เศษอาหารหมักเป็นน้ำยา EM ได้ภายใน 7–45 วัน',
+    '♻️ ของเหลือใช้ในหน่วยงานหนึ่ง อาจเป็นของที่อีกหน่วยงานต้องการ'
+  ];
 
-  document.getElementById('themeBtn').addEventListener('click', function () {
-    var t = root.dataset.theme === 'dark' ? 'light' : 'dark';
-    root.dataset.theme = t; try { localStorage.setItem('theme', t); } catch (e) {}
+  if (CFG.ORG_NAME) document.getElementById('orgName').textContent = CFG.ORG_NAME;
+  if (CFG.APP_NAME) document.getElementById('appName').textContent = CFG.APP_NAME;
+
+  var root = document.documentElement, stage = document.getElementById('stage'), frame = document.getElementById('app');
+  var qs = new URLSearchParams(location.search);
+  window.currentPage = qs.get('page') || '';
+  window.currentAction = qs.get('action') || '';
+  var slowTimer = null, tipTimer = null, tipIdx = Math.floor(Math.random() * TIPS.length);
+
+  // ---- chips ----
+  var chips = document.getElementById('chips');
+  chips.innerHTML = CAMPAIGNS.map(function (c) {
+    return '<button class="chip" style="--c:' + c.c + '" data-page="' + c.page + '"><span class="e">' + c.e + '</span>' + c.t + '</button>';
+  }).join('') + '<span class="chips-note">ข้อมูลจริงจาก Google Sheets · อัปเดตทันที</span>';
+  chips.addEventListener('click', function (ev) {
+    var b = ev.target.closest('.chip'); if (!b) return;
+    loadApp(b.dataset.page, '');
   });
-  document.getElementById('langBtn').addEventListener('click', function () {
-    var l = root.lang === 'th' ? 'en' : 'th';
-    root.lang = l; try { localStorage.setItem('lang', l); } catch (e) {}
-  });
-
-  var nav = document.getElementById('nav');
-  function onScroll() { nav.classList.toggle('scrolled', scrollY > 8); }
-  addEventListener('scroll', onScroll, { passive: true }); onScroll();
-
-  // reveal on scroll
-  var els = document.querySelectorAll('.rv');
-  if ('IntersectionObserver' in window) {
-    var io = new IntersectionObserver(function (es) {
-      es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
-    }, { threshold: .12, rootMargin: '0px 0px -40px 0px' });
-    els.forEach(function (el, i) { el.style.transitionDelay = (i % 4) * 60 + 'ms'; io.observe(el); });
-  } else els.forEach(function (el) { el.classList.add('in'); });
-
-  // count-up
-  function count(el) {
-    var to = +el.dataset.count, suf = el.dataset.suffix || '', t0 = performance.now(), d = 1400;
-    (function tick(t) {
-      var p = Math.min(1, (t - t0) / d), v = Math.round(to * (1 - Math.pow(1 - p, 3)));
-      el.textContent = v.toLocaleString('en-US') + (p === 1 ? suf : '');
-      if (p < 1) requestAnimationFrame(tick);
-    })(t0);
+  function markChip(page) {
+    chips.querySelectorAll('.chip').forEach(function (b) { b.classList.toggle('on', b.dataset.page === page); });
+    var on = chips.querySelector('.chip.on'); if (on && on.scrollIntoView) on.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
   }
-  var cio = new IntersectionObserver(function (es) {
-    es.forEach(function (e) { if (e.isIntersecting) { count(e.target); cio.unobserve(e.target); } });
-  }, { threshold: .6 });
-  document.querySelectorAll('[data-count]').forEach(function (el) { cio.observe(el); });
 
-  // copy commands
-  document.getElementById('copyBtn').addEventListener('click', function () {
-    var txt = document.getElementById('cmd').innerText.split('\n').map(function (l) { return l.replace(/^\$ /, '').replace(/\s+#.*$/, ''); }).join('\n');
-    var b = this, old = b.innerHTML;
-    (navigator.clipboard ? navigator.clipboard.writeText(txt) : Promise.reject()).then(function () {
-      b.textContent = '✓'; setTimeout(function () { b.innerHTML = old; }, 1600);
-    }).catch(function () {});
+  // ---- tips ----
+  function showTip() {
+    var el = document.getElementById('tip'); el.style.opacity = 0;
+    setTimeout(function () { el.textContent = TIPS[tipIdx++ % TIPS.length]; el.style.opacity = 1; }, 250);
+  }
+
+  // ---- load app ----
+  function appUrl(page, action) {
+    var u = APP_URL, p = [];
+    if (page) p.push('page=' + encodeURIComponent(page));
+    if (action) p.push('action=' + encodeURIComponent(action));
+    return p.length ? u + (u.indexOf('?') === -1 ? '?' : '&') + p.join('&') : u;
+  }
+  window.loadApp = function (page, action) {
+    window.currentPage = page || ''; window.currentAction = action || '';
+    markChip(window.currentPage);
+    var url = appUrl(window.currentPage, window.currentAction);
+    document.getElementById('newTab').href = url;
+    document.getElementById('slowNewTab').href = url;
+    var q = new URLSearchParams();
+    if (window.currentPage) q.set('page', window.currentPage);
+    if (window.currentAction) q.set('action', window.currentAction);
+    history.replaceState(null, '', location.pathname + (q.toString() ? '?' + q : ''));
+
+    stage.classList.remove('ready');
+    document.getElementById('slow').classList.remove('show');
+    document.getElementById('loadTitle').textContent = 'กำลังเปิด ' + (CAMPAIGNS.filter(function (c) { return c.page === window.currentPage; })[0] || CAMPAIGNS[0]).t + '…';
+    showTip(); clearInterval(tipTimer); tipTimer = setInterval(showTip, 3200);
+    clearTimeout(slowTimer); slowTimer = setTimeout(function () { document.getElementById('slow').classList.add('show'); }, 20000);
+    frame.src = url;
+  };
+  frame.addEventListener('load', function () {
+    if (!frame.getAttribute('src')) return;
+    clearTimeout(slowTimer); clearInterval(tipTimer);
+    stage.classList.add('ready');
   });
+
+  // ---- controls ----
+  document.getElementById('reloadBtn').onclick = function () { loadApp(window.currentPage, window.currentAction); };
+  document.getElementById('themeBtn').onclick = function () {
+    var t = root.dataset.theme === 'dark' ? 'light' : 'dark'; root.dataset.theme = t;
+    try { localStorage.setItem('shellTheme', t); } catch (e) {}
+  };
+  function setFocus(on) { document.body.classList.toggle('focus', on); }
+  document.getElementById('focusBtn').onclick = function () { setFocus(true); };
+  document.getElementById('exitFocus').onclick = function () { setFocus(false); };
+  addEventListener('keydown', function (e) { if (e.key === 'Escape') setFocus(false); });
+
+  // ---- start ----
+  if (!/^https:\/\/script\.google(usercontent)?\.com\//.test(APP_URL)) {
+    document.getElementById('splash').style.display = 'none';
+    document.getElementById('setup').classList.add('show');
+    document.getElementById('newTab').style.display = 'none';
+    document.getElementById('live').style.display = 'none';
+    markChip(window.currentPage);
+  } else {
+    loadApp(window.currentPage, window.currentAction);
+  }
 })();
 </script>
 </body>
