@@ -8,13 +8,13 @@
 **8 แคมเปญ · 1 แดชบอร์ด · ไม่ต้องมีเซิร์ฟเวอร์**
 *8 campaigns · 1 dashboard · zero servers*
 
-[![CI](https://github.com/kan200837-blip/hospital-eco-tracker/actions/workflows/ci.yml/badge.svg)](https://github.com/kan200837-blip/hospital-eco-tracker/actions/workflows/ci.yml)
-[![Pages](https://img.shields.io/badge/docs-GitHub%20Pages-16a34a)](https://kan200837-blip.github.io/hospital-eco-tracker/)
+[![CI](https://github.com/green-somdej/project-room/actions/workflows/ci.yml/badge.svg)](https://github.com/green-somdej/project-room/actions/workflows/ci.yml)
+[![Pages](https://img.shields.io/badge/docs-GitHub%20Pages-16a34a)](https://green-somdej.github.io/project-room/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-16a34a.svg)](LICENSE)
 ![Apps Script](https://img.shields.io/badge/Google-Apps%20Script-4285F4?logo=google&logoColor=white)
 ![Google Sheets](https://img.shields.io/badge/DB-Google%20Sheets-34A853?logo=googlesheets&logoColor=white)
 
-[**🌐 เว็บไซต์โครงการ**](https://kan200837-blip.github.io/hospital-eco-tracker/) · [เริ่มใช้งาน](#-เริ่มใช้งานใน-10-นาที) · [สถาปัตยกรรม](docs/ARCHITECTURE.md) · [แจ้งปัญหา](../../issues/new/choose)
+[**🌐 เว็บไซต์โครงการ**](https://green-somdej.github.io/project-room/) · [เริ่มใช้งาน](#-เริ่มใช้งานใน-10-นาที) · [สถาปัตยกรรม](docs/ARCHITECTURE.md) · [แจ้งปัญหา](../../issues/new/choose)
 
 </div>
 
@@ -76,8 +76,8 @@ scripts/check.mjs  ตรวจ syntax ก่อน push
 
 **วิธี B — clasp (แนะนำสำหรับนักพัฒนา)**
 ```bash
-git clone https://github.com/kan200837-blip/hospital-eco-tracker.git
-cd hospital-eco-tracker && npm install
+git clone https://github.com/green-somdej/project-room.git
+cd project-room && npm install
 npx clasp login
 npx clasp create --type webapp --title "Hospital Eco Tracker" --rootDir src
 npm run push && npm run deploy
@@ -95,4 +95,4 @@ PIN เก็บเป็น SHA-256 · สิทธิ์ผู้ดูแล�
 
 ## 📄 License
 
-[MIT](LICENSE) © 2026 KPI-GBM
+[MIT](LICENSE) © 2026 Green Somdej

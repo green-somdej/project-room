@@ -4,8 +4,8 @@
 
 ## เริ่มต้น
 ```bash
-git clone https://github.com/kan200837-blip/hospital-eco-tracker.git
-cd hospital-eco-tracker
+git clone https://github.com/green-somdej/project-room.git
+cd project-room
 npm run check      # ตรวจ syntax Code.gs และ JS.html
 ```
 ทดสอบด้วย Apps Script ของตนเอง: `cp .clasp.json.example .clasp.json` ใส่ Script ID แล้ว `npm install && npm run push`
