@@ -12,6 +12,7 @@ Browser ──google.script.run──▶ Code.gs (doGet/doPost) ──▶ Google
 | Modules | หัวข้อ `// ===== โครงการ … =====` | อ่าน/เขียนข้อมูลรายโครงการ |
 | Impact | `getEnvironmentalImpactSummary` | แปลงกิจกรรมเป็นต้นไม้/CO₂ จากชีต `EnvironmentalSettings` |
 | Linked projects | `LINKED_PROJECT_*` | แถวตัวแทนแต่ละแคมเปญในชีต `Projects` เพื่อแสดงในภาพรวม/Gantt |
+| Executive Summary | `ExecSlides.gs`: `setupExecutiveSummaries`, `executiveSummaryAutoUpdate`, `xsRun_` | สร้าง Google Slides 16:9 ≤10 หน้าต่อโครงการ ผ่าน Slides API `batchUpdate` อัปเดตเมื่อลายนิ้วมือข้อมูลเปลี่ยน (ทริกเกอร์รายชั่วโมง) ลงทะเบียนในชีต `ExecutiveDecks` |
 | Q&A | `askAssistant` | ตอบจากข้อมูลโครงการ, ส่งอีเมลต่อเมื่อตอบไม่ได้, ปฏิเสธคำขอ PIN |
 
 ## ชีตหลัก
