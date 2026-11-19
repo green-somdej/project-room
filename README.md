@@ -56,6 +56,7 @@ Browser (Index/CSS/JS) ──google.script.run──▶ Apps Script Web App (Cod
 ```
 src/
   Code.gs          Backend ทั้งหมด (โมดูลละโครงการ + auth + API)
+  ExecSlides.gs    สรุปผู้บริหาร Google Slides 16:9 รายโครงการ (อัปเดตอัตโนมัติ)
   Index.html       โครงหน้าเว็บ + แท็บทุกโครงการ
   CSS.html         สไตล์ + ธีมสีรายโครงการ
   JS.html          ตรรกะฝั่งเบราว์เซอร์
@@ -87,6 +88,16 @@ npm run push && npm run deploy
 หน้า `https://green-somdej.github.io/project-room/` แสดงระบบจริงให้ใช้งานได้ทันที เมื่อใส่ลิงก์ Web App (`…/exec`) ใน [`docs/config.js`](docs/config.js) ที่ `APP_URL` · ลิงก์ตรงเข้าโครงการใช้ได้ เช่น `…/project-room/?page=paperless`
 
 > ⚠️ `clasp create` จะสร้าง `.clasp.json` ซึ่งถูก `.gitignore` ไว้แล้ว — ห้าม commit Script ID ของระบบจริง
+
+## 📊 สรุปสำหรับผู้บริหาร (Google Slides 16:9)
+
+ระบบสร้างสไลด์สรุปสำหรับผู้บริหาร **1 ไฟล์ต่อโครงการ ไม่เกิน 10 หน้า** จากข้อมูลจริงในชีต และ **อัปเดตอัตโนมัติทุกชั่วโมงเมื่อข้อมูลของโครงการนั้นเปลี่ยน** (ไฟล์/ลิงก์เดิม ไม่ต้องแชร์ใหม่)
+
+1. (ติดตั้งแบบคัดลอกวาง) เพิ่มไฟล์ `ExecSlides.gs` และเปิด `Services (+) → Google Slides API` — แบบ clasp ตั้งไว้ใน `appsscript.json` แล้ว
+2. รันฟังก์ชัน `setupExecutiveSummaries()` หนึ่งครั้ง (อนุญาตสิทธิ์ Slides/Drive/Triggers)
+3. ลิงก์ของทุกโครงการอยู่ในชีต `ExecutiveDecks` · ไฟล์อยู่ในโฟลเดอร์ Drive "สรุปผู้บริหาร-ระบบติดตามโครงการสิ่งแวดล้อม" (แชร์โฟลเดอร์ให้ผู้บริหารครั้งเดียว)
+
+เมนู **📊 สรุปผู้บริหาร** ในสเปรดชีต: อัปเดตตอนนี้ / สร้างใหม่ทั้งหมด / เปิด-ปิดการอัปเดตอัตโนมัติ / เปิดโฟลเดอร์
 
 ## 🔐 ความปลอดภัย
 
