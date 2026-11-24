@@ -275,6 +275,57 @@ body.focus .exit-focus{display:inline-flex}
 .gerr{margin-top:12px;padding:10px 14px;border-radius:12px;background:#fee2e2;color:#b91c1c;font-weight:600;font-size:.9rem}
 .gbox .btn{width:100%;margin:18px 0 0;height:52px;font-size:1.05rem}
 .privacy{margin-top:14px;font-size:.78rem;color:var(--ink-3);text-align:center;line-height:1.5}
+.gtabs{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:5px;margin:10px 0 4px;border-radius:14px;background:var(--bg)}
+.gtabs button{height:42px;border:0;border-radius:10px;background:transparent;color:var(--ink-2);font:inherit;font-weight:700;cursor:pointer;transition:.2s}
+.gtabs button.on{background:var(--card);color:#047857;box-shadow:0 2px 10px rgba(0,0,0,.12)}
+.field .eye{position:absolute;right:8px;top:50%;transform:translateY(-50%);width:38px;height:38px;border:0;background:transparent;border-radius:10px;cursor:pointer;font-size:1.05rem;color:var(--ink-2)}
+.field .eye:hover{background:var(--line)}
+.field.has-eye input{padding-right:50px}
+.consent{display:flex!important;gap:10px;align-items:flex-start;font-weight:500!important;font-size:.86rem!important;line-height:1.5;color:var(--ink-2);cursor:pointer;margin-top:14px!important}
+.consent.hidden{display:none!important}
+.consent input{width:20px;height:20px;margin-top:2px;flex:none;accent-color:#10b981}
+.consent a,.linkbtn{color:#047857;font-weight:700;text-decoration:underline;cursor:pointer;background:none;border:0;padding:0;font:inherit}
+.gnote{margin-top:12px;padding:10px 14px;border-radius:12px;background:#fef3c7;color:#92400e;font-size:.84rem;line-height:1.5}
+.pendbar{margin:0 0 16px;padding:12px 16px;border-radius:16px;background:#fef3c7;color:#92400e;font-weight:600;font-size:.92rem;line-height:1.5;border:1px solid #fcd34d}
+.dlg{position:fixed;inset:0;z-index:95;display:grid;place-items:center;padding:20px;overflow:auto;background:rgba(2,20,16,.72);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.dbox{width:min(560px,100%);max-height:88vh;overflow:auto;background:var(--card);border-radius:22px;padding:26px 26px 22px;box-shadow:0 30px 80px rgba(0,0,0,.45)}
+.dbox h2{font-size:1.3rem;margin-bottom:6px}
+.dbox h3{font-size:1rem;margin:16px 0 4px}
+.dbox p,.dbox li{color:var(--ink-2);font-size:.92rem;line-height:1.6}
+.dbox ul{margin:4px 0 0 18px;padding:0}
+.dbox .row{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap}
+.dbox .row .btn{flex:1;min-width:140px;height:46px;margin:0}
+.dbox .who{display:flex;gap:14px;align-items:center;padding:14px;border-radius:16px;background:var(--bg);margin:12px 0}
+.dbox .who b{display:block;letter-spacing:.05em}
+.stt{display:inline-block;padding:2px 10px;border-radius:99px;font-size:.78rem;font-weight:700}
+.stt.ok{background:#dcfce7;color:#166534}.stt.wait{background:#fef3c7;color:#92400e}
+.btn.danger{background:#dc2626;color:#fff}
+.loginbtn{height:42px;padding:0 18px;border-radius:99px;border:0;background:linear-gradient(135deg,#bef264,#22c55e);color:#064e3b;font:inherit;font-weight:800;font-size:.88rem;cursor:pointer;box-shadow:0 6px 16px rgba(34,197,94,.4);transition:.2s}
+.loginbtn:hover{transform:translateY(-1px)}
+.sbadge{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:99px;font-size:.74rem;font-weight:800;white-space:nowrap}
+.sb-prog{background:#dbeafe;color:#1e40af}.sb-late{background:#fee2e2;color:#991b1b}.sb-done{background:#dcfce7;color:#166534}.sb-none{background:#e5e7eb;color:#374151}.sb-hold{background:#fef3c7;color:#92400e}
+.pbar{height:7px;border-radius:99px;background:var(--line);overflow:hidden;margin-top:10px}
+.pbar i{display:block;height:100%;background:linear-gradient(90deg,var(--c),color-mix(in srgb,var(--c) 55%,#fbbf24));border-radius:99px;transition:width .8s}
+.pc .meta{display:flex;justify-content:space-between;gap:8px;margin-top:7px;font-size:.78rem;color:var(--ink-3)}
+.joinbtn{margin-top:12px;height:40px;width:100%;border-radius:12px;border:1.5px solid var(--c);background:transparent;color:var(--c);font:inherit;font-weight:800;font-size:.86rem;cursor:pointer;transition:.2s}
+.joinbtn:hover{background:var(--c);color:#fff}
+.joinbtn.wait{border-style:dashed;color:#92400e;border-color:#f59e0b}
+.joinbtn.wait:hover{background:#fef3c7;color:#92400e}
+.joinbtn.ok{background:linear-gradient(135deg,#22c55e,#0d9488);color:#fff;border-color:transparent;cursor:default}
+.joinbtn:disabled{opacity:.55;cursor:not-allowed}
+.ov{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:20px 22px;box-shadow:var(--shadow);margin-bottom:22px}
+.ov-k{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin:12px 0 14px}
+.ov-k div{background:var(--bg);border-radius:16px;padding:12px 14px}
+.ov-k b{display:block;font-size:1.5rem;font-family:'Prompt',sans-serif}
+.ov-k span{color:var(--ink-2);font-size:.82rem}
+.ov-bar{display:flex;height:16px;border-radius:99px;overflow:hidden;background:var(--line)}
+.ov-bar i{display:block;height:100%}
+.ov-leg{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:10px;font-size:.82rem;color:var(--ink-2)}
+.ov-leg i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px}
+.ov-oth{margin-top:14px;font-size:.9rem}
+.ov-oth summary{cursor:pointer;font-weight:700}
+.ov-oth .row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--line)}
+.toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%);z-index:120;max-width:min(520px,92vw);padding:12px 18px;border-radius:14px;background:#064e3b;color:#fff;font-weight:600;font-size:.92rem;box-shadow:0 12px 30px rgba(0,0,0,.35)}
 
 /* setup */
 .setup{position:absolute;inset:0;overflow:auto;display:none;place-items:center;justify-items:center;padding:28px;z-index:4;background:var(--bg)}
@@ -437,7 +488,8 @@ body.focus .exit-focus{display:inline-flex}
       <svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
       <svg class="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
     </button>
-    <button class="user hidden" id="userBtn" title="เปลี่ยนผู้ใช้"><span class="avatar" id="uAv">?</span><span class="ut"><small id="uCode"></small><b id="uName"></b></span></button>
+    <button class="loginbtn" id="loginBtn" type="button">เข้าสู่ระบบ / สมัครสมาชิก</button>
+    <button class="user hidden" id="userBtn" title="บัญชีของฉัน"><span class="avatar" id="uAv">?</span><span class="ut"><small id="uCode"></small><b id="uName"></b></span></button>
   </div>
 </header>
 
@@ -460,6 +512,7 @@ body.focus .exit-focus{display:inline-flex}
       <div class="car-chips" id="carChips"></div>
     </section>
 
+    <div class="pendbar hidden" id="pendBar" role="status"></div>
     <div class="hello rv">
       <div>
         <h1 class="disp"><span class="wave">👋</span> สวัสดี <span id="hName">ผู้ร่วมโครงการ</span></h1>
@@ -488,7 +541,15 @@ body.focus .exit-focus{display:inline-flex}
       <div class="mine-list" id="mineList"><div class="skel"></div><div class="skel"></div><div class="skel"></div></div>
     </section>
 
-    <div class="sec-h rv"><h2 class="disp">โครงการทั้งหมด</h2><span>คลิกการ์ดเพื่อเปิดรายละเอียดในระบบ</span></div>
+    <section class="ov rv" id="ovSection" aria-label="สถานะภาพรวมโครงการ">
+      <div class="mine-h"><h2 class="disp">📊 สถานะภาพรวมโครงการ</h2><span id="ovNote">กำลังโหลด…</span></div>
+      <div class="ov-k" id="ovKpis"></div>
+      <div class="ov-bar" id="ovBar" role="img" aria-label="สัดส่วนสถานะโครงการ"></div>
+      <div class="ov-leg" id="ovLeg"></div>
+      <details class="ov-oth hidden" id="ovOthers"><summary id="ovOthSum">โครงการอื่นๆ</summary><div id="ovOthList"></div></details>
+    </section>
+
+    <div class="sec-h rv"><h2 class="disp">โครงการทั้งหมด</h2><span>ทุกคนดูรายละเอียดได้ · สมาชิกกด "สมัครเข้าร่วม" แล้วรอผู้ดูแลอนุมัติ</span></div>
     <div class="cards" id="cards"></div>
 
     <p class="foot">© <span id="yr">2026</span> Green Somdej · ข้อมูลจริงจาก Google Sheets</p>
@@ -534,21 +595,64 @@ body.focus .exit-focus{display:inline-flex}
 
 <!-- ================= STAFF GATE ================= -->
 <div class="gate hidden" id="gate" role="dialog" aria-modal="true" aria-labelledby="gTitle">
-  <form class="gbox" id="gForm" autocomplete="on" novalidate>
+  <form class="gbox" id="gForm" autocomplete="off" novalidate>
     <div class="badge-ic">🪪</div>
-    <h2 class="disp" id="gTitle">ยืนยันตัวตนก่อนเข้าใช้งาน</h2>
-    <p class="lead">กรอกรหัสเจ้าหน้าที่และชื่อ เพื่อดูว่าท่านร่วมโครงการอะไรบ้าง</p>
+    <h2 class="disp" id="gTitle">เข้าสู่ระบบ</h2>
+    <div class="gtabs" role="tablist">
+      <button type="button" role="tab" id="tabLogin" class="on" aria-selected="true">เข้าสู่ระบบ</button>
+      <button type="button" role="tab" id="tabSignup" aria-selected="false">ใช้งานครั้งแรก</button>
+    </div>
+    <p class="lead" id="gLead">กรอกรหัสเจ้าหน้าที่และรหัสผ่าน เพื่อดูว่าท่านร่วมโครงการอะไรบ้าง</p>
     <label for="gCode">รหัสเจ้าหน้าที่ (7 หลัก)</label>
-    <div class="field"><span class="fi">#</span><input id="gCode" name="staffcode" inputmode="numeric" placeholder="ตัวเลข 7 หลัก" autocomplete="off" required></div>
+    <div class="field has-eye"><span class="fi">#</span><input id="gCode" name="staffcode" type="password" inputmode="numeric" maxlength="7" placeholder="ตัวเลข 7 หลัก" autocomplete="off" required><button type="button" class="eye" id="gEye" aria-label="แสดง/ซ่อนรหัสเจ้าหน้าที่" title="แสดง/ซ่อนรหัส">👁</button></div>
     <div class="digits" id="digits"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
-    <label for="gName">ชื่อ - นามสกุล</label>
-    <div class="field"><span class="fi">👤</span><input id="gName" name="name" maxlength="100" placeholder="เช่น สมชาย ใจดี" autocomplete="name" required></div>
-    <label class="remember"><input type="checkbox" id="gRemember" checked> จดจำบนอุปกรณ์นี้</label>
-    <div class="gerr hidden" id="gErr"></div>
-    <button class="btn pri" id="gBtn" type="submit">เข้าใช้งาน →</button>
-    <p class="privacy">ระบบบันทึกรหัส ชื่อ และเวลาเข้าใช้งาน เพื่อเป็นประวัติและสรุปการร่วมโครงการของท่าน<br>ใช้ภายในโรงพยาบาลเท่านั้น</p>
+    <div id="gNameRow" class="hidden">
+      <label for="gName">ชื่อ - นามสกุล</label>
+      <div class="field"><span class="fi">👤</span><input id="gName" name="name" maxlength="100" placeholder="เช่น สมชาย ใจดี" autocomplete="off"></div>
+    </div>
+    <label for="gPw" id="gPwLabel">รหัสผ่าน</label>
+    <div class="field has-eye"><span class="fi">🔒</span><input id="gPw" name="password" type="password" maxlength="100" placeholder="อย่างน้อย 8 ตัวอักษร" autocomplete="current-password" required><button type="button" class="eye" id="gEye2" aria-label="แสดง/ซ่อนรหัสผ่าน" title="แสดง/ซ่อนรหัสผ่าน">👁</button></div>
+    <label class="consent hidden" id="gConsentRow"><input type="checkbox" id="gConsent"><span>ข้าพเจ้าได้อ่านและรับทราบ <button type="button" class="linkbtn" data-notice>ประกาศความเป็นส่วนตัว</button> และยินยอมให้โรงพยาบาลเก็บ ใช้ ข้อมูลตามที่ระบุ</span></label>
+    <div class="gnote hidden" id="gNote">⏳ บัญชีใหม่ใช้งานได้ต่อเนื่อง 2 ชั่วโมงแรก จากนั้น<b>ผู้ดูแลระบบต้องตรวจสอบว่าเป็นเจ้าหน้าที่</b>และอนุมัติก่อน จึงจะเข้าสู่ระบบครั้งถัดไปได้ (ระบบแจ้งผู้ดูแลให้อัตโนมัติ)</div>
+    <label class="remember"><input type="checkbox" id="gRemember" checked> จดจำบนอุปกรณ์นี้ (เก็บเฉพาะรหัสเข้าใช้ ไม่เก็บรหัสพนักงานและชื่อ)</label>
+    <div class="gerr hidden" id="gErr" role="alert"></div>
+    <button class="btn pri" id="gBtn" type="submit">เข้าสู่ระบบ →</button>
+    <p class="privacy">ระบบแสดงรหัสและชื่อของท่านแบบปกปิดบางส่วนเสมอ · สมาชิกใหม่ต้องได้รับอนุมัติจากผู้ดูแลระบบ<br><button type="button" class="linkbtn" data-notice>อ่านประกาศความเป็นส่วนตัว (PDPA)</button> · <button type="button" class="linkbtn" id="gSkip">ดูโครงการก่อน (ไม่ต้องเข้าสู่ระบบ)</button></p>
   </form>
 </div>
+
+<!-- ================= PRIVACY NOTICE (PDPA) ================= -->
+<div class="dlg hidden" id="noticeDlg" role="dialog" aria-modal="true" aria-labelledby="ntTitle">
+  <div class="dbox">
+    <h2 class="disp" id="ntTitle">ประกาศความเป็นส่วนตัว</h2>
+    <div id="ntBody"></div>
+    <div class="row"><button class="btn sec" id="ntClose" type="button">ปิด</button><button class="btn pri hidden" id="ntAck" type="button">รับทราบและใช้งานต่อ</button></div>
+  </div>
+</div>
+
+<!-- ================= ACCOUNT ================= -->
+<div class="dlg hidden" id="acctDlg" role="dialog" aria-modal="true" aria-labelledby="acTitle">
+  <div class="dbox">
+    <h2 class="disp" id="acTitle">บัญชีของฉัน</h2>
+    <div class="who"><span class="avatar" id="acAv">?</span><div><b id="acCode"></b><span id="acName"></span><br><span class="stt" id="acStatus"></span></div></div>
+    <p>ระบบแสดงรหัสและชื่อแบบปกปิดบางส่วนเพื่อความเป็นส่วนตัว และไม่เก็บรหัสพนักงาน/ชื่อเต็มไว้ในเครื่องนี้</p>
+    <div id="acDelBox" class="hidden">
+      <h3>ลบบัญชีและข้อมูลของฉัน</h3>
+      <p>ลบบัญชีและประวัติการเข้าใช้หน้าเว็บของท่าน (ข้อมูลการร่วมกิจกรรมในแต่ละโครงการเป็นบันทึกของโครงการ ขอลบ/ปกปิดได้ที่ผู้ดูแลข้อมูลส่วนบุคคล) ยืนยันด้วยรหัสผ่าน</p>
+      <div class="field"><span class="fi">🔒</span><input id="acPw" type="password" autocomplete="current-password" placeholder="รหัสผ่าน"></div>
+      <div class="gerr hidden" id="acErr"></div>
+      <div class="row"><button class="btn sec" id="acDelCancel" type="button">ยกเลิก</button><button class="btn danger" id="acDelGo" type="button">ลบบัญชีถาวร</button></div>
+    </div>
+    <div class="row" id="acBtns">
+      <button class="btn sec" id="acNotice" type="button">ประกาศความเป็นส่วนตัว</button>
+      <button class="btn sec" id="acDel" type="button">ลบบัญชีของฉัน</button>
+      <button class="btn pri" id="acOut" type="button">ออกจากระบบ</button>
+    </div>
+    <div class="row"><button class="btn sec" id="acClose" type="button">ปิด</button></div>
+  </div>
+</div>
+
+<div class="toast hidden" id="toast" role="status"></div>
 
 <button class="ib exit-focus" id="exitFocus"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v3a2 2 0 0 1-2 2H3M21 8h-3a2 2 0 0 1-2-2V3M3 16h3a2 2 0 0 1 2 2v3M16 21v-3a2 2 0 0 1 2-2h3"/></svg>ออกจากเต็มจอ</button>
 
@@ -593,13 +697,26 @@ body.focus .exit-focus{display:inline-flex}
   var root = document.documentElement;
   var qs = new URLSearchParams(location.search);
   var deepPage = qs.get('page'), deepAction = qs.get('action') || '';
-  var user = null; try { user = JSON.parse(load('ecoUser') || 'null'); } catch (e) {}
+  var PRIV = CFG.PRIVACY || {};
+  var NOTICE_VER = String(PRIV.VERSION || '');
+  /* PDPA: เวอร์ชันก่อนหน้าเคยเก็บรหัส+ชื่อเต็มไว้ในเครื่อง — ล้างทิ้ง (ตอนนี้เก็บเฉพาะ token และข้อความที่ปกปิดบางส่วน) */
+  var hadLegacy = false;
+  try { hadLegacy = !!(localStorage.getItem('ecoUser') || sessionStorage.getItem('ecoUser')); localStorage.removeItem('ecoUser'); sessionStorage.removeItem('ecoUser'); sessionStorage.removeItem('ecoLogged'); } catch (e) {}
+  var sess = null; try { sess = JSON.parse(load('ecoSess') || 'null'); } catch (e) {}
+  if (sess && (!sess.token || !sess.user)) sess = null;
 
   /* ---------------- API ---------------- */
+  /* ข้อมูลสาธารณะ (ตัวเลขสรุปรวม ไม่มีข้อมูลส่วนบุคคล) */
   function api(params) {
     if (!HAS_APP) return Promise.reject(new Error('noapp'));
     var q = Object.keys(params).map(function (k) { return k + '=' + encodeURIComponent(params[k]); }).join('&');
     return fetch(APP_URL + (APP_URL.indexOf('?') === -1 ? '?' : '&') + q, { redirect: 'follow' })
+      .then(function (r) { return r.json(); });
+  }
+  /* สมัคร/เข้าสู่ระบบ/ข้อมูลของตนเอง: ใช้ POST เสมอ — รหัสผ่านและ token ไม่อยู่ใน URL (ไม่ติดบันทึกการเข้าถึง/ประวัติเบราว์เซอร์) */
+  function post(body) {
+    if (!HAS_APP) return Promise.reject(new Error('noapp'));
+    return fetch(APP_URL, { method: 'POST', body: JSON.stringify(body), redirect: 'follow' })
       .then(function (r) { return r.json(); });
   }
 
@@ -626,47 +743,163 @@ body.focus .exit-focus{display:inline-flex}
   else { buildIntro(); intro.addEventListener('click', closeIntro); introTimer = setTimeout(closeIntro, 6500); }
 
   /* ---------------- staff gate ---------------- */
-  var gate = $('gate'), gCode = $('gCode'), gName = $('gName');
+  var gate = $('gate'), gCode = $('gCode'), gName = $('gName'), gPw = $('gPw'), mode = 'login', busy = false;
   function paintDigits() {
     gCode.value = gCode.value.replace(/\D/g, '').slice(0, 7);
     var n = gCode.value.length;
     $('digits').querySelectorAll('i').forEach(function (d, i) { d.classList.toggle('on', i < n); });
   }
-  gCode.addEventListener('input', function () { paintDigits(); if (gCode.value.length === 7 && !gName.value) gName.focus(); });
-  function openGate() {
-    if (user) { gCode.value = user.code; gName.value = user.name; }
-    paintDigits(); $('gErr').classList.add('hidden'); gate.classList.remove('hidden');
-    setTimeout(function () { (gCode.value.length === 7 ? gName : gCode).focus(); }, 80);
+  gCode.addEventListener('input', function () { paintDigits(); if (gCode.value.length === 7) (mode === 'signup' ? gName : gPw).focus(); });
+  function setMode(m) {
+    mode = m; var su = m === 'signup';
+    $('tabLogin').classList.toggle('on', !su); $('tabSignup').classList.toggle('on', su);
+    $('tabLogin').setAttribute('aria-selected', String(!su)); $('tabSignup').setAttribute('aria-selected', String(su));
+    $('gNameRow').classList.toggle('hidden', !su); $('gConsentRow').classList.toggle('hidden', !su); $('gNote').classList.toggle('hidden', !su);
+    $('gTitle').textContent = su ? 'ใช้งานครั้งแรก' : 'เข้าสู่ระบบ';
+    $('gLead').textContent = su ? 'ใช้รหัสเจ้าหน้าที่ 7 หลักและชื่อ-นามสกุลของท่านเอง แล้วตั้งรหัสผ่านอย่างน้อย 8 ตัวอักษร'
+      : 'กรอกรหัสเจ้าหน้าที่และรหัสผ่าน เพื่อดูว่าท่านร่วมโครงการอะไรบ้าง';
+    gPw.setAttribute('autocomplete', su ? 'new-password' : 'current-password');
+    $('gBtn').textContent = su ? 'สมัครและเข้าใช้งาน →' : 'เข้าสู่ระบบ →';
+    $('gErr').classList.add('hidden');
+  }
+  $('tabLogin').onclick = function () { setMode('login'); };
+  $('tabSignup').onclick = function () { setMode('signup'); };
+  function eye(btn, input) { btn.onclick = function () { input.type = input.type === 'password' ? 'text' : 'password'; }; }
+  eye($('gEye'), gCode); eye($('gEye2'), gPw);
+  function openGate(m, hint) {
+    gCode.value = ''; gName.value = ''; gPw.value = ''; gCode.type = 'password'; gPw.type = 'password'; $('gConsent').checked = false;
+    setMode(m === 'signup' ? 'signup' : 'login'); paintDigits(); gate.classList.remove('hidden');
+    if (hint) $('gLead').textContent = hint;
+    setTimeout(function () { gCode.focus(); }, 80);
   }
   function gateError(m) { $('gErr').textContent = m; $('gErr').classList.remove('hidden'); }
-  $('gForm').addEventListener('submit', function (e) {
-    e.preventDefault();
-    var code = gCode.value.trim(), name = gName.value.replace(/\s+/g, ' ').trim();
-    if (!/^\d{7}$/.test(code)) { gateError('รหัสเจ้าหน้าที่ต้องเป็นตัวเลข 7 หลัก'); gCode.focus(); return; }
-    if (name.length < 3 || !/\s/.test(name)) { gateError('กรุณากรอกทั้งชื่อและนามสกุล'); gName.focus(); return; }
-    var changed = !user || user.code !== code || user.name !== name;
-    user = { code: code, name: name };
-    var s = JSON.stringify(user);
-    if ($('gRemember').checked) store('ecoUser', s); else { store('ecoUser', null); try { sessionStorage.setItem('ecoUser', s); } catch (x) {} }
-    if (changed) try { sessionStorage.removeItem('ecoLogged'); } catch (x) {}
-    gate.classList.add('hidden');
-    applyUser(); checkin();
-  });
-  $('userBtn').onclick = openGate;
+  function setBusy(b) { busy = b; $('gBtn').disabled = b; }
 
-  function applyUser() {
-    if (!user) return;
-    var first = user.name.replace(/^(นางสาว|นาง|นาย|น\.ส\.|ดร\.)\s*/, '');
-    $('uAv').textContent = first.charAt(0) || '?';
-    $('uCode').textContent = 'รหัส ' + user.code;
-    $('uName').textContent = user.name;
-    $('userBtn').classList.remove('hidden');
-    $('hName').textContent = 'คุณ' + first.split(' ')[0];
-    $('hMeta').textContent = '🪪 ' + user.code + ' · ' + user.name;
+  /* เก็บเฉพาะ token + ข้อความที่ปกปิดบางส่วน (ไม่เก็บรหัสพนักงานและชื่อเต็มในเครื่อง) */
+  function saveSession(token, u, remember) {
+    sess = { token: token, user: u };
+    var s = JSON.stringify(sess);
+    try { localStorage.removeItem('ecoSess'); sessionStorage.removeItem('ecoSess'); (remember ? localStorage : sessionStorage).setItem('ecoSess', s); } catch (e) {}
+  }
+  function persistUser(u) {
+    if (!sess) return; sess.user = u;
+    var s = JSON.stringify(sess);
+    try { if (localStorage.getItem('ecoSess')) localStorage.setItem('ecoSess', s); else sessionStorage.setItem('ecoSess', s); } catch (e) {}
+  }
+  /* ผู้เยี่ยมชมที่ยังไม่เข้าสู่ระบบ: ดูโครงการ สรุป และสถานะภาพรวมได้ทั้งหมด (ไม่มีข้อมูลบุคคล) */
+  function applyGuest() {
+    $('userBtn').classList.add('hidden'); $('loginBtn').classList.remove('hidden'); $('pendBar').classList.add('hidden');
+    $('hName').textContent = 'ผู้เยี่ยมชม'; $('hMeta').textContent = '🔒 ยังไม่ได้เข้าสู่ระบบ';
+    $('mineNote').textContent = '';
+    $('mineList').innerHTML = '<div class="empty"><span class="e">🔒</span><div><b>ทุกคนดูโครงการและสถานะได้</b><br>เข้าสู่ระบบหรือสมัครสมาชิก (ผู้ดูแลระบบอนุมัติ) เพื่อสมัครเข้าร่วมโครงการและดูประวัติของท่าน</div></div>';
+  }
+  function signOut(msg) {
+    sess = null; mine = {}; joins = {};
+    try { localStorage.removeItem('ecoSess'); sessionStorage.removeItem('ecoSess'); sessionStorage.removeItem('ecoLogged'); } catch (e) {}
+    applyGuest(); renderCards();
+    if (msg) { openGate('login'); gateError(msg); }
+  }
+  var toastTimer = null;
+  function toast(m) {
+    var t = $('toast'); t.textContent = m; t.classList.remove('hidden');
+    clearTimeout(toastTimer); toastTimer = setTimeout(function () { t.classList.add('hidden'); }, 5200);
   }
 
+  $('gForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    if (busy) return;
+    var su = mode === 'signup', code = gCode.value.trim(), pw = gPw.value, name = gName.value.replace(/\s+/g, ' ').trim();
+    if (!/^\d{7}$/.test(code)) { gateError('รหัสเจ้าหน้าที่ต้องเป็นตัวเลข 7 หลัก'); gCode.focus(); return; }
+    if (su && (name.length < 3 || !/\s/.test(name))) { gateError('กรุณากรอกทั้งชื่อและนามสกุล'); gName.focus(); return; }
+    if (su && pw.length < 8) { gateError('รหัสผ่านต้องมีอย่างน้อย 8 ตัวอักษร'); gPw.focus(); return; }
+    if (!su && !pw) { gateError('กรุณากรอกรหัสผ่าน'); gPw.focus(); return; }
+    if (su && !$('gConsent').checked) { gateError('กรุณาติ๊กรับทราบประกาศความเป็นส่วนตัวก่อน'); return; }
+    $('gErr').classList.add('hidden'); setBusy(true);
+    var body = su ? { action: 'portalSignup', code: code, name: name, password: pw, ack: true, noticeVersion: NOTICE_VER }
+                  : { action: 'portalLogin', code: code, password: pw, noticeVersion: NOTICE_VER };
+    post(body).then(function (r) {
+      setBusy(false);
+      if (!r || !r.ok) { gateError((r && r.error) || 'เกิดข้อผิดพลาด กรุณาลองใหม่'); return; }
+      gCode.value = ''; gPw.value = ''; gName.value = ''; paintDigits();   // ล้างค่าที่กรอกทันที
+      try { sessionStorage.removeItem('ecoLogged'); } catch (x) {}
+      saveSession(r.token, r.user, $('gRemember').checked);
+      gate.classList.add('hidden');
+      applyUser(); checkin();
+    }).catch(function () { setBusy(false); gateError(HAS_APP ? 'เชื่อมต่อระบบไม่ได้ กรุณาลองใหม่' : 'ยังไม่ได้เชื่อมต่อระบบ'); });
+  });
+  $('userBtn').onclick = openAcct;
+
+  function applyUser() {
+    if (!sess) return;
+    var u = sess.user;
+    $('uAv').textContent = (u.firstName || '?').charAt(0) || '?';
+    $('uCode').textContent = 'รหัส ' + u.codeMasked;
+    $('uName').textContent = u.nameMasked;
+    $('userBtn').classList.remove('hidden'); $('loginBtn').classList.add('hidden');
+    $('hName').textContent = 'คุณ' + (u.firstName || '');
+    $('hMeta').textContent = '🪪 ' + u.codeMasked + ' · ' + u.nameMasked;
+    var pb = $('pendBar');
+    if (u.status === 'pending') {
+      pb.textContent = '⏳ บัญชีของท่านรอผู้ดูแลระบบตรวจสอบว่าเป็นเจ้าหน้าที่ — ตอนนี้ใช้งานได้ชั่วคราว แต่จะเข้าสู่ระบบครั้งถัดไปไม่ได้จนกว่าจะได้รับการอนุมัติ และยังไม่แสดงประวัติการร่วมโครงการ';
+      pb.classList.remove('hidden');
+    } else pb.classList.add('hidden');
+  }
+
+  /* ---------------- privacy notice (PDPA) ---------------- */
+  function buildNotice() {
+    var P = PRIV, c = esc(P.CONTROLLER || ''), t = esc(P.CONTACT || ''), y = esc(P.RETENTION_YEARS || 3);
+    return '<p><b>' + c + '</b> เป็นผู้ควบคุมข้อมูลส่วนบุคคล สำหรับหน้าเว็บ "' + esc(CFG.APP_NAME || '') + '" (เวอร์ชันประกาศ ' + esc(NOTICE_VER) + ')</p>' +
+      '<h3>ข้อมูลที่เก็บ</h3><ul><li>รหัสเจ้าหน้าที่ 7 หลัก และชื่อ-นามสกุล</li><li>รหัสผ่าน (เก็บเป็นค่าเข้ารหัสที่ย้อนกลับไม่ได้ ไม่เก็บรหัสผ่านจริง)</li><li>วันเวลา หน้าที่เปิด และประเภทอุปกรณ์ (มือถือ/คอมพิวเตอร์) ที่เข้าใช้งาน</li><li>ข้อมูลที่ท่านกรอกเองในแต่ละโครงการ เช่น จำนวนที่ร่วม เบอร์โทร</li></ul>' +
+      '<h3>วัตถุประสงค์</h3><ul><li>ยืนยันว่าท่านเป็นเจ้าหน้าที่ของโรงพยาบาล (ผู้ดูแลระบบตรวจสอบก่อนอนุมัติบัญชี)</li><li>แสดงประวัติและสรุปการร่วมโครงการของท่าน</li><li>จัดทำสถิติภาพรวมที่ไม่ระบุตัวบุคคล และรักษาความปลอดภัยของระบบ</li></ul>' +
+      '<h3>การเปิดเผยและการปกปิด</h3><ul><li>หน้าเว็บแสดงรหัสและชื่อของท่านแบบปกปิดบางส่วนเสมอ และไม่เก็บรหัสพนักงานหรือชื่อเต็มไว้ในเครื่องของท่าน</li><li>ตารางอันดับสาธารณะแสดงชื่อ/รหัสแบบปกปิดบางส่วน และไม่แสดงเบอร์โทร</li><li>เฉพาะผู้ดูแลระบบที่ได้รับสิทธิ์เห็นข้อมูลเต็มเพื่อตรวจสอบ และทุกการเข้าถึงถูกบันทึก ไม่เปิดเผยแก่บุคคลภายนอก</li></ul>' +
+      '<h3>ระยะเวลาเก็บ</h3><ul><li>ประวัติการเข้าใช้หน้าเว็บ 1 ปี · บัญชีที่ไม่เข้าใช้งานเกิน 3 ปีจะถูกลบ</li><li>บันทึกการร่วมกิจกรรมของโครงการ ' + y + ' ปี แล้วปกปิดตัวตนหรือลบ</li></ul>' +
+      '<h3>สิทธิของท่าน</h3><p>ขอเข้าถึง แก้ไข ลบ คัดค้าน หรือถอนความยินยอมได้ — กดปุ่ม "ลบบัญชีของฉัน" ในเมนูบัญชี หรือติดต่อ ' + t + '</p>';
+  }
+  var ntNeedAck = false;
+  function showNotice(needAck) {
+    ntNeedAck = !!needAck; $('ntBody').innerHTML = buildNotice();
+    $('ntAck').classList.toggle('hidden', !needAck); $('ntClose').classList.toggle('hidden', !!needAck);
+    $('noticeDlg').classList.remove('hidden');
+  }
+  $('ntClose').onclick = function () { $('noticeDlg').classList.add('hidden'); };
+  $('ntAck').onclick = function () {
+    if (!sess) return;
+    $('ntAck').disabled = true;
+    post({ action: 'portalAckNotice', token: sess.token, noticeVersion: NOTICE_VER }).then(function (r) {
+      $('ntAck').disabled = false;
+      if (r && r.ok) { persistUser(r.user); $('noticeDlg').classList.add('hidden'); applyUser(); }
+    }).catch(function () { $('ntAck').disabled = false; });
+  };
+  document.addEventListener('click', function (e) { if (e.target.closest('[data-notice]')) { e.preventDefault(); showNotice(false); } });
+
+  /* ---------------- account dialog ---------------- */
+  function openAcct() {
+    if (!sess) return openGate('login');
+    var u = sess.user;
+    $('acAv').textContent = (u.firstName || '?').charAt(0) || '?';
+    $('acCode').textContent = u.codeMasked; $('acName').textContent = u.nameMasked;
+    var st = $('acStatus'); st.textContent = u.status === 'pending' ? 'รอผู้ดูแลตรวจสอบ' : 'ยืนยันแล้ว'; st.className = 'stt ' + (u.status === 'pending' ? 'wait' : 'ok');
+    $('acDelBox').classList.add('hidden'); $('acBtns').classList.remove('hidden'); $('acPw').value = ''; $('acErr').classList.add('hidden');
+    $('acctDlg').classList.remove('hidden');
+  }
+  $('acClose').onclick = function () { $('acctDlg').classList.add('hidden'); };
+  $('acNotice').onclick = function () { showNotice(false); };
+  $('acOut').onclick = function () { $('acctDlg').classList.add('hidden'); signOut(); };
+  $('acDel').onclick = function () { $('acBtns').classList.add('hidden'); $('acDelBox').classList.remove('hidden'); $('acPw').focus(); };
+  $('acDelCancel').onclick = function () { $('acDelBox').classList.add('hidden'); $('acBtns').classList.remove('hidden'); };
+  $('acDelGo').onclick = function () {
+    if (!sess) return;
+    var pw = $('acPw').value; if (!pw) { $('acErr').textContent = 'กรุณากรอกรหัสผ่านเพื่อยืนยัน'; $('acErr').classList.remove('hidden'); return; }
+    $('acDelGo').disabled = true;
+    post({ action: 'portalDeleteAccount', token: sess.token, password: pw }).then(function (r) {
+      $('acDelGo').disabled = false;
+      if (r && r.ok) { $('acctDlg').classList.add('hidden'); signOut(); toast('ลบบัญชีและประวัติการเข้าใช้ของท่านแล้ว'); return; }
+      $('acErr').textContent = (r && r.error) || 'ลบไม่สำเร็จ'; $('acErr').classList.remove('hidden');
+    }).catch(function () { $('acDelGo').disabled = false; $('acErr').textContent = 'เชื่อมต่อระบบไม่ได้'; $('acErr').classList.remove('hidden'); });
+  };
+
   /* ---------------- participation ---------------- */
-  var mine = {};
+  var mine = {}, joins = {};
   function renderMine(res) {
     var list = $('mineList');
     if (!res || !res.ok) {
@@ -674,8 +907,10 @@ body.focus .exit-focus{display:inline-flex}
       $('mineNote').textContent = ''; return;
     }
     mine = {}; (res.projects || []).forEach(function (p) { mine[p.key] = p; });
-    $('mineNote').textContent = 'เข้าใช้งานครั้งที่ ' + num(res.visits && res.visits.count) + (res.visits && res.visits.first ? ' · เริ่มใช้ ' + new Date(res.visits.first).toLocaleDateString('th-TH', { day: 'numeric', month: 'short', year: 'numeric' }) : '');
-    if (!res.projects.length) {
+    $('mineNote').textContent = !res.visits ? '' : 'เข้าใช้งานครั้งที่ ' + num(res.visits && res.visits.count) + (res.visits && res.visits.first ?' · เริ่มใช้ ' + new Date(res.visits.first).toLocaleDateString('th-TH', { day: 'numeric', month: 'short', year: 'numeric' }) : '');
+    if (sess && sess.user.status === 'pending') {
+      list.innerHTML = '<div class="empty"><span class="e">⏳</span><div><b>รอผู้ดูแลตรวจสอบบัญชี</b><br>ประวัติการร่วมโครงการจะแสดงหลังได้รับการอนุมัติ</div></div>';
+    } else if (!res.projects.length) {
       list.innerHTML = '<div class="empty"><span class="e">🌱</span><div><b>ยังไม่พบประวัติการร่วมโครงการ</b><br>เลือกโครงการด้านล่างเพื่อเริ่มร่วมกิจกรรมได้เลย</div></div>';
     } else {
       list.innerHTML = res.projects.map(function (p) {
@@ -689,10 +924,22 @@ body.focus .exit-focus{display:inline-flex}
   }
   $('mineList').addEventListener('click', function (e) { var m = e.target.closest('.mp'); if (m) openApp(m.dataset.page); });
   function checkin() {
+    if (!sess) return;
     $('mineList').innerHTML = '<div class="skel"></div><div class="skel"></div><div class="skel"></div>';
     var logged = false; try { logged = sessionStorage.getItem('ecoLogged') === '1'; } catch (e) {}
-    api({ api: 'portalCheckin', code: user.code, name: user.name, page: deepPage || 'home', device: /Mobi/i.test(navigator.userAgent) ? 'mobile' : 'desktop', log: logged ? '0' : '1' })
-      .then(function (r) { if (r && r.ok) try { sessionStorage.setItem('ecoLogged', '1'); } catch (e) {} renderMine(r); })
+    post({ action: 'portalCheckin', token: sess.token, page: deepPage || 'home', device: /Mobi/i.test(navigator.userAgent) ? 'mobile' : 'desktop', log: !logged, noticeVersion: NOTICE_VER })
+      .then(function (r) {
+        if (r && r.ok) {
+          try { sessionStorage.setItem('ecoLogged', '1'); } catch (e) {}
+          joins = r.joins || {};
+          persistUser(r.user); applyUser(); renderMine(r);
+          if (r.user.needAck) showNotice(true);
+        } else if (r && r.code === 'AUTH') {
+          signOut('เซสชันหมดอายุ หรือบัญชีรอการอนุมัติ กรุณาเข้าสู่ระบบอีกครั้ง');
+        } else if (r && r.code === 'UPDATE') {
+          renderMine(null);
+        } else renderMine(null);
+      })
       .catch(function () { renderMine(null); });
   }
 
@@ -728,17 +975,97 @@ body.focus .exit-focus{display:inline-flex}
   }
 
   /* ---------------- cards ---------------- */
+  var JOINABLE = { frytofly: 1, paperless: 1, cartridge: 1, kitchen: 1, calendar: 1, share: 1, em: 1, compost: 1 };
+  var STATUS_COLOR = { 'ยังไม่เริ่ม': '#9ca3af', 'กำลังดำเนินการ': '#3b82f6', 'ล่าช้า': '#ef4444', 'เสร็จสมบูรณ์': '#22c55e', 'ระงับ': '#f59e0b' };
+  var STATUS_CLS = { 'ยังไม่เริ่ม': 'sb-none', 'กำลังดำเนินการ': 'sb-prog', 'ล่าช้า': 'sb-late', 'เสร็จสมบูรณ์': 'sb-done', 'ระงับ': 'sb-hold' };
+  var ov = null, ovBy = {};
+  function badge(status) { return status ? '<span class="sbadge ' + (STATUS_CLS[status] || 'sb-none') + '">' + esc(status) + '</span>' : ''; }
+
+  function joinState(page) {
+    if (!sess) return { t: 'สมัครเข้าร่วม', cls: '', dis: false };
+    if (sess.user.status === 'pending') return { t: 'รอยืนยันบัญชีก่อน', cls: '', dis: true };
+    var s = joins[page];
+    if (s === 'approved') return { t: '✓ เป็นสมาชิกโครงการ', cls: 'ok', dis: false };
+    if (s === 'pending') return { t: '⏳ รออนุมัติ (กดเพื่อยกเลิกคำขอ)', cls: 'wait', dis: false };
+    if (s === 'rejected') return { t: 'ไม่อนุมัติ · สมัครใหม่', cls: '', dis: false };
+    return { t: 'สมัครเข้าร่วม', cls: '', dis: false };
+  }
+
   function renderCards() {
     $('cards').innerHTML = CAMPAIGNS.slice(1).map(function (c) {
-      var m = mine[c.page];
-      return '<button class="pc rv in" style="--c:' + c.c + '" data-page="' + c.page + '">' +
-        '<div class="top"><span class="e">' + c.e + '</span>' + (m ? '<span class="joined">✓ ร่วมแล้ว ' + num(m.count) + ' ครั้ง</span>' : '') + '</div>' +
+      var m = mine[c.page], o = ovBy[c.page], js = JOINABLE[c.page] ? joinState(c.page) : null;
+      var prog = o && o.progress != null ? Math.max(0, Math.min(100, o.progress)) : null;
+      return '<div class="pc rv in" role="button" tabindex="0" style="--c:' + c.c + '" data-page="' + c.page + '">' +
+        '<div class="top"><span class="e">' + c.e + '</span>' + (m ? '<span class="joined">✓ ร่วมแล้ว ' + num(m.count) + ' ครั้ง</span>' : badge(o && o.status)) + '</div>' +
         '<h3 class="disp">' + c.t + '</h3><p>' + c.d + '</p>' +
         '<div class="stat">' + esc(statFor(c.page)) + '</div>' +
-        '<span class="cta">เปิดรายละเอียด <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></button>';
+        (prog != null ? '<div class="pbar" title="ความคืบหน้า ' + prog + '%"><i style="width:' + prog + '%"></i></div><div class="meta"><span>ความคืบหน้า ' + prog + '%</span><span>' + (o.members ? '👥 สมาชิก ' + num(o.members) + ' คน' : '') + '</span></div>' : '') +
+        '<span class="cta">เปิดรายละเอียด <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>' +
+        (js ? '<button class="joinbtn ' + js.cls + '" type="button" data-join="' + c.page + '"' + (js.dis ? ' disabled' : '') + '>' + js.t + '</button>' : '') +
+        '</div>';
     }).join('');
   }
-  $('cards').addEventListener('click', function (e) { var b = e.target.closest('.pc'); if (b) openApp(b.dataset.page); });
+  $('cards').addEventListener('click', function (e) {
+    var jb = e.target.closest('.joinbtn'); if (jb) { e.stopPropagation(); return joinFlow(jb.dataset.join); }
+    var b = e.target.closest('.pc'); if (b) openApp(b.dataset.page);
+  });
+  $('cards').addEventListener('keydown', function (e) { if (e.key === 'Enter' && e.target.classList && e.target.classList.contains('pc')) openApp(e.target.dataset.page); });
+
+  /* ---------------- สมัครเข้าร่วมโครงการ (ผู้ดูแลอนุมัติ) ---------------- */
+  function joinFlow(page) {
+    var c = byPage[page] || { t: page };
+    if (!sess) { openGate('signup', 'สมัครสมาชิกเพื่อสมัครเข้าร่วม "' + c.t + '" — ผู้ดูแลระบบจะตรวจสอบและอนุมัติ'); return; }
+    if (sess.user.status === 'pending') { toast('บัญชีของท่านยังรอผู้ดูแลอนุมัติ จึงสมัครเข้าร่วมโครงการยังไม่ได้'); return; }
+    var s = joins[page];
+    if (s === 'approved') { toast('ท่านเป็นสมาชิกโครงการ "' + c.t + '" แล้ว'); return; }
+    var body, okMsg;
+    if (s === 'pending') {
+      if (!confirm('ยกเลิกคำขอเข้าร่วม "' + c.t + '" ใช่หรือไม่?')) return;
+      body = { action: 'portalJoinCancel', token: sess.token, projectKey: page }; okMsg = 'ยกเลิกคำขอเข้าร่วม "' + c.t + '" แล้ว';
+    } else {
+      body = { action: 'portalJoinRequest', token: sess.token, projectKey: page }; okMsg = 'ส่งคำขอเข้าร่วม "' + c.t + '" แล้ว — รอผู้ดูแลระบบอนุมัติ ระบบแจ้งผู้ดูแลให้แล้ว';
+    }
+    post(body).then(function (r) {
+      if (r && r.ok) { joins = r.joins || {}; renderCards(); toast(okMsg); }
+      else if (r && r.code === 'AUTH') signOut('เซสชันหมดอายุ กรุณาเข้าสู่ระบบอีกครั้ง');
+      else toast((r && r.error) || 'ทำรายการไม่สำเร็จ');
+    }).catch(function () { toast('เชื่อมต่อระบบไม่ได้ กรุณาลองใหม่'); });
+  }
+  /* ปุ่มร่วมกิจกรรมบนสไลด์ (เปิดฟอร์ม) ใช้ได้เมื่อเป็นสมาชิกโครงการที่ได้รับอนุมัติ; ปุ่มดูข้อมูลเปิดได้ทุกคน */
+  function goProject(s) {
+    if (!s.action || joins[s.page] === 'approved') return openApp(s.page, s.action);
+    if (sess && joins[s.page] === 'pending') { toast('คำขอเข้าร่วมโครงการนี้ของท่านรอผู้ดูแลระบบอนุมัติอยู่ — เมื่ออนุมัติแล้วจึงร่วมกิจกรรมได้'); return; }
+    toast('การร่วมกิจกรรมต้องเป็นสมาชิกโครงการที่ผู้ดูแลอนุมัติ — ดูรายละเอียดโครงการได้ทุกคน');
+    joinFlow(s.page);
+  }
+
+  /* ---------------- สรุปและสถานะภาพรวม (สาธารณะ) ---------------- */
+  function loadOverview() {
+    api({ api: 'portalOverview' }).then(function (r) {
+      if (!r || !r.ok) throw 0;
+      ov = r; ovBy = {}; (r.campaigns || []).forEach(function (c) { ovBy[c.key] = c; });
+      var t = r.totals, bs = t.byStatus || {}, total = Math.max(1, t.projects);
+      $('ovKpis').innerHTML =
+        '<div><b>' + num(t.projects) + '</b><span>โครงการทั้งหมด</span></div>' +
+        '<div><b>' + num(t.avgProgress) + '%</b><span>ความคืบหน้าเฉลี่ย</span></div>' +
+        '<div><b>' + num(bs['กำลังดำเนินการ'] || 0) + '</b><span>กำลังดำเนินการ</span></div>' +
+        '<div><b>' + num(bs['เสร็จสมบูรณ์'] || 0) + '</b><span>เสร็จสมบูรณ์</span></div>' +
+        '<div><b>' + num(bs['ล่าช้า'] || 0) + '</b><span>ล่าช้า</span></div>';
+      var order = ['เสร็จสมบูรณ์', 'กำลังดำเนินการ', 'ยังไม่เริ่ม', 'ระงับ', 'ล่าช้า'];
+      $('ovBar').innerHTML = order.map(function (k) { var n = bs[k] || 0; return n ? '<i style="width:' + (n / total * 100) + '%;background:' + STATUS_COLOR[k] + '" title="' + esc(k) + ' ' + n + '"></i>' : ''; }).join('');
+      $('ovLeg').innerHTML = order.map(function (k) { return '<span><i style="background:' + STATUS_COLOR[k] + '"></i>' + esc(k) + ' ' + num(bs[k] || 0) + '</span>'; }).join('');
+      $('ovNote').textContent = 'อัปเดตล่าสุด ' + new Date(r.generatedAt).toLocaleString('th-TH', { dateStyle: 'medium', timeStyle: 'short' });
+      var oth = r.others || [];
+      $('ovOthers').classList.toggle('hidden', !oth.length);
+      if (oth.length) {
+        $('ovOthSum').textContent = 'โครงการทั่วไปอื่นๆ ' + oth.length + ' โครงการ';
+        $('ovOthList').innerHTML = oth.map(function (p) {
+          return '<div class="row"><span><b>' + esc(p.name) + '</b>' + (p.category ? ' <small style="color:var(--ink-3)">· ' + esc(p.category) + '</small>' : '') + '</span><span>' + badge(p.status) + ' <small>' + num(p.progress) + '%</small></span></div>';
+        }).join('');
+      }
+      renderCards();
+    }).catch(function () { $('ovNote').textContent = HAS_APP ? 'ยังโหลดสถานะไม่ได้ ลองรีเฟรชอีกครั้ง' : 'ยังไม่ได้เชื่อมต่อระบบ'; $('ovKpis').innerHTML = ''; });
+  }
   $('reportCard').addEventListener('click', function () { openApp('envreport'); });
   $('reportCard').addEventListener('keydown', function (e) { if (e.key === 'Enter') openApp('envreport'); });
 
@@ -792,7 +1119,7 @@ body.focus .exit-focus{display:inline-flex}
   $('focusBtn').onclick = function () { setFocus(true); };
   $('exitFocus').onclick = function () { setFocus(false); };
   addEventListener('keydown', function (e) {
-    if (e.key === 'Escape') setFocus(false);
+    if (e.key === 'Escape') { setFocus(false); gate.classList.add('hidden'); }
     if ((e.key === 'Enter' || e.key === ' ') && !intro.classList.contains('gone') && !intro.classList.contains('out')) closeIntro();
   });
 
@@ -842,7 +1169,7 @@ body.focus .exit-focus{display:inline-flex}
   $('carNext').onclick = function () { goSlide(slideIdx + 1, true); };
   document.addEventListener('click', function (e) {
     var d = e.target.closest('[data-dot]'); if (d && (d.closest('#carDots') || d.closest('#carChips'))) return goSlide(Number(d.dataset.dot), true);
-    var g = e.target.closest('[data-go]'); if (g) { var s1 = SLIDES[Number(g.dataset.go)]; return openApp(s1.page, s1.action); }
+    var g = e.target.closest('[data-go]'); if (g) return goProject(SLIDES[Number(g.dataset.go)]);
     var m = e.target.closest('[data-more]'); if (m) return openApp(SLIDES[Number(m.dataset.more)].page);
   });
   car.addEventListener('mouseenter', function () { car.classList.add('paused'); });
@@ -853,12 +1180,18 @@ body.focus .exit-focus{display:inline-flex}
   restartCar();
 
   /* ---------------- start ---------------- */
+  $('loginBtn').onclick = function () { openGate('login'); };
+  $('gSkip').onclick = function () { gate.classList.add('hidden'); };
   renderCards();
   loadImpact();
+  loadOverview();
   if (deepPage) openApp(deepPage, deepAction);
   introPromise.then(function () {
-    if (user) { applyUser(); checkin(); }
-    else setTimeout(openGate, 350);
+    if (sess) { applyUser(); checkin(); }
+    else {
+      applyGuest();
+      if (hadLegacy) toast('ระบบปรับปรุงความเป็นส่วนตัว (PDPA): ผู้ใช้เดิมกรุณากด "เข้าสู่ระบบ / สมัครสมาชิก" แล้วเลือก "ใช้งานครั้งแรก" เพื่อตั้งรหัสผ่านใหม่');
+    }
   });
 })();
 </script>

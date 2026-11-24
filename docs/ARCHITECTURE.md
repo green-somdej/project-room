@@ -13,6 +13,8 @@ Browser ──google.script.run──▶ Code.gs (doGet/doPost) ──▶ Google
 | Impact | `getEnvironmentalImpactSummary` | แปลงกิจกรรมเป็นต้นไม้/CO₂ จากชีต `EnvironmentalSettings` |
 | Linked projects | `LINKED_PROJECT_*` | แถวตัวแทนแต่ละแคมเปญในชีต `Projects` เพื่อแสดงในภาพรวม/Gantt |
 | Executive Summary | `ExecSlides.gs`: `setupExecutiveSummaries`, `executiveSummaryAutoUpdate`, `xsRun_` | สร้าง Google Slides 16:9 ≤10 หน้าต่อโครงการ ผ่าน Slides API `batchUpdate` อัปเดตเมื่อลายนิ้วมือข้อมูลเปลี่ยน (ทริกเกอร์รายชั่วโมง) ลงทะเบียนในชีต `ExecutiveDecks` |
+| Executive Deck (ในระบบ) | `getExecutiveDeckData` (ExecSlides.gs) + `xd*` (JS.html) | สไลด์ 16:9 รวมทุกโครงการ ≤10 หน้า สร้างสดในเบราว์เซอร์จากรายงานสิ่งแวดล้อม + `getPeriodSummary` ทุกแคมเปญ + เป้าหมาย + สถานะโครงการ |
+| Cartridge stock | `ctgLoad_`, `ctgApplyItems_`, `ctgAllocateFifo_`, `ctgRelease_`, `ctgMerge_` | การจำหน่ายตัดยอดรายการ "รอจำหน่าย" ที่เลือก (แยกจำหน่ายได้/ไม่ได้) ผูกด้วย `SaleID` แบ่งแถวด้วย `SplitFrom` |
 | Q&A | `askAssistant` | ตอบจากข้อมูลโครงการ, ส่งอีเมลต่อเมื่อตอบไม่ได้, ปฏิเสธคำขอ PIN |
 
 ## ชีตหลัก
