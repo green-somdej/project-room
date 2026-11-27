@@ -17,6 +17,8 @@ Browser ──google.script.run──▶ Code.gs (doGet/doPost) ──▶ Google
 | Cartridge stock | `ctgLoad_`, `ctgApplyItems_`, `ctgAllocateFifo_`, `ctgRelease_`, `ctgMerge_` | การจำหน่ายตัดยอดรายการ "รอจำหน่าย" ที่เลือก (แยกจำหน่ายได้/ไม่ได้) ผูกด้วย `SaleID` แบ่งแถวด้วย `SplitFrom` |
 | Eco Hub (ร่วมโครงการ) | `Hub.gs`: `hubHandleGet_`, `hubHandlePost_`, `hubCatalog_`, `hubJoinStaff_`, `hubDeptJoin_`, `hubRegister_`, `hubAdmin_` + `docs/join.html` | ผู้ดูแลกำหนดว่าโครงการไหนเปิดให้ เจ้าหน้าที่/หน่วยงาน/ประชาชน/บริษัท (`HubProjects`) · สมัครหลายโครงการครั้งเดียว · ดูรายละเอียดใน [HUB.md](HUB.md) |
 | ปีงบประมาณ | `getPeriodSummary(key, year, basis)`, `periodYearOf_` | `basis='fiscal'` = 1 ต.ค.–30 ก.ย. (ปีงบ = ปี ค.ศ. ที่สิ้นสุด) ใช้ทั้ง Hub และการ์ดสรุปในแอป |
+| ฐานช่วงเวลาทั้งระบบ | `periodCtx_`, `setPeriodBasis_`, `pYear_`, `pSlot_`, `pLen_`, `periodInfo_`, `periodLabel_` (Code.gs) · `PB`, `pbSetBasis`, `pbMonths`, `pbYL`, ตัวเลือกช่วงเดือน (JS.html) | ฐาน `calendar` / `fiscal` / `range:M:N` = หน้าต่าง N เดือนเริ่มเดือน M ซ้ำทุกปี · key = ปีของเดือนสุดท้าย · ข้อมูลรายเดือนส่งมาเรียงตามช่อง 0..N-1 พร้อม `period` · ค่าเริ่มต้นปี พ.ศ. |
+| ที่มาของตัวเลข | `periodSource_`, `getNumberSources`, `numberSourceMeta_` (Code.gs) · `srcOpen` (JS.html) | ใช้รายการชุดเดียวกับ `getPeriodSummary` → สูตรพร้อมตัวเลขจริง ค่าสัมประสิทธิ์ (ค่าเริ่มต้น/ชีต) ชีตต้นทาง และรายการทีละแถว (≤ 2,000 ปกปิดข้อมูลบุคคล) |
 | Q&A | `askAssistant` | ตอบจากข้อมูลโครงการ, ส่งอีเมลต่อเมื่อตอบไม่ได้, ปฏิเสธคำขอ PIN |
 
 ## ชีตหลัก

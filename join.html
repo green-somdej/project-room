@@ -205,6 +205,95 @@ td.n{color:var(--line)}
 .pill{font-size:12px;border-radius:999px;padding:1px 8px;background:var(--soft);border:1px solid var(--line);margin-left:4px}
 .toast{position:fixed;left:50%;top:72px;transform:translateX(-50%);z-index:80;background:#052e22;color:#fff;border-radius:14px;padding:10px 16px;box-shadow:0 10px 30px rgba(0,0,0,.3);max-width:calc(100% - 24px);font-size:14.5px}
 footer{color:var(--ink-3);font-size:13px;text-align:center;padding:36px 0 110px}
+
+/* =====================================================================
+   ธีมธรรมชาติ สบายตา (v1.12) — เขียวใบไม้ · ครีม · เหลืองแดด · ฟ้า
+   ===================================================================== */
+:root{
+  --bg:#f6f8f0; --ink:#1f2d24; --ink-2:#4b5b50; --ink-3:#7b887f; --line:#e2e8d8; --card:#fff; --soft:#eef4e6;
+  --brand:#3a7d44; --brand-2:#6aa84f; --sun:#f2c14e; --sky:#5aa9d6;
+  --shadow:0 1px 2px rgba(40,70,40,.05),0 8px 24px rgba(40,70,40,.08); --r:20px;
+}
+[data-theme="dark"]{ --bg:#0f1a13; --ink:#e6efe6; --ink-2:#b1c2b4; --ink-3:#86978a; --line:#26392c; --card:#16241a; --soft:#1b2d20; --brand:#7cc489; --brand-2:#a5d68e; }
+body{background:radial-gradient(900px 420px at 100% -10%,#e6f3ff 0%,transparent 60%),radial-gradient(700px 360px at -10% 0,#fff6dc 0%,transparent 55%),var(--bg);background-attachment:fixed;font-size:16px}
+[data-theme="dark"] body{background:var(--bg)}
+.bar{background:rgba(255,255,255,.86);color:var(--ink);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:0 1px 0 var(--line)}
+[data-theme="dark"] .bar{background:rgba(15,26,19,.86)}
+.brand .logo{background:linear-gradient(135deg,#a8d88a,#3a7d44);color:#fff}
+.brand small{color:var(--ink-3);opacity:1}
+.tb{background:var(--soft);border-color:var(--line);color:var(--ink)}
+.tb:hover{background:#e3edd8}
+/* hero ทุ่งหญ้า */
+.nat-hero{position:relative;overflow:hidden;margin-top:18px;padding:30px 28px 64px;border-radius:28px;background:linear-gradient(180deg,#e8f5ff 0%,#f4fbef 70%);border:1px solid #dfeadf}
+[data-theme="dark"] .nat-hero{background:linear-gradient(180deg,#132733,#16241a);border-color:var(--line)}
+.nat-hills{position:absolute;left:0;right:0;bottom:0;width:100%;height:90px}
+[data-theme="dark"] .nat-hills path{fill:#1f3a26}
+.nat-sun{position:absolute;right:38px;top:26px;width:74px;height:74px;border-radius:50%;background:radial-gradient(circle at 40% 40%,#fff3c4,#f2c14e 70%);box-shadow:0 0 0 14px rgba(242,193,78,.16),0 0 0 30px rgba(242,193,78,.08)}
+.nat-hero-in{position:relative;max-width:760px}
+.nat-kick{display:inline-block;padding:5px 12px;border-radius:999px;background:#fff;border:1px solid #d7e8cf;color:var(--brand);font-weight:700;font-size:13.5px}
+[data-theme="dark"] .nat-kick{background:var(--soft);border-color:var(--line)}
+.hero h1{margin-top:10px;font-size:clamp(28px,4.6vw,42px)}
+.hero h1 em{background:linear-gradient(90deg,#3a7d44,#4f9fcf);-webkit-background-clip:text;background-clip:text}
+.hero p.lead{font-size:17px}
+.steps{list-style:none;display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.steps li{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.85);border:1px solid var(--line);border-radius:999px;padding:6px 14px 6px 6px;font-size:14.5px;color:var(--ink-3);transition:.25s}
+[data-theme="dark"] .steps li{background:var(--card)}
+.steps i{font-style:normal;width:26px;height:26px;border-radius:50%;background:#d8e3d2;color:#fff;display:grid;place-items:center;font-size:13px;font-weight:700;transition:.25s}
+.steps li.on{color:var(--ink);border-color:var(--brand);box-shadow:0 0 0 3px rgba(58,125,68,.14);font-weight:700}
+.steps li.on i{background:var(--brand)}
+.steps li.done{color:var(--brand)}
+.steps li.done i{background:var(--brand-2)}
+.steps li.done i::after{content:'✓'}
+.steps li.done i{font-size:0}.steps li.done i::after{font-size:13px}
+/* เลือกกลุ่ม */
+.who{margin-top:16px;gap:10px}
+.who button{border-radius:18px;padding:14px 16px;border-width:2px;box-shadow:none;align-items:flex-start}
+.who button .e{font-size:30px}
+.who button[aria-pressed="true"]{border-color:var(--brand);background:#f0f8ea;box-shadow:0 6px 18px -10px rgba(58,125,68,.6)}
+[data-theme="dark"] .who button[aria-pressed="true"]{background:var(--soft)}
+/* การ์ดโครงการ: แตะทั้งใบเพื่อเลือก */
+.sec-h{margin:26px 0 12px}
+.pc{border-radius:22px;border:2px solid var(--line);box-shadow:var(--shadow);padding:18px;transition:transform .15s,border-color .15s,box-shadow .15s}
+.pc::before{content:'';position:absolute;inset:0 0 auto 0;height:6px;border-radius:22px 22px 0 0;background:linear-gradient(90deg,var(--c),color-mix(in srgb,var(--c) 45%,#f2c14e))}
+.pc.tap{cursor:pointer}
+.pc.tap:hover{transform:translateY(-3px);border-color:color-mix(in srgb,var(--c) 45%,var(--line))}
+.pc.tap:focus-visible{outline:3px solid color-mix(in srgb,var(--c) 55%,transparent);outline-offset:2px}
+.pc.sel{background:color-mix(in srgb,var(--c) 6%,var(--card))}
+.pc .em{width:52px;height:52px;border-radius:16px;font-size:28px}
+.pick{border-radius:999px;height:42px;font-size:15px}
+.pick .box{width:20px;height:20px;border-radius:50%}
+.pc .acts .btn:not(.pick){border-radius:999px}
+/* แถบเลือกแล้ว */
+.basket{background:#24452c;border-radius:22px;padding:12px 12px 12px 18px}
+.basket .btn.pri{background:var(--sun);border-color:var(--sun);color:#3d2e05;border-radius:999px;height:48px;padding:0 20px;font-weight:700}
+/* ผลลัพธ์ / ข้อมูลเพิ่มเติม */
+.nat-results{margin-top:8px}
+.kpi{border-radius:18px}
+.kpi.main{background:linear-gradient(135deg,#3a7d44,#5aa9d6)}
+.nat-more{margin-top:26px;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:4px 16px}
+.nat-more summary{cursor:pointer;padding:12px 0;font-size:18px;font-weight:600;list-style:none}
+.nat-more summary::-webkit-details-marker{display:none}
+.nat-more summary small{font-family:'Sarabun',sans-serif;font-size:13px;color:var(--ink-3);font-weight:400;margin-left:6px}
+.nat-more[open] summary{border-bottom:1px solid var(--line);margin-bottom:10px}
+.nat-more-note{color:var(--ink-3);font-size:14px;margin-bottom:8px}
+/* หน้าต่างสมัคร: ฟอร์มเดียว */
+.dlg .box{border-radius:24px 24px 0 0;padding:22px 20px 20px}
+@media (min-width:700px){.dlg .box{border-radius:24px}}
+.inp{height:46px;border-radius:14px;font-size:16px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}
+@media (max-width:520px){.g2{grid-template-columns:1fr}}
+.whoami{margin-top:8px;padding:10px 14px;border-radius:14px;background:var(--soft);border:1px solid var(--line);font-size:14.5px}
+.linkb{border:0;background:none;color:var(--brand);text-decoration:underline;font-weight:600;padding:0;margin-left:6px}
+.mini-l{margin-top:8px;font-size:14px;color:var(--ink-3)}
+.okt{color:var(--ok);font-weight:700}.waitt{color:var(--ink-3)}
+.btn{border-radius:999px}
+.btn.big{height:48px;padding:0 24px;font-size:16px}
+.btn.pri{background:var(--brand);border-color:var(--brand)}
+.done-ic{width:68px;height:68px;margin:0 auto 6px;border-radius:50%;display:grid;place-items:center;font-size:34px;background:linear-gradient(135deg,#e6f5dc,#d9eefb)}
+.mcard{background:linear-gradient(135deg,#3a7d44,#4f9fcf)}
+.demo{background:#fff8e1}
+@media (max-width:640px){.nat-hero{padding:18px 16px 44px;margin-top:12px}.nat-hills{height:46px}.nat-sun{width:44px;height:44px;right:14px;top:14px}.hero h1{font-size:25px}.hero p.lead{font-size:15px}.steps li{font-size:13px;padding:4px 10px 4px 4px}.steps i{width:22px;height:22px}}
+@media (prefers-reduced-motion:reduce){.pc,.steps li,.steps i{transition:none}}
 </style>
 </head>
 <body>
@@ -221,14 +310,23 @@ footer{color:var(--ink-3);font-size:13px;text-align:center;padding:36px 0 110px}
 <div class="demo hidden" id="demoBar" role="status"></div>
 
 <main class="wrap">
-  <section class="hero">
-    <h1 class="disp">ร่วมกันดูแลสิ่งแวดล้อม <em>เริ่มได้ในคลิกเดียว</em></h1>
-    <p class="lead">เลือกว่าคุณคือใคร ระบบจะแสดงโครงการที่คุณร่วมได้ — ติ๊กได้หลายโครงการ แล้วกดสมัครครั้งเดียว</p>
-    <div class="steps" aria-label="ขั้นตอน"><span><i>1</i>เลือกว่าคุณคือใคร</span><span><i>2</i>ติ๊กโครงการที่สนใจ</span><span><i>3</i>กดสมัครครั้งเดียว</span></div>
-    <div class="who" id="who" role="group" aria-label="เลือกกลุ่มผู้เข้าร่วม"></div>
+  <section class="hero nat-hero">
+    <svg class="nat-hills" viewBox="0 0 1200 200" preserveAspectRatio="none" aria-hidden="true"><path d="M0 140 C 200 80 360 170 600 120 S 1000 60 1200 110 V200 H0Z" fill="#cfe5c0"/><path d="M0 170 C 260 120 420 190 700 150 S 1050 120 1200 150 V200 H0Z" fill="#b5d6a3"/></svg>
+    <span class="nat-sun" aria-hidden="true"></span>
+    <div class="nat-hero-in">
+      <span class="nat-kick">🌿 โรงพยาบาลสีเขียว</span>
+      <h1 class="disp">ร่วมดูแลโลกไปด้วยกัน <em>ใช้เวลาไม่ถึง 1 นาที</em></h1>
+      <p class="lead">เลือกว่าท่านคือใคร แตะโครงการที่สนใจ แล้วกดส่งครั้งเดียว — ระบบแจ้งผลทางอีเมลให้</p>
+      <ol class="steps" id="steps" aria-label="ขั้นตอน"><li id="st1"><i>1</i>ท่านคือ</li><li id="st2"><i>2</i>แตะเลือกโครงการ</li><li id="st3"><i>3</i>กรอกข้อมูลแล้วส่ง</li></ol>
+    </div>
   </section>
+  <div class="who" id="who" role="group" aria-label="เลือกกลุ่มผู้เข้าร่วม"></div>
 
-  <section aria-label="ผลลัพธ์ตามช่วงเวลา">
+  <div class="sec-h"><h2 class="disp" id="gridTitle">โครงการทั้งหมด</h2><span id="gridNote"></span></div>
+  <div class="grid" id="grid"><div class="skel"></div><div class="skel"></div><div class="skel"></div></div>
+
+  <section aria-label="ผลลัพธ์ตามช่วงเวลา" class="nat-results">
+    <div class="sec-h"><h2 class="disp">🌍 ผลลัพธ์ที่เราช่วยกันสร้าง</h2></div>
     <div class="period">
       <div class="seg" role="group" aria-label="ฐานของปี">
         <button type="button" data-basis="calendar">ปี พ.ศ.</button>
@@ -245,12 +343,12 @@ footer{color:var(--ink-3);font-size:13px;text-align:center;padding:36px 0 110px}
     </div>
   </section>
 
-  <div class="sec-h"><h2 class="disp" id="gridTitle">โครงการทั้งหมด</h2><span id="gridNote"></span></div>
-  <div class="grid" id="grid"><div class="skel"></div><div class="skel"></div><div class="skel"></div></div>
-
-  <div class="sec-h"><h2 class="disp">🏢 หน่วยงานไหน ร่วมโครงการอะไร</h2><span>ข้อมูลเฉพาะชื่อหน่วยงาน · หน่วยงานของท่านยังไม่มี? เลือก "หน่วยงาน" ด้านบนแล้วสมัครได้เลย</span></div>
-  <div class="mx-tools"><input class="inp" id="mxQ" type="search" placeholder="🔎 ค้นหาชื่อหน่วยงาน" aria-label="ค้นหาชื่อหน่วยงาน"></div>
-  <div class="tbl-wrap" id="mx"><div class="empty">กำลังโหลด…</div></div>
+  <details class="nat-more">
+    <summary class="disp">🏢 หน่วยงานไหน ร่วมโครงการอะไร <small>แตะเพื่อดู</small></summary>
+    <p class="nat-more-note">ข้อมูลเฉพาะชื่อหน่วยงาน · หน่วยงานของท่านยังไม่มี? เลือก "หน่วยงาน" ด้านบนแล้วสมัครได้เลย</p>
+    <div class="mx-tools"><input class="inp" id="mxQ" type="search" placeholder="🔎 ค้นหาชื่อหน่วยงาน" aria-label="ค้นหาชื่อหน่วยงาน"></div>
+    <div class="tbl-wrap" id="mx"><div class="empty">กำลังโหลด…</div></div>
+  </details>
 
   <footer>© <span id="yr"></span> <span id="org2">Green Somdej</span> · ตัวเลขจาก Google Sheets ของโครงการ · ค่า CO₂ เป็นค่าประมาณ · <a href="#" data-notice>ประกาศความเป็นส่วนตัว</a></footer>
 </main>
@@ -258,7 +356,7 @@ footer{color:var(--ink-3);font-size:13px;text-align:center;padding:36px 0 110px}
 <div class="basket" id="basket" aria-live="polite">
   <div class="t"><b id="bkT">เลือกแล้ว 0 โครงการ</b><span id="bkE"></span></div>
   <button class="clr" id="bkClr" type="button">ล้าง</button>
-  <button class="btn pri" id="bkGo" type="button">สมัครเข้าร่วม →</button>
+  <button class="btn pri" id="bkGo" type="button">ถัดไป: กรอกข้อมูล →</button>
 </div>
 
 <!-- dialogs -->
@@ -417,7 +515,8 @@ footer{color:var(--ink-3);font-size:13px;text-align:center;padding:36px 0 110px}
       var pickBtn = !open ? '<span class="meta">' + (p.isOpen ? 'ไม่เปิดรับ' + AUD_BY[S.aud].t : 'ปิดรับสมัครชั่วคราว · ติดตามผลได้') + '</span>'
         : (st === 'approved' || st === 'pending') ? '' :
         '<button class="btn pick" type="button" data-pick="' + p.key + '" aria-pressed="' + sel + '"><span class="box">' + (sel ? '✓' : '') + '</span>' + (sel ? 'เลือกแล้ว' : 'เลือกโครงการนี้') + '</button>';
-      return '<article class="pc' + (sel ? ' sel' : '') + (open ? '' : ' off') + '" style="--c:' + esc(p.color) + '">' +
+      var tappable = open && st !== 'approved' && st !== 'pending';
+      return '<article class="pc' + (sel ? ' sel' : '') + (open ? '' : ' off') + (tappable ? ' tap' : '') + '" style="--c:' + esc(p.color) + '"' + (tappable ? ' data-card="' + esc(p.key) + '" tabindex="0" role="checkbox" aria-checked="' + sel + '" aria-label="' + esc(p.label) + '"' : '') + '>' +
         (st && ST_TXT[st] ? '<span class="st ' + ST_TXT[st][0] + '">' + ST_TXT[st][1] + '</span>' : '') +
         '<div class="top"><span class="em" aria-hidden="true">' + esc(p.emoji) + '</span><div><h3 class="disp">' + esc(p.label) + '</h3>' +
         '<div class="aud" aria-label="เปิดรับ: ' + AUD.filter(function (a) { return p.audiences[a.k]; }).map(function (a) { return a.t; }).join(', ') + '"><small>เปิดรับ</small>' +
@@ -429,10 +528,16 @@ footer{color:var(--ink-3);font-size:13px;text-align:center;padding:36px 0 110px}
         '<div class="acts">' + pickBtn + act + '<button class="btn" type="button" data-stat="' + p.key + '">📈 ดูสถิติ</button></div></article>';
     }).join('') || '<div class="empty">ยังไม่มีโครงการ</div>';
   }
+  function togglePick(k) { if (S.pick[k]) delete S.pick[k]; else S.pick[k] = 1; paintGrid(); paintBasket(); }
   $('grid').addEventListener('click', function (e) {
-    var b = e.target.closest('[data-pick]');
-    if (b) { var k = b.dataset.pick; if (S.pick[k]) delete S.pick[k]; else S.pick[k] = 1; paintGrid(); paintBasket(); return; }
-    var s = e.target.closest('[data-stat]'); if (s) openStats(s.dataset.stat);
+    var s = e.target.closest('[data-stat]'); if (s) return openStats(s.dataset.stat);
+    if (e.target.closest('a')) return;
+    var b = e.target.closest('[data-pick]') || e.target.closest('[data-card]');   // แตะตรงไหนของการ์ดก็เลือกได้
+    if (b) togglePick(b.dataset.pick || b.dataset.card);
+  });
+  $('grid').addEventListener('keydown', function (e) {
+    var c = e.target.closest && e.target.closest('[data-card]');
+    if (c && e.target === c && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); togglePick(c.dataset.card); }
   });
   function appLink(page, action) { return 'index.html?page=' + encodeURIComponent(page) + (action ? '&action=' + encodeURIComponent(action) : ''); }
 
@@ -441,6 +546,7 @@ footer{color:var(--ink-3);font-size:13px;text-align:center;padding:36px 0 110px}
   function paintBasket() {
     var L = picked();
     $('basket').classList.toggle('show', L.length > 0);
+    $('st1').className = 'done'; $('st2').className = L.length ? 'done' : 'on'; $('st3').className = L.length ? 'on' : '';
     $('bkT').textContent = 'เลือกแล้ว ' + L.length + ' โครงการ · สมัครในนาม' + AUD_BY[S.aud].t;
     $('bkE').textContent = L.map(function (p) { return p.emoji; }).join(' ');
   }
@@ -460,12 +566,125 @@ footer{color:var(--ink-3);font-size:13px;text-align:center;padding:36px 0 110px}
   function v(id) { var el = $(id); return el ? String(el.value || '').trim() : ''; }
 
   /* ======================= สมัครเข้าร่วม ======================= */
-  function openJoin() {
+  /**
+   * ฟอร์มเดียว ส่งครั้งเดียว — รวมเข้าสู่ระบบ/ลงทะเบียน + ข้อมูลที่จำเป็น + อีเมลรับแจ้งผล ไว้ในหน้าต่างเดียว
+   * (เดิม: เข้าสู่ระบบ → ยืนยัน → กรอกข้อมูล → เสร็จ = 3–4 หน้าต่าง)
+   */
+  var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+  function openJoin(forceMode) {
     var L = picked(); if (!L.length) return;
-    if (S.aud === 'staff') return S.sess ? joinStaffConfirm(L) : staffLogin('สมัครโครงการในนามเจ้าหน้าที่ ต้องเข้าสู่ระบบด้วยรหัสเจ้าหน้าที่ก่อน (ครั้งแรกเท่านั้น)', function () { joinStaffConfirm(picked()); });
-    if (S.aud === 'dept') return S.sess ? joinDeptForm(L) : staffLogin('การสมัครในนามหน่วยงาน ยื่นโดยเจ้าหน้าที่ของหน่วยงาน — กรุณาเข้าสู่ระบบก่อน', function () { joinDeptForm(picked()); });
-    if (S.member && S.member.type === S.aud) return joinMemberConfirm(L);
-    registerForm(L);
+    var aud = S.aud, staffLike = aud === 'staff' || aud === 'dept';
+    var mode = forceMode || (staffLike ? (S.sess ? 'sess' : 'login') : (S.member && S.member.type === aud ? 'saved' : 'register'));
+    var co = aud === 'company', lastEmail = load('hubEmail') || '';
+    var needEmail = mode !== 'saved' && mode !== 'member';
+    var html = '<h2 class="disp" id="dlgT">' + AUD_BY[aud].e + ' สมัคร ' + L.length + ' โครงการ</h2>' +
+      '<p class="sub">กรอกครั้งเดียวแล้วกดส่ง — ' + L.map(function (p) { return esc(p.emoji) + ' ' + esc(p.label) + (p.autoApprove && aud !== 'dept' ? ' <b class="okt">(เป็นสมาชิกทันที)</b>' : ' <span class="waitt">(รออนุมัติ)</span>'); }).join(' · ') + '</p>' +
+      '<form id="fJoin" novalidate>';
+    if (staffLike) {
+      if (mode === 'sess') {
+        html += '<div class="whoami">✅ ' + esc(S.sess.user.nameMasked) + ' · รหัส ' + esc(S.sess.user.codeMasked) + (S.sess.user.status === 'pending' ? ' <span class="st wait">บัญชีรอยืนยัน</span>' : '') +
+          ' <button type="button" class="linkb" id="fSwitch">ไม่ใช่ฉัน</button></div>';
+      } else {
+        var su = mode === 'signup';
+        html += '<div class="tabs" role="tablist"><button type="button" role="tab" aria-selected="' + !su + '" data-m="login">มีบัญชีแล้ว</button><button type="button" role="tab" aria-selected="' + su + '" data-m="signup">ใช้ครั้งแรก</button></div>' +
+          '<div class="g2"><label class="fld"><span>รหัสเจ้าหน้าที่ 7 หลัก</span><input class="inp" id="fCode" type="password" inputmode="numeric" maxlength="7" autocomplete="off" placeholder="•••••••"></label>' +
+          '<label class="fld"><span>' + (su ? 'ตั้งรหัสผ่าน (8 ตัวขึ้นไป)' : 'รหัสผ่าน') + '</span><input class="inp" id="fPw" type="password" maxlength="100" autocomplete="' + (su ? 'new-password' : 'current-password') + '"></label></div>' +
+          (su ? '<label class="fld"><span>ชื่อ-นามสกุล</span><input class="inp" id="fName" maxlength="100" autocomplete="off" placeholder="เช่น สมชาย ใจดี"></label>' : '');
+      }
+      if (aud === 'dept') {
+        var names = (S.matrix && S.matrix.names) || [];
+        html += '<label class="fld"><span>ชื่อหน่วยงาน</span><input class="inp" id="fDept" list="deptList" maxlength="120" placeholder="พิมพ์หรือเลือกจากรายการ" value="' + esc(load('hubDept') || '') + '"></label>' +
+          '<datalist id="deptList">' + names.map(function (n) { return '<option value="' + esc(n) + '">'; }).join('') + '</datalist>';
+      }
+    } else if (mode === 'saved') {
+      html += '<div class="whoami">✅ ' + esc(S.member.orgName || S.member.nameMasked) + ' · รหัสสมาชิก ' + esc(S.member.memberId) + ' <button type="button" class="linkb" id="fSwitch">ไม่ใช่ฉัน</button></div>';
+    } else if (mode === 'member') {
+      html += '<div class="g2"><label class="fld"><span>รหัสสมาชิก</span><input class="inp" id="fMid" maxlength="10" autocomplete="off" placeholder="เช่น P-7KQ2MX" style="text-transform:uppercase;letter-spacing:2px"></label>' +
+        '<label class="fld"><span>เบอร์โทรที่ลงทะเบียน</span><input class="inp" id="fPhone" type="tel" inputmode="tel" maxlength="15" autocomplete="tel"></label></div>' +
+        '<p class="mini-l"><button type="button" class="linkb" id="fNew">ยังไม่เคยลงทะเบียน</button> · <button type="button" class="linkb" id="fLost">ลืมรหัสสมาชิก</button></p>';
+    } else {
+      html += (co ? '<label class="fld"><span>ชื่อบริษัท/องค์กร</span><input class="inp" id="fOrg" maxlength="150" autocomplete="organization"></label>' : '') +
+        '<div class="g2"><label class="fld"><span>' + (co ? 'ชื่อผู้ติดต่อ' : 'ชื่อ-นามสกุล') + '</span><input class="inp" id="fName" maxlength="100" autocomplete="name"></label>' +
+        '<label class="fld"><span>เบอร์โทร</span><input class="inp" id="fPhone" type="tel" inputmode="tel" maxlength="15" autocomplete="tel" placeholder="08x-xxx-xxxx"></label></div>' +
+        '<p class="mini-l">เคยลงทะเบียนแล้ว? <button type="button" class="linkb" id="fHave">ใช้รหัสสมาชิกเดิม</button></p>';
+    }
+    if (needEmail) html += '<label class="fld"><span>📧 อีเมลรับแจ้งผลและลิงก์เข้าโครงการ</span><input class="inp" id="fEmail" type="email" maxlength="120" autocomplete="email" value="' + esc(lastEmail) + '"></label>';
+    if (mode === 'signup' || mode === 'register') html += consentHtml();
+    html += '<label class="chk"><input type="checkbox" id="fRem" checked><span>จดจำบนอุปกรณ์นี้ ครั้งหน้าไม่ต้องกรอกซ้ำ</span></label>' +
+      '<div class="err hidden" id="fErr" role="alert"></div>' +
+      '<div class="row"><button class="btn" type="button" data-close>ยกเลิก</button><button class="btn pri big" id="fGo" type="submit">📨 ส่งใบสมัคร</button></div></form>';
+    openDlg(html);
+
+    $('dlgBody').querySelectorAll('[data-m]').forEach(function (b) { b.onclick = function () { openJoin(b.dataset.m); }; });
+    var on = function (id, fn) { var el = $(id); if (el) el.onclick = fn; };
+    on('fSwitch', function () { if (staffLike) { signOutStaff(); openJoin('login'); } else { saveMember(null); openJoin('register'); } });
+    on('fHave', function () { openJoin('member'); });
+    on('fNew', function () { openJoin('register'); });
+    on('fLost', recoverForm);
+    if ($('fCode')) $('fCode').addEventListener('input', function () { this.value = this.value.replace(/\D/g, '').slice(0, 7); });
+
+    $('fJoin').onsubmit = function (e) {
+      e.preventDefault();
+      var keys = L.map(function (p) { return p.key; }), rem = $('fRem').checked, email = v('fEmail');
+      if (needEmail && !EMAIL_RE.test(email)) return showErr('กรุณากรอกอีเมลให้ถูกต้อง — ระบบส่งผลการสมัครและลิงก์เข้าโครงการไปที่อีเมลนี้');
+      if ((mode === 'signup' || mode === 'register') && !$('fAck').checked) return showErr('กรุณาติ๊กรับทราบประกาศความเป็นส่วนตัว');
+      var btn = $('fGo'); busy(btn, true, 'กำลังส่ง…');
+      var fail = function (m) { busy(btn, false, ' '); showErr(m); };
+      var step;
+      if (staffLike) {
+        var dept = aud === 'dept' ? v('fDept').replace(/\s+/g, ' ') : '';
+        if (aud === 'dept' && dept.length < 2) return fail('กรุณาระบุชื่อหน่วยงาน');
+        var auth = Promise.resolve(S.sess && S.sess.token);
+        if (mode !== 'sess') {
+          var code = v('fCode'), pw = $('fPw').value, nm = mode === 'signup' ? v('fName').replace(/\s+/g, ' ') : '';
+          if (!/^\d{7}$/.test(code)) return fail('รหัสเจ้าหน้าที่ต้องเป็นตัวเลข 7 หลัก');
+          if (mode === 'signup' && (nm.length < 3 || nm.indexOf(' ') === -1)) return fail('กรุณากรอกทั้งชื่อและนามสกุล');
+          if (pw.length < (mode === 'signup' ? 8 : 1)) return fail(mode === 'signup' ? 'รหัสผ่านต้องมีอย่างน้อย 8 ตัวอักษร' : 'กรุณากรอกรหัสผ่าน');
+          auth = post(mode === 'signup' ? { action: 'portalSignup', code: code, name: nm, password: pw, ack: true, noticeVersion: NOTICE_VER } : { action: 'portalLogin', code: code, password: pw, noticeVersion: NOTICE_VER })
+            .then(function (r) {
+              if (!r || !r.ok) throw new Error((r && r.error) || 'เข้าสู่ระบบไม่สำเร็จ');
+              S.sess = { token: r.token, user: r.user };
+              try { localStorage.removeItem(K.sess); sessionStorage.removeItem(K.sess); (rem ? localStorage : sessionStorage).setItem(K.sess, JSON.stringify(S.sess)); } catch (x) {}
+              paintMe(); return r.token;
+            });
+        }
+        step = auth.then(function (token) {
+          return post(aud === 'dept' ? { action: 'hubDeptJoin', token: token, deptName: dept, projectKeys: keys, notifyEmail: email }
+            : { action: 'hubJoinStaff', token: token, projectKeys: keys, notifyEmail: email });
+        }).then(function (r) {
+          if (r && r.code === 'AUTH') { signOutStaff(); throw new Error('เซสชันหมดอายุ กรุณาเข้าสู่ระบบอีกครั้ง'); }
+          if (!r || !r.ok) throw new Error((r && r.error) || 'สมัครไม่สำเร็จ');
+          if (aud === 'dept') store('hubDept', dept); else S.staffJoins = r.joins || {};
+          refreshMine();
+          return { r: r, title: aud === 'dept' ? 'ส่งคำขอของ "' + dept + '" แล้ว' : 'ยินดีต้อนรับสู่โครงการ!', who: aud };
+        });
+      } else if (mode === 'register') {
+        var body = { action: 'hubRegister', type: aud, name: v('fName'), orgName: co ? v('fOrg') : '', phone: v('fPhone'), email: email, ack: true, noticeVersion: NOTICE_VER, projectKeys: keys };
+        if (co && body.orgName.length < 2) return fail('กรุณากรอกชื่อบริษัท/องค์กร');
+        if (body.name.length < 2) return fail('กรุณากรอกชื่อ');
+        if (!/^0\d{8,9}$/.test(body.phone.replace(/\D/g, ''))) return fail('เบอร์โทรไม่ถูกต้อง (9–10 หลัก ขึ้นต้นด้วย 0)');
+        step = post(body).then(function (r) {
+          if (!r || !r.ok) throw new Error((r && r.error) || 'ลงทะเบียนไม่สำเร็จ');
+          saveMember({ memberId: r.member.memberId, phone: body.phone.replace(/\D/g, ''), type: r.member.type, nameMasked: r.member.nameMasked, orgName: r.member.orgName }, rem);
+          S.memberJoins = r.joins || {};
+          return { r: r, title: 'ลงทะเบียนสำเร็จ!', who: 'member', member: r.member };
+        });
+      } else {
+        var mid = mode === 'member' ? v('fMid') : S.member.memberId, ph = mode === 'member' ? v('fPhone').replace(/\D/g, '') : S.member.phone;
+        if (!mid || !ph) return fail('กรุณากรอกรหัสสมาชิกและเบอร์โทร');
+        step = post({ action: 'hubMemberJoin', memberId: mid, phone: ph, projectKeys: keys }).then(function (r) {
+          if (!r || !r.ok) throw new Error((r && r.error) || 'สมัครไม่สำเร็จ');
+          saveMember({ memberId: r.member.memberId, phone: ph, type: r.member.type, nameMasked: r.member.nameMasked, orgName: r.member.orgName }, rem);
+          S.memberJoins = r.joins || {};
+          return { r: r, title: 'สมัครเพิ่มเรียบร้อย!', who: 'member', member: r.member };
+        });
+      }
+      step.then(function (x) {
+        if (needEmail && rem) store('hubEmail', email); else if (!rem) store('hubEmail', null);
+        S.pick = {};
+        doneDlg(L, x.r.result, x.title, x.who, x.member, x.r.mailed);
+      }).catch(function (err) { fail((err && err.message) || 'เชื่อมต่อระบบไม่ได้ กรุณาลองใหม่'); });
+    };
   }
 
   /* --- เจ้าหน้าที่ --- */
@@ -503,80 +722,7 @@ footer{color:var(--ink-3);font-size:13px;text-align:center;padding:36px 0 110px}
     }
     render();
   }
-  function joinStaffConfirm(L) {
-    if (!L.length) { closeDlg(); toast('ท่านร่วมโครงการที่เลือกไว้ครบแล้ว'); return; }
-    var pend = S.sess.user.status === 'pending';
-    openDlg('<h2 class="disp" id="dlgT">ยืนยันการสมัคร ' + L.length + ' โครงการ</h2><p class="sub">ในนามเจ้าหน้าที่ ' + esc(S.sess.user.nameMasked) + ' (รหัส ' + esc(S.sess.user.codeMasked) + ')</p>' + chipsOf(L) +
-      '<div class="note">' + L.map(function (p) { return esc(p.emoji) + ' ' + esc(p.label) + ': ' + (p.autoApprove ? '<b>เป็นสมาชิกทันที</b>' : 'รอผู้ดูแลอนุมัติ'); }).join('<br>') +
-      (pend ? '<br><br>⏳ บัญชีของท่านรอผู้ดูแลยืนยันว่าเป็นเจ้าหน้าที่ — ใช้ฟอร์มของโครงการได้หลังบัญชีได้รับอนุมัติ' : '') + '</div>' +
-      '<div class="err hidden" id="fErr"></div><div class="row"><button class="btn" type="button" data-close>ยกเลิก</button><button class="btn pri" id="fGo" type="button">ยืนยันสมัคร →</button></div>');
-    $('fGo').onclick = function () {
-      var btn = this; busy(btn, true, 'กำลังบันทึก…');
-      post({ action: 'hubJoinStaff', token: S.sess.token, projectKeys: L.map(function (p) { return p.key; }) }).then(function (r) {
-        busy(btn, false, ' ');
-        if (r && r.code === 'AUTH') { signOutStaff(); return showErr('เซสชันหมดอายุ กรุณาเข้าสู่ระบบอีกครั้ง'); }
-        if (!r || !r.ok) return showErr((r && r.error) || 'สมัครไม่สำเร็จ');
-        S.staffJoins = r.joins || {}; S.pick = {};
-        doneDlg(L, r.result, 'ยินดีต้อนรับสู่โครงการ!', 'staff');
-      }).catch(function () { busy(btn, false, ' '); showErr('เชื่อมต่อระบบไม่ได้'); });
-    };
-  }
-
-  /* --- หน่วยงาน --- */
-  function joinDeptForm(L) {
-    var names = (S.matrix && S.matrix.names) || [];
-    var last = load('hubDept') || '';
-    openDlg('<h2 class="disp" id="dlgT">สมัครในนามหน่วยงาน · ' + L.length + ' โครงการ</h2><p class="sub">ยื่นโดย ' + esc(S.sess.user.nameMasked) + ' — ผู้ดูแลระบบจะตรวจสอบและเพิ่มหน่วยงานเข้าโครงการให้</p>' + chipsOf(L) +
-      '<label class="fld"><span>ชื่อหน่วยงาน</span><input class="inp" id="fDept" list="deptList" maxlength="120" placeholder="พิมพ์หรือเลือกจากรายการ" value="' + esc(last) + '"><small>ถ้าไม่มีในรายการ พิมพ์ชื่อหน่วยงานใหม่ได้เลย</small></label>' +
-      '<datalist id="deptList">' + names.map(function (n) { return '<option value="' + esc(n) + '">'; }).join('') + '</datalist>' +
-      '<label class="fld"><span>ผู้ประสานงาน / หมายเหตุ (ไม่บังคับ)</span><textarea class="inp" id="fNote" maxlength="300" placeholder="เช่น ชื่อผู้ประสานงาน เบอร์ภายใน"></textarea></label>' +
-      '<div class="err hidden" id="fErr"></div><div class="row"><button class="btn" type="button" data-close>ยกเลิก</button><button class="btn pri" id="fGo" type="button">ส่งคำขอ →</button></div>');
-    $('fGo').onclick = function () {
-      var dept = v('fDept').replace(/\s+/g, ' ');
-      if (dept.length < 2) return showErr('กรุณาระบุชื่อหน่วยงาน');
-      var btn = this; busy(btn, true, 'กำลังส่ง…');
-      post({ action: 'hubDeptJoin', token: S.sess.token, deptName: dept, note: v('fNote'), projectKeys: L.map(function (p) { return p.key; }) }).then(function (r) {
-        busy(btn, false, ' ');
-        if (r && r.code === 'AUTH') { signOutStaff(); return showErr('เซสชันหมดอายุ กรุณาเข้าสู่ระบบอีกครั้ง'); }
-        if (!r || !r.ok) return showErr((r && r.error) || 'ส่งคำขอไม่สำเร็จ');
-        store('hubDept', dept); S.pick = {};
-        refreshMine();
-        doneDlg(L, r.result, 'ส่งคำขอของ "' + dept + '" แล้ว', 'dept');
-      }).catch(function () { busy(btn, false, ' '); showErr('เชื่อมต่อระบบไม่ได้'); });
-    };
-  }
-
   /* --- ประชาชน / บริษัท --- */
-  function registerForm(L) {
-    var co = S.aud === 'company';
-    openDlg('<h2 class="disp" id="dlgT">ลงทะเบียน' + AUD_BY[S.aud].t + ' · ' + L.length + ' โครงการ</h2><p class="sub">ลงทะเบียนครั้งเดียว ไม่ต้องตั้งรหัสผ่าน — ได้ <b>รหัสสมาชิก</b> ไว้ใช้คู่กับเบอร์โทร</p>' + chipsOf(L) +
-      '<form id="fReg" novalidate>' +
-      (co ? '<label class="fld"><span>ชื่อบริษัท/องค์กร</span><input class="inp" id="fOrg" maxlength="150" autocomplete="organization"></label>' : '') +
-      '<label class="fld"><span>' + (co ? 'ชื่อผู้ติดต่อ' : 'ชื่อ-นามสกุล') + '</span><input class="inp" id="fName" maxlength="100" autocomplete="name"></label>' +
-      '<label class="fld"><span>เบอร์โทร</span><input class="inp" id="fPhone" type="tel" inputmode="tel" maxlength="15" autocomplete="tel" placeholder="08x-xxx-xxxx"></label>' +
-      '<label class="fld"><span>อีเมล (แนะนำ — ใช้รับรหัสสมาชิกและกู้รหัส)</span><input class="inp" id="fEmail" type="email" maxlength="120" autocomplete="email"></label>' +
-      consentHtml() +
-      '<label class="chk"><input type="checkbox" id="fRem" checked><span>จดจำรหัสสมาชิกบนอุปกรณ์นี้</span></label>' +
-      '<div class="err hidden" id="fErr" role="alert"></div>' +
-      '<div class="row"><button class="btn" type="button" id="fHave">มีรหัสสมาชิกแล้ว</button><button class="btn pri" id="fGo" type="submit">ลงทะเบียนและสมัคร →</button></div></form>');
-    $('fHave').onclick = function () { memberLogin(function () { joinMemberConfirm(picked()); }); };
-    $('fReg').onsubmit = function (e) {
-      e.preventDefault();
-      var body = { action: 'hubRegister', type: S.aud, name: v('fName'), orgName: co ? v('fOrg') : '', phone: v('fPhone'), email: v('fEmail'), ack: $('fAck').checked, noticeVersion: NOTICE_VER, projectKeys: L.map(function (p) { return p.key; }) };
-      if (co && body.orgName.length < 2) return showErr('กรุณากรอกชื่อบริษัท/องค์กร');
-      if (body.name.length < 2) return showErr('กรุณากรอกชื่อ');
-      if (!/^0\d{8,9}$/.test(body.phone.replace(/\D/g, ''))) return showErr('เบอร์โทรไม่ถูกต้อง (9–10 หลัก ขึ้นต้นด้วย 0)');
-      if (!body.ack) return showErr('กรุณาติ๊กรับทราบประกาศความเป็นส่วนตัว');
-      var btn = $('fGo'); busy(btn, true, 'กำลังลงทะเบียน…');
-      post(body).then(function (r) {
-        busy(btn, false, ' ');
-        if (!r || !r.ok) return showErr((r && r.error) || 'ลงทะเบียนไม่สำเร็จ');
-        saveMember({ memberId: r.member.memberId, phone: body.phone.replace(/\D/g, ''), type: r.member.type, nameMasked: r.member.nameMasked, orgName: r.member.orgName }, $('fRem').checked);
-        S.memberJoins = r.joins || {}; S.pick = {};
-        doneDlg(L, r.result, 'ลงทะเบียนสำเร็จ!', 'member', r.member);
-      }).catch(function () { busy(btn, false, ' '); showErr('เชื่อมต่อระบบไม่ได้'); });
-    };
-  }
   function saveMember(m, remember) {
     S.member = m;
     try { localStorage.removeItem(K.mem); sessionStorage.removeItem(K.mem); if (m) (remember ? localStorage : sessionStorage).setItem(K.mem, JSON.stringify(m)); } catch (e) {}
@@ -614,25 +760,8 @@ footer{color:var(--ink-3);font-size:13px;text-align:center;padding:36px 0 110px}
         .catch(function () { busy(btn, false, ' '); showErr('เชื่อมต่อระบบไม่ได้'); });
     };
   }
-  function joinMemberConfirm(L) {
-    var m = S.member;
-    if (!L.length) { closeDlg(); return; }
-    openDlg('<h2 class="disp" id="dlgT">สมัครเพิ่ม ' + L.length + ' โครงการ</h2><p class="sub">ในนาม ' + esc(m.orgName || m.nameMasked) + ' · รหัสสมาชิก ' + esc(m.memberId) + '</p>' + chipsOf(L) +
-      '<div class="err hidden" id="fErr"></div><div class="row"><button class="btn" type="button" id="fOther">ไม่ใช่ฉัน</button><button class="btn pri" id="fGo" type="button">ยืนยันสมัคร →</button></div>');
-    $('fOther').onclick = function () { saveMember(null); registerForm(L); };
-    $('fGo').onclick = function () {
-      var btn = this; busy(btn, true, 'กำลังบันทึก…');
-      post({ action: 'hubMemberJoin', memberId: m.memberId, phone: m.phone, projectKeys: L.map(function (p) { return p.key; }) }).then(function (r) {
-        busy(btn, false, ' ');
-        if (!r || !r.ok) return showErr((r && r.error) || 'สมัครไม่สำเร็จ');
-        S.memberJoins = r.joins || {}; S.pick = {};
-        doneDlg(L, r.result, 'สมัครเพิ่มเรียบร้อย!', 'member', r.member);
-      }).catch(function () { busy(btn, false, ' '); showErr('เชื่อมต่อระบบไม่ได้'); });
-    };
-  }
-
   /* --- หลังสมัครสำเร็จ: บอกขั้นต่อไปชัดๆ --- */
-  function doneDlg(L, result, title, who, member) {
+  function doneDlg(L, result, title, who, member, mailed) {
     result = result || {};
     var rows = L.map(function (p) {
       var r = result[p.key], ok = r === 'approved', wait = r === 'pending' || r === 'created';
@@ -640,7 +769,8 @@ footer{color:var(--ink-3);font-size:13px;text-align:center;padding:36px 0 110px}
       return '<li><span class="e">' + esc(p.emoji) + '</span><span class="t"><b>' + esc(p.label) + '</b><small>' + (ok ? '✓ เป็นสมาชิกแล้ว' : wait ? '⏳ รอผู้ดูแลอนุมัติ (ระบบแจ้งผู้ดูแลแล้ว)' : r === 'exists' ? 'ส่งคำขอไว้แล้วก่อนหน้านี้' : '') + '</small></span>' + go + '</li>';
     }).join('');
     var card = member ? '<div class="mcard"><small>รหัสสมาชิกของท่าน · ใช้คู่กับเบอร์โทร ' + esc(member.phoneMasked || '') + '</small><div class="id">' + esc(member.memberId) + '</div><small>' + esc(member.orgName || member.nameMasked) + (member.emailMasked ? ' · ส่งรหัสไปที่ ' + esc(member.emailMasked) + ' แล้ว' : ' · กรุณาจดหรือถ่ายภาพหน้าจอเก็บไว้') + '</small></div>' : '';
-    openDlg('<h2 class="disp" id="dlgT">🎉 ' + esc(title) + '</h2>' + card + '<ul class="jl">' + rows + '</ul>' +
+    openDlg('<div class="done-ic" aria-hidden="true">🌱</div><h2 class="disp" id="dlgT" style="text-align:center">🎉 ' + esc(title) + '</h2>' + card + '<ul class="jl">' + rows + '</ul>' +
+      (mailed ? '<div class="note">📧 ส่งอีเมลยืนยันพร้อมลิงก์เข้าแต่ละโครงการแล้ว — โครงการที่รออนุมัติ ระบบแจ้งผลทางอีเมลอีกครั้ง</div>' : '') +
       (who === 'staff' ? '<div class="note">เวลาบันทึกในฟอร์มของโครงการ ให้กรอก "รหัสสมาชิกโครงการ" = รหัสเจ้าหน้าที่ 7 หลักของท่าน</div>' : '') +
       '<div class="row"><button class="btn pri" type="button" data-close>เสร็จสิ้น</button></div>');
     paintGrid(); paintBasket(); loadHomeQuiet();
@@ -979,9 +1109,20 @@ footer{color:var(--ink-3);font-size:13px;text-align:center;padding:36px 0 110px}
     };
   })();
 
+  /* ลิงก์จากหน้าหลัก: join.html?p=<key>&aud=<กลุ่ม> → เลือกไว้ให้แล้ว เหลือแค่กดส่ง */
+  var PRE = qs.get('p'), PRE_AUD = qs.get('aud');
+  if (PRE_AUD && AUD_BY[PRE_AUD]) { S.aud = PRE_AUD; store('hubAud', S.aud); }
   paintWho(); paintPeriod(); paintMe(); paintBasket();
   S.year = curYear(S.basis);
-  loadHome().then(function () { loadMatrix(); refreshMine(); });
+  loadHome().then(function () {
+    if (PRE) {
+      var p = projBy(PRE);
+      if (p && !openFor(p)) { var a = AUD.filter(function (x) { return openFor(p, x.k); })[0]; if (a) { S.aud = a.k; store('hubAud', S.aud); paintWho(); } }
+      if (p && openFor(p)) { S.pick[PRE] = 1; paintGrid(); paintBasket(); }
+      var el = document.querySelector('[data-card="' + PRE + '"]'); if (el && el.scrollIntoView) setTimeout(function () { el.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 200);
+    }
+    loadMatrix(); refreshMine();
+  });
 })();
 </script>
 </body>
