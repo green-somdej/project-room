@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640">
+<defs>
+<linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#052e1b"/><stop offset="1" stop-color="#0b3b2e"/></linearGradient>
+<linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#22c55e"/><stop offset="1" stop-color="#0d9488"/></linearGradient>
+<radialGradient id="g1" cx=".85" cy=".1" r=".6"><stop offset="0" stop-color="#f59e0b" stop-opacity=".16"/><stop offset="1" stop-color="#f59e0b" stop-opacity="0"/></radialGradient>
+<radialGradient id="g2" cx=".1" cy=".95" r=".6"><stop offset="0" stop-color="#22c55e" stop-opacity=".3"/><stop offset="1" stop-color="#22c55e" stop-opacity="0"/></radialGradient>
+<pattern id="gr" width="48" height="48" patternUnits="userSpaceOnUse"><path d="M48 0H0V48" fill="none" stroke="#34d399" stroke-opacity=".07"/></pattern>
+</defs>
+<rect width="1280" height="640" fill="url(#bg)"/><rect width="1280" height="640" fill="url(#gr)"/><rect width="1280" height="640" fill="url(#g1)"/><rect width="1280" height="640" fill="url(#g2)"/>
+<rect x="80" y="86" width="84" height="84" rx="22" fill="url(#lg)"/>
+<g fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" transform="translate(98 104) scale(2.1)"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></g>
+<text x="80" y="285" font-family="Inter, DejaVu Sans, sans-serif" font-weight="800" font-size="78" fill="#ecfdf5" letter-spacing="-2">Hospital Eco Tracker</text>
+<text x="80" y="352" font-family="Sarabun, Noto Sans Thai, sans-serif" font-weight="600" font-size="34" fill="#6ee7b7">ระบบติดตามโครงการสิ่งแวดล้อมโรงพยาบาล</text>
+<text x="80" y="418" font-family="Inter, DejaVu Sans, sans-serif" font-size="28" fill="#9fc9b4">8 campaigns · 1 dashboard · zero servers</text>
+<g font-family="Inter, DejaVu Sans, sans-serif" font-weight="600" font-size="22">
+<rect x="80" y="476" width="214" height="52" rx="26" fill="#ffffff" fill-opacity=".08" stroke="#34d399" stroke-opacity=".4"/><text x="187" y="510" text-anchor="middle" fill="#a7f3d0">Apps Script</text>
+<rect x="310" y="476" width="214" height="52" rx="26" fill="#ffffff" fill-opacity=".08" stroke="#34d399" stroke-opacity=".4"/><text x="417" y="510" text-anchor="middle" fill="#a7f3d0">Google Sheets</text>
+<rect x="540" y="476" width="170" height="52" rx="26" fill="#ffffff" fill-opacity=".08" stroke="#34d399" stroke-opacity=".4"/><text x="625" y="510" text-anchor="middle" fill="#a7f3d0">MIT</text>
+</g>
+<g transform="translate(860 130)">
+<rect width="340" height="380" rx="26" fill="#0e2017" stroke="#1d3528" stroke-width="2"/>
+<rect x="24" y="26" width="92" height="12" rx="6" fill="#1d3528"/>
+<g><rect x="24" y="62" width="94" height="70" rx="12" fill="#12281d"/><rect x="123" y="62" width="94" height="70" rx="12" fill="#12281d"/><rect x="222" y="62" width="94" height="70" rx="12" fill="#12281d"/>
+<rect x="36" y="78" width="40" height="8" rx="4" fill="#3b5a49"/><rect x="36" y="98" width="56" height="18" rx="5" fill="#34d399"/>
+<rect x="135" y="78" width="40" height="8" rx="4" fill="#3b5a49"/><rect x="135" y="98" width="46" height="18" rx="5" fill="#fbbf24"/>
+<rect x="234" y="78" width="40" height="8" rx="4" fill="#3b5a49"/><rect x="234" y="98" width="52" height="18" rx="5" fill="#34d399"/></g>
+<rect x="24" y="152" width="292" height="130" rx="14" fill="#12281d"/>
+<g transform="translate(44 168)"><g fill="#22c55e"><rect x="0" y="62" width="18" height="38" rx="4"/><rect x="30" y="48" width="18" height="52" rx="4"/><rect x="60" y="54" width="18" height="46" rx="4"/><rect x="90" y="34" width="18" height="66" rx="4"/><rect x="120" y="40" width="18" height="60" rx="4"/><rect x="150" y="18" width="18" height="82" rx="4"/><rect x="180" y="28" width="18" height="72" rx="4"/><rect x="210" y="6" width="18" height="94" rx="4"/></g><g fill="#fbbf24"><rect x="0" y="62" width="0" height="0"/></g></g>
+<g transform="translate(24 302)"><rect width="292" height="10" rx="5" fill="#12281d"/><rect width="210" height="10" rx="5" fill="#3b82f6"/><rect y="24" width="292" height="10" rx="5" fill="#12281d"/><rect y="24" width="160" height="10" rx="5" fill="#f59e0b"/><rect y="48" width="292" height="10" rx="5" fill="#12281d"/><rect y="48" width="120" height="10" rx="5" fill="#65a30d"/></g>
+</g>
+</svg>
