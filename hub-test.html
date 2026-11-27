@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="th"><head><meta charset="utf-8"><title>Hub.gs tests</title>
+<style>body{font:14px/1.5 system-ui,sans-serif;margin:24px}li.ok{color:#166534}li.bad{color:#b91c1c;font-weight:700}code{background:#f3f4f6;padding:1px 4px;border-radius:4px}</style></head>
+<body>
+<h2>Hub.gs (ศูนย์ร่วมโครงการ) + ปีงบประมาณ — ชุดทดสอบ (ไม่ต้องติดตั้ง Node)</h2>
+<p>เปิดผ่านเว็บเซิร์ฟเวอร์ที่ชี้ไปที่รากของรีโป เช่น <code>http://localhost:8765/scripts/hub-test.html</code> — โหลด <code>src/*.gs</code> มารันบนตัวจำลอง Apps Script (ชีตในหน่วยความจำ) ไม่แตะข้อมูลจริง</p>
+<h3 id="sum">กำลังทดสอบ…</h3><ul id="out"></ul>
+<script>
+/* ---------- SHA-256 / HMAC (เหมือน portal-test.html) ---------- */
+const primes=[];for(let n=2;primes.length<64;n++){if(primes.every(p=>n%p))primes.push(n);}
+const frac=x=>x-Math.floor(x);
+const K=primes.map(p=>Math.floor(frac(Math.cbrt(p))*4294967296)>>>0);
+const H0=primes.slice(0,8).map(p=>Math.floor(frac(Math.sqrt(p))*4294967296)>>>0);
+const rotr=(x,n)=>(x>>>n)|(x<<(32-n));
+function sha256(bytes){
+  const m=Array.from(bytes,b=>b&255),l=m.length*8;m.push(0x80);while(m.length%64!==56)m.push(0);
+  for(let i=7;i>=0;i--)m.push(i>3?0:(l>>>(i*8))&255);
+  let h=H0.slice();
+  for(let o=0;o<m.length;o+=64){
+    const w=new Array(64);
+    for(let i=0;i<16;i++)w[i]=(m[o+4*i]<<24)|(m[o+4*i+1]<<16)|(m[o+4*i+2]<<8)|m[o+4*i+3];
+    for(let i=16;i<64;i++){const s0=rotr(w[i-15],7)^rotr(w[i-15],18)^(w[i-15]>>>3),s1=rotr(w[i-2],17)^rotr(w[i-2],19)^(w[i-2]>>>10);w[i]=(w[i-16]+s0+w[i-7]+s1)|0;}
+    let [a,b,c,d,e,f,g,hh]=h;
+    for(let i=0;i<64;i++){const S1=rotr(e,6)^rotr(e,11)^rotr(e,25),ch=(e&f)^(~e&g),t1=(hh+S1+ch+K[i]+w[i])|0,S0=rotr(a,2)^rotr(a,13)^rotr(a,22),mj=(a&b)^(a&c)^(b&c),t2=(S0+mj)|0;hh=g;g=f;f=e;e=(d+t1)|0;d=c;c=b;b=a;a=(t1+t2)|0;}
+    h=[h[0]+a,h[1]+b,h[2]+c,h[3]+d,h[4]+e,h[5]+f,h[6]+g,h[7]+hh].map(x=>x|0);
+  }
+  const out=[];h.forEach(x=>{out.push((x>>>24)&255,(x>>>16)&255,(x>>>8)&255,x&255);});return out;
+}
+const enc=new TextEncoder(),dec=new TextDecoder();
+const toBytes=v=>typeof v==='string'?Array.from(enc.encode(v)):Array.from(v,b=>b&255);
+function hmac(v,k){let key=k.length>64?sha256(k):k.slice();while(key.length<64)key.push(0);return sha256(key.map(b=>b^0x5c).concat(sha256(key.map(b=>b^0x36).concat(v))));}
+const hex=b=>b.map(x=>('0'+x.toString(16)).slice(-2)).join('');
+
+function mkSheet(name,rows){const s={name,data:rows.map(r=>r.slice())};
+  const rng=(r,c,nr,nc)=>({
+    getValues:()=>{const o=[];for(let i=0;i<nr;i++){const row=[];for(let j=0;j<nc;j++){const v=(s.data[r-1+i]||[])[c-1+j];row.push(v===undefined?'':v);}o.push(row);}return o;},
+    getValue:()=>{const v=(s.data[r-1]||[])[c-1];return v===undefined?'':v;},
+    setValues:vals=>{vals.forEach((row,i)=>{while(s.data.length<r+i)s.data.push([]);row.forEach((v,j)=>{s.data[r-1+i][c-1+j]=v;});});return rng(r,c,nr,nc);},
+    setValue:v=>{while(s.data.length<r)s.data.push([]);s.data[r-1][c-1]=v;return rng(r,c,nr,nc);},
+    setNumberFormat:()=>rng(r,c,nr,nc),setFontWeight:()=>rng(r,c,nr,nc),clearContent:()=>{}});
+  return Object.assign(s,{getName:()=>name,getLastRow:()=>s.data.length,getLastColumn:()=>Math.max(0,...s.data.map(r=>r.length)),
+    getDataRange:()=>rng(1,1,s.data.length,Math.max(1,...s.data.map(r=>r.length))),
+    getRange:(a,b,c,d)=>typeof a==='string'?rng(1,1,1,1):rng(a,b,c||1,d||1),
+    appendRow:row=>{s.data.push(row.slice());},deleteRow:i=>{s.data.splice(i-1,1);},setFrozenRows:()=>{}});}
+function xhr(u){const x=new XMLHttpRequest();x.open('GET',u,false);x.send();if(x.status!==200)throw new Error('โหลด '+u+' ไม่ได้ ('+x.status+') — ต้องเปิดผ่านเว็บเซิร์ฟเวอร์ ไม่ใช่ file://');return x.responseText;}
+
+const DEPT_H=['DepartmentID','DepartmentName','SortOrder','IsActive','PinHash','CreatedAt','UpdatedAt'];
+function makeEnv(){
+  const sheets={};const ss={getSheetByName:n=>sheets[n]||null,getSheets:()=>Object.values(sheets),insertSheet:n=>(sheets[n]=mkSheet(n,[]))};
+  sheets.Departments=mkSheet('Departments',[['DepartmentID','DepartmentName','DepartmentEmail','PinHash','IsAdmin','IsActive','SortOrder','CreatedAt','UpdatedAt'],
+    ['D1','งานสิ่งแวดล้อม','admin@example.org',hex(sha256(toBytes('654321'))),true,true,1,'',''],
+    ['D2','งานพัสดุ','',hex(sha256(toBytes('111111'))),false,true,2,'','']]);
+  sheets.PaperlessDepartments=mkSheet('PaperlessDepartments',[DEPT_H,['PLD-ALL','ทุกหน่วยงาน',0,true,'','',''],['PLD-1','งานเวชระเบียน',1,true,'','','']]);
+  sheets.CartridgeDepartments=mkSheet('CartridgeDepartments',[DEPT_H,['CTGD-1','งานเวชระเบียน',1,true,'','',''],['CTGD-2','งานปิด',2,false,'','','']]);
+  sheets.ShareDepartments=mkSheet('ShareDepartments',[DEPT_H]);
+  // Paperless: ต.ค.68 100 · ธ.ค.68 50 · ม.ค.69 30 · ก.ย.69 20 · ต.ค.69 7
+  sheets.PaperlessLog=mkSheet('PaperlessLog',[['LogID','Year','Month','DepartmentID','DepartmentName','ItemCount','SheetsReduced'],
+    ['L1',2025,10,'PLD-1','งานเวชระเบียน',1,100],['L2',2025,12,'PLD-1','งานเวชระเบียน',1,50],['L3',2026,1,'PLD-1','งานเวชระเบียน',1,30],
+    ['L4',2026,9,'PLD-1','งานเวชระเบียน',1,20],['L5',2026,10,'PLD-1','งานเวชระเบียน',1,7]]);
+  sheets.Projects=mkSheet('Projects',[['ProjectID','ProjectName','StatusCategory','Progress','IsArchived']]);
+  const props={},cache={},sent=[];
+  const env={
+    SpreadsheetApp:{getActiveSpreadsheet:()=>ss},
+    PropertiesService:{getScriptProperties:()=>({getProperty:k=>props[k]??null,setProperty:(k,v)=>{props[k]=v;}})},
+    CacheService:{getScriptCache:()=>({get:k=>cache[k]??null,put:(k,v)=>{cache[k]=v;},remove:k=>{delete cache[k];}})},
+    LockService:{getScriptLock:()=>({waitLock(){},releaseLock(){}})},
+    MailApp:{sendEmail:o=>sent.push(o)},Logger:{log(){}},
+    Session:{getScriptTimeZone:()=>'Asia/Bangkok',getEffectiveUser:()=>({getEmail:()=>'owner@example.org'})},
+    ScriptApp:{getService:()=>({getUrl:()=>'https://script.google.com/x/exec'}),getProjectTriggers:()=>[]},
+    ContentService:{createTextOutput:s=>({text:s,setMimeType(){return this;}}),MimeType:{JSON:'json'}},
+    HtmlService:{},Slides:{},DriveApp:{},UrlFetchApp:{},
+    Utilities:{DigestAlgorithm:{SHA_256:1},Charset:{UTF_8:1},
+      computeDigest:(a,t)=>sha256(toBytes(t)),computeHmacSha256Signature:(v,k)=>hmac(toBytes(v),toBytes(k)),
+      newBlob:x=>{const b=toBytes(x);return{getBytes:()=>b,getDataAsString:()=>dec.decode(new Uint8Array(b))};},
+      base64Encode:x=>btoa(String.fromCharCode(...toBytes(x))),
+      base64EncodeWebSafe:x=>btoa(String.fromCharCode(...toBytes(x))).replace(/\+/g,'-').replace(/\//g,'_'),
+      base64DecodeWebSafe:s=>Array.from(atob(s.replace(/-/g,'+').replace(/_/g,'/')),c=>c.charCodeAt(0)),
+      getUuid:()=>crypto.randomUUID(),
+      formatDate:(d,tz,f)=>{const p=n=>String(n).padStart(2,'0');const ds=`${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}`;return f==='yyyy-MM-dd'?ds:`${ds} ${p(d.getHours())}:${p(d.getMinutes())}`;}}
+  };
+  return {env,sheets,props,cache,sent};
+}
+
+const R=[];const T=(name,ok,info)=>R.push({name,ok:!!ok,info});
+const throwsCode=(fn,code)=>{try{fn();return false;}catch(e){return !code||e.code===code||String(e.message).includes(code);}};
+function run(){
+  const src=['Code.gs','Portal.gs','ExecSlides.gs','Hub.gs'].map(f=>xhr('../src/'+f)).join('\n;\n');
+  const world=makeEnv();const {env,sheets,cache,sent}=world;
+  const names='portalHandlePost_,hubHandlePost_,hubHandleGet_,handleApiGet_,doPost,getPeriodSummary,periodYearOf_,reviewPortalUser,portalAssertMember_,invalidateReadCache_,hubCatalog_';
+  const api=new Function(...Object.keys(env),src+'\nreturn {'+names+'};')(...Object.values(env));
+  const fresh=()=>{api.invalidateReadCache_();Object.keys(cache).filter(k=>k.indexOf('hub_stats')===0).forEach(k=>delete cache[k]);};
+  const post=b=>{fresh();return b.action.indexOf('hub')===0?api.hubHandlePost_(b):api.portalHandlePost_(b);};
+  const get=p=>{fresh();return api.hubHandleGet_(p);};
+  const ADM={departmentId:'D1',pin:'654321'};
+  const admin=(op,extra)=>post(Object.assign({action:'hubAdmin',op},ADM,extra||{}));
+  T('โหลด Code.gs+Portal.gs+ExecSlides.gs+Hub.gs รวมกันได้ (ไม่มีชื่อซ้ำ)',true);
+
+  /* ---------- ปีงบประมาณ ---------- */
+  T('ต.ค.–ธ.ค. นับเป็นปีงบถัดไป',api.periodYearOf_(new Date(2025,9,1),'fiscal')===2026&&api.periodYearOf_(new Date(2026,8,30),'fiscal')===2026&&api.periodYearOf_(new Date(2025,9,1),'calendar')===2025);
+  const cal=api.getPeriodSummary('paperless',2026,'calendar'), fy=api.getPeriodSummary('paperless',2026,'fiscal'), legacy=api.getPeriodSummary('paperless',2026);
+  T('ปีปฏิทิน 2569 = 57 แผ่น (ม.ค.30 + ก.ย.20 + ต.ค.7)',cal.yearTotal.sheets===57&&cal.basis==='calendar',cal.yearTotal);
+  T('เรียกแบบเดิม (ไม่ส่ง basis) ได้ผลเหมือนปีปฏิทิน',JSON.stringify(legacy.monthly)===JSON.stringify(cal.monthly)&&legacy.yearTotal.sheets===57);
+  T('ปีงบ 2569 = 200 แผ่น (ต.ค.68 – ก.ย.69)',fy.yearTotal.sheets===200&&fy.basis==='fiscal',fy.yearTotal);
+  T('ปีงบ: เดือนแรก ต.ค. ปี 2568 · เดือนสุดท้าย ก.ย. 2569',fy.monthly[0].month===10&&fy.monthly[0].calYear===2025&&fy.monthly[0].sheets===100&&fy.monthly[11].month===9&&fy.monthly[11].calYear===2026&&fy.monthly[11].sheets===20);
+  T('รายการปีงบ = 2570, 2569 · ปีปฏิทิน = 2569, 2568',JSON.stringify(fy.years)==='[2027,2026]'&&JSON.stringify(cal.years)==='[2026,2025]');
+  T('สะสมปีงบถึง 2569 = 200, ถึง 2570 = 207',fy.cumulative[0].year===2027&&fy.cumulative[0].sheets===207&&fy.cumulative[1].sheets===200);
+
+  /* ---------- หน้าแรก (สาธารณะ) ---------- */
+  const home=get({api:'hubHome',basis:'fiscal',year:'2026'});
+  T('hubHome สำเร็จ + สร้างชีต HubProjects 8 โครงการ',home.ok&&home.projects.length===8&&sheets.HubProjects.data.length===9,home.error);
+  const pl=home.projects.find(p=>p.key==='paperless');
+  T('ค่าเริ่มต้น: Paperless รายหน่วยงาน · ปฏิทินเปิดทุกกลุ่ม',pl.audiences.dept&&!pl.audiences.public&&home.projects.find(p=>p.key==='calendar').audiences.public);
+  T('ตัวเลขหลักบนการ์ดตามปีงบ (200 แผ่น) และสะสม (207)',pl.stats.main.year===200&&pl.stats.main.total===207,pl.stats);
+  T('จำนวนหน่วยงานที่ร่วม Paperless/ตลับหมึก มาจากชีตเดิม (ไม่นับ "ทุกหน่วยงาน"/ที่ปิด)',pl.members.dept===1&&home.projects.find(p=>p.key==='cartridge').members.dept===1);
+  T('ไม่มีเลข row ภายในหลุดออกไป',!JSON.stringify(home).includes('"row"'));
+  const hcal=get({api:'hubHome',basis:'calendar',year:'2026'});
+  T('สลับเป็นปีปฏิทิน 2569 → 57 แผ่น',hcal.projects.find(p=>p.key==='paperless').stats.main.year===57);
+  T('hubProject รายเดือนปีงบ',get({api:'hubProject',key:'paperless',basis:'fiscal',year:'2026'}).monthly[0].month===10);
+  T('ผ่าน handleApiGet_ (doGet) ได้',JSON.parse(api.handleApiGet_({api:'hubHome',basis:'calendar'}).text).ok);
+
+  /* ---------- เจ้าหน้าที่: สมัครหลายโครงการ ---------- */
+  const su=post({action:'portalSignup',code:'1234567',name:'สมชาย ใจดี',password:'password123',ack:true,noticeVersion:'v1'});
+  T('ไม่มี token สมัครไม่ได้',post({action:'hubJoinStaff',projectKeys:['em']}).code==='AUTH');
+  T('โครงการที่ไม่เปิดให้เจ้าหน้าที่ (Paperless) ถูกปฏิเสธทั้งชุด',post({action:'hubJoinStaff',token:su.token,projectKeys:['em','paperless']}).code==='NOT_OPEN');
+  const j1=post({action:'hubJoinStaff',token:su.token,projectKeys:['em','calendar','frytofly']});
+  T('บัญชีรออนุมัติก็สมัครล่วงหน้าได้ 3 โครงการในครั้งเดียว',j1.ok&&j1.accountPending&&j1.joins.em==='approved'&&j1.joins.calendar==='approved'&&j1.joins.frytofly==='approved',j1);
+  T('ฟอร์มยังไม่ผ่านจนกว่าบัญชีจะอนุมัติ',throwsCode(()=>{fresh();api.portalAssertMember_('em','1234567');}));
+  fresh();api.reviewPortalUser('D1','654321','1234567',true);
+  fresh();T('อนุมัติบัญชีแล้ว → ใช้ฟอร์มโครงการที่สมัครไว้ได้ทันที',api.portalAssertMember_('em','1234567')===true&&api.portalAssertMember_('calendar','1234567')===true);
+  T('ไม่มีแถวซ้ำเมื่อสมัครซ้ำ',(post({action:'hubJoinStaff',token:su.token,projectKeys:['em']}),sheets.PortalJoinRequests.data.length===4));
+  // ปิดอนุมัติอัตโนมัติของ "คัดแยก แบ่งปัน"
+  const catAll=admin('catalog').projects;
+  T('ผู้ดูแลอ่านการตั้งค่าได้',catAll.length===8);
+  const sv=admin('saveCatalog',{items:[Object.assign({},catAll.find(p=>p.key==='share'),{forStaff:true,forDept:true,forPublic:false,forCompany:false,isOpen:true,autoApprove:false})]});
+  T('ผู้ดูแลบันทึกการตั้งค่า',sv.ok&&sv.saved===1&&sv.projects.find(p=>p.key==='share').autoApprove===false);
+  const j2=post({action:'hubJoinStaff',token:su.token,projectKeys:['share']});
+  T('โครงการที่ปิดอนุมัติอัตโนมัติ → รออนุมัติ',j2.joins.share==='pending');
+  const ib=admin('inbox');
+  T('กล่องรออนุมัติเห็นคำขอเจ้าหน้าที่',ib.ok&&ib.staffJoins.length===1&&ib.staffJoins[0].projectKey==='share');
+  T('ผู้ดูแลอนุมัติคำขอเจ้าหน้าที่',admin('reviewStaffJoin',{requestId:ib.staffJoins[0].requestId,approve:true}).staffJoins.length===0);
+  const sst=post({action:'hubStaffStatus',token:su.token,noticeVersion:'v1'});
+  T('สถานะของฉัน (เจ้าหน้าที่) ไม่มีรหัส/ชื่อเต็ม',sst.ok&&sst.joins.share==='approved'&&!JSON.stringify(sst).includes('1234567')&&!JSON.stringify(sst).includes('ใจดี'));
+
+  /* ---------- หน่วยงาน ---------- */
+  T('หน่วยงานสมัครโครงการที่ไม่เปิดให้หน่วยงาน (ทอดไม่ทิ้ง) ไม่ได้',post({action:'hubDeptJoin',token:su.token,deptName:'งานการเงิน',projectKeys:['frytofly']}).code==='NOT_OPEN');
+  const dj=post({action:'hubDeptJoin',token:su.token,deptName:'งานการเงิน',projectKeys:['cartridge','paperless','em'],note:'ติดต่อคุณเอ ต่อ 123'});
+  T('หน่วยงานสมัคร 3 โครงการ → รออนุมัติทั้งหมด',dj.ok&&dj.joins.cartridge==='pending'&&dj.joins.paperless==='pending'&&dj.joins.em==='pending',dj);
+  const ib2=admin('inbox');
+  T('กล่องรออนุมัติเห็นคำขอหน่วยงาน 3 รายการ + บันทึกผู้ยื่นแบบปกปิด',ib2.hubJoins.length===3&&ib2.hubJoins.every(x=>x.requestedBy==='•••••67')&&ib2.hubJoins[0].note.includes('ต่อ 123'));
+  const jc=ib2.hubJoins.find(x=>x.projectKey==='cartridge'),jp=ib2.hubJoins.find(x=>x.projectKey==='paperless'),je=ib2.hubJoins.find(x=>x.projectKey==='em');
+  admin('reviewHubJoin',{joinId:jc.joinId,approve:true});
+  T('อนุมัติตลับหมึก → เพิ่มชื่อในชีต CartridgeDepartments ให้อัตโนมัติ',sheets.CartridgeDepartments.data.some(r=>r[1]==='งานการเงิน'&&r[3]===true));
+  T('Paperless ต้องตั้ง PIN ก่อนอนุมัติ',admin('reviewHubJoin',{joinId:jp.joinId,approve:true}).ok===false&&sheets.HubJoins.data.some(r=>r[0]===jp.joinId&&r[4]==='pending'));
+  admin('reviewHubJoin',{joinId:jp.joinId,approve:true,deptPin:'4321'});
+  T('ตั้ง PIN แล้วอนุมัติ Paperless ได้ (เก็บ PIN เป็นแฮช)',sheets.PaperlessDepartments.data.some(r=>r[1]==='งานการเงิน'&&r[4]===hex(sha256(toBytes('4321')))));
+  admin('reviewHubJoin',{joinId:je.joinId,approve:false});
+  const mx=get({api:'hubDepartments'});
+  const fin=mx.departments.find(d=>d.name==='งานการเงิน');
+  T('ตารางหน่วยงาน × โครงการ (สาธารณะ): งานการเงิน ร่วมตลับหมึก + Paperless (ไม่รวมที่ไม่อนุมัติ)',fin&&fin.projects.indexOf('cartridge')!==-1&&fin.projects.indexOf('paperless')!==-1&&fin.projects.indexOf('em')===-1,fin);
+  T('รายชื่อหน่วยงานให้เลือกรวมจากทุกชีต',mx.names.indexOf('งานพัสดุ')!==-1&&mx.names.indexOf('งานเวชระเบียน')!==-1);
+  T('ไม่อนุมัติแล้วยื่นใหม่ได้',post({action:'hubDeptJoin',token:su.token,deptName:'งานการเงิน',projectKeys:['em']}).joins.em==='pending');
+
+  /* ---------- ประชาชน / บริษัท ---------- */
+  const reg=b=>post(Object.assign({action:'hubRegister',type:'public',name:'มานี มีสุข',phone:'081-234-5678',email:'manee@example.com',ack:true,noticeVersion:'v1',projectKeys:['calendar','em']},b||{}));
+  T('เบอร์โทรผิด',reg({phone:'12345'}).code==='BAD_PHONE');
+  T('ต้องรับทราบ PDPA',reg({ack:false}).code==='NO_ACK');
+  T('ประชาชนสมัครโครงการรายหน่วยงาน (ตลับหมึก) ไม่ได้',reg({projectKeys:['cartridge']}).code==='NOT_OPEN');
+  const sentBefore=sent.length;
+  const r1=reg();
+  T('ลงทะเบียนประชาชน 2 โครงการ → ได้รหัสสมาชิก + อนุมัติอัตโนมัติ',r1.ok&&/^P-[A-Z0-9]{6}$/.test(r1.member.memberId)&&r1.joins.calendar==='approved'&&r1.joins.em==='approved',r1);
+  T('คำตอบปกปิดเบอร์/ชื่อ',!JSON.stringify(r1).includes('0812345678')&&!JSON.stringify(r1).includes('มีสุข')&&r1.member.phoneMasked==='08••••••78');
+  T('ส่งอีเมลรหัสสมาชิกถึงผู้ลงทะเบียน',sent.slice(sentBefore).some(m=>m.to==='manee@example.com'&&m.htmlBody.includes(r1.member.memberId)));
+  T('ข้อมูลอยู่ในชีต HubMembers',sheets.HubMembers.data.length===2);
+  T('เบอร์เดิมลงทะเบียนซ้ำไม่ได้ และไม่เปิดเผยรหัสเดิม',(()=>{const x=reg({name:'คนอื่น'});return x.code==='HAS_MEMBER'&&!JSON.stringify(x).includes(r1.member.memberId);})());
+  const mid=r1.member.memberId;
+  T('รหัสถูก เบอร์ผิด → ปฏิเสธ',post({action:'hubMemberStatus',memberId:mid,phone:'0899999999'}).code==='BAD_MEMBER');
+  const ms=post({action:'hubMemberStatus',memberId:mid.toLowerCase().replace('-',''),phone:'0812345678'});
+  T('ดูสถานะด้วยรหัส (พิมพ์เล็ก/ไม่มีขีดก็ได้) + เบอร์',ms.ok&&ms.joins.em==='approved',ms);
+  T('เข้าร่วมเพิ่ม (ปุ๋ยหมัก)',post({action:'hubMemberJoin',memberId:mid,phone:'0812345678',projectKeys:['compost']}).joins.compost==='approved');
+  T('เลิกเข้าร่วม (น้ำยา EM)',post({action:'hubMemberLeave',memberId:mid,phone:'0812345678',projectKey:'em'}).joins.em===undefined);
+  const sb=sent.length;
+  post({action:'hubRecoverMember',phone:'0812345678',email:'MANEE@example.com'});
+  T('ลืมรหัส → ส่งรหัสทางอีเมลที่ลงทะเบียน',sent.length===sb+1&&sent[sb].htmlBody.includes(mid));
+  T('ลืมรหัสด้วยอีเมลผิด → ตอบเหมือนกันแต่ไม่ส่ง',(()=>{delete cache['hub_recover_0811111111'];const x=post({action:'hubRecoverMember',phone:'0811111111',email:'x@y.z'});return x.ok&&sent.length===sb+1;})());
+  T('บริษัทต้องมีชื่อบริษัท',reg({type:'company',phone:'0822222222'}).code==='BAD_ORG');
+  const rc=reg({type:'company',name:'สมศักดิ์ ขยัน',orgName:'บริษัท กรีน จำกัด',phone:'0822222222',email:'',projectKeys:['calendar']});
+  T('บริษัทลงทะเบียน → รหัส C-',rc.ok&&/^C-/.test(rc.member.memberId)&&rc.member.orgName==='บริษัท กรีน จำกัด');
+  const h2=get({api:'hubHome',basis:'calendar'});
+  T('จำนวนสมาชิกแยกกลุ่มบนการ์ด (ปฏิทิน: เจ้าหน้าที่ 1 · ประชาชน 1 · บริษัท 1)',(()=>{const m=h2.projects.find(p=>p.key==='calendar').members;return m.staff===1&&m.public===1&&m.company===1;})());
+  T('hubHome ไม่มีข้อมูลบุคคล',!/0812345678|มานี|สมศักดิ์|1234567/.test(JSON.stringify(h2)));
+  const ml=admin('members');
+  T('ผู้ดูแลเห็นรายชื่อสมาชิกภายนอกเต็ม',ml.members.length===2&&ml.members.some(m=>m.phone==='0812345678'));
+  // ผู้ดูแลปิดปฏิทินสำหรับประชาชน
+  const c2=admin('catalog').projects.find(p=>p.key==='calendar');
+  admin('saveCatalog',{items:[Object.assign({},c2,{forStaff:true,forDept:true,forPublic:false,forCompany:true,isOpen:true,autoApprove:true})]});
+  T('ผู้ดูแลปิดรับประชาชน → ประชาชนสมัครปฏิทินไม่ได้',post({action:'hubMemberJoin',memberId:mid,phone:'0812345678',projectKeys:['calendar']}).code==='NOT_OPEN');
+  T('ลบข้อมูลของตนเอง (PDPA)',post({action:'hubMemberDelete',memberId:mid,phone:'0812345678'}).deleted&&!sheets.HubMembers.data.some(r=>r[0]===mid)&&!sheets.HubJoins.data.some(r=>r[2]===mid));
+
+  /* ---------- ผู้ดูแล ---------- */
+  T('PIN ผิด → ปฏิเสธ',post({action:'hubAdmin',op:'inbox',departmentId:'D1',pin:'000000'}).code==='ADMIN_AUTH');
+  T('หน่วยงานที่ไม่ใช่ผู้ดูแล → ปฏิเสธ',post({action:'hubAdmin',op:'inbox',departmentId:'D2',pin:'111111'}).code==='ADMIN_AUTH');
+  for(let i=0;i<5;i++)post({action:'hubAdmin',op:'login',departmentId:'D9',pin:'x'});
+  T('ผิดเกิน 5 ครั้ง → ล็อก 10 นาที',post({action:'hubAdmin',op:'login',departmentId:'D9',pin:'x'}).code==='LOCKED');
+  T('รายชื่อหน่วยงานสำหรับเข้าสู่ระบบผู้ดูแล',get({api:'hubAdminDepts'}).departments.length===2);
+  T('doPost ส่งคำสั่ง hub* ถูกที่',JSON.parse(api.doPost({postData:{contents:JSON.stringify({action:'hubAdmin',op:'login',departmentId:'D1',pin:'654321'})}}).text).admin==='งานสิ่งแวดล้อม');
+}
+try{run();}catch(e){T('เกิดข้อผิดพลาดระหว่างทดสอบ: '+e.message,false,e.stack);}
+const bad=R.filter(r=>!r.ok);
+document.getElementById('sum').textContent=(bad.length?'❌ ไม่ผ่าน '+bad.length+' / ':'✅ ผ่านทั้งหมด ')+R.length+' ข้อ';
+document.getElementById('out').innerHTML=R.map(r=>`<li class="${r.ok?'ok':'bad'}">${r.ok?'✓':'✗'} ${r.name}${r.ok||r.info===undefined?'':' — <code>'+String(typeof r.info==='object'?JSON.stringify(r.info):r.info).replace(/</g,'&lt;').slice(0,400)+'</code>'}</li>`).join('');
+window.TEST_RESULT={pass:R.length-bad.length,fail:bad.length,bad:bad.map(b=>b.name+' :: '+(typeof b.info==='object'?JSON.stringify(b.info):b.info))};
+</script>
+</body></html>
