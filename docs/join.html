@@ -539,7 +539,10 @@ body{background:radial-gradient(900px 420px at 100% -10%,#e6f3ff 0%,transparent 
     var c = e.target.closest && e.target.closest('[data-card]');
     if (c && e.target === c && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); togglePick(c.dataset.card); }
   });
-  function appLink(page, action) { return 'index.html?page=' + encodeURIComponent(page) + (action ? '&action=' + encodeURIComponent(action) : ''); }
+  function appLink(page, action) {
+    var p = projBy(page), pg = p && p.kind === 'activity' ? 'act:' + page : page;   // โครงการแบบบันทึกกิจกรรม (NextGen Office ฯลฯ)
+    return 'index.html?page=' + encodeURIComponent(pg) + (action ? '&action=' + encodeURIComponent(action) : '');
+  }
 
   /* ======================= ตะกร้าโครงการ ======================= */
   function picked() { return Object.keys(S.pick).map(projBy).filter(Boolean); }

@@ -580,6 +580,25 @@ body{font-size:16px}
     { page: 'compost',   e: '🪴', t: 'ปุ๋ยหมักใบไม้',     c: '#65a30d', d: 'เปลี่ยนใบไม้และเศษหญ้าในโรงพยาบาลเป็นปุ๋ยหมัก' }
   ];
   var byPage = {}; CAMPAIGNS.forEach(function (c) { byPage[c.page] = c; });
+  /* โครงการที่ผู้ดูแลสร้างเพิ่ม (เช่น NextGen Office) ดึงจากระบบ (?api=hubHome) — ไม่ต้องแก้หน้าเว็บนี้อีก
+     โครงการแบบบันทึกกิจกรรมเปิดในระบบหลักด้วย page = "act:<key>" */
+  function loadCatalog() {
+    return api({ api: 'hubHome' }).then(function (r) {
+      if (!r || !r.ok) return;
+      var added = false;
+      (r.projects || []).forEach(function (p) {
+        var page = p.kind === 'activity' ? 'act:' + p.key : p.key;
+        var s = p.stats && p.stats.main;
+        var stat = s ? (p.emoji + ' ' + s.label + ' ' + num(s.total, s.dec) + ' ' + s.unit) : '';
+        if (byPage[page]) { if (stat && !byPage[page].stat && p.kind === 'activity') byPage[page].stat = stat; return; }
+        var c = { page: page, key: p.key, e: p.emoji || '🌿', t: p.label, c: p.color || '#16a34a', d: p.tagline || '', stat: stat, kind: p.kind || '' };
+        CAMPAIGNS.push(c); byPage[page] = c; JOINABLE[p.key] = 1;
+        if (p.kind === 'activity') ACTIONS[p.key] = 'record';
+        added = true;
+      });
+      if (added) { renderCards(); buildChips(); }
+    }).catch(function () { /* ใช้รายการเดิม */ });
+  }
   var TIPS = [
     '🌳 กระดาษ A4 ประมาณ 8,333 แผ่น เทียบเท่าต้นไม้ 1 ต้น',
     '🛢️ น้ำมันใช้แล้ว 1 ลิตรที่นำกลับมาใช้ ช่วยลด CO₂ ได้ราว 2.5 กก.',
@@ -868,28 +887,29 @@ body{font-size:16px}
 
   /* ปุ่มเดียวต่อการ์ด: เป็นสมาชิกแล้ว → "ร่วมกิจกรรม" · รออนุมัติ → แสดงสถานะ · ยังไม่ร่วม → "ร่วมโครงการ" (ไปฟอร์มเดียวที่เลือกโครงการนี้ไว้ให้แล้ว) */
   var ACTIONS = { frytofly: 'form', cartridge: 'form', calendar: 'form', share: 'form', em: 'request', compost: 'request' };
-  function cardAction(page) {
-    var s = joins[page];
-    if (s === 'approved') return ACTIONS[page] ? '<button class="joinbtn ok" type="button" data-act="' + page + '">✓ สมาชิกแล้ว · ร่วมกิจกรรม →</button>' : '<span class="joinbtn ok">✓ เป็นสมาชิกโครงการ</span>';
+  /* k = key ของโครงการ (ใช้กับสถานะสมาชิก/หน้าสมัคร) · page = หน้าที่เปิดในระบบหลัก (โครงการแบบบันทึกกิจกรรม = "act:<key>") */
+  function cardAction(k, page) {
+    var s = joins[k];
+    if (s === 'approved') return ACTIONS[k] ? '<button class="joinbtn ok" type="button" data-act="' + esc(page) + '" data-k="' + esc(k) + '">✓ สมาชิกแล้ว · ' + (ACTIONS[k] === 'record' ? 'บันทึกกิจกรรม' : 'ร่วมกิจกรรม') + ' →</button>' : '<span class="joinbtn ok">✓ เป็นสมาชิกโครงการ</span>';
     if (s === 'pending') return '<span class="joinbtn wait">⏳ รอผู้ดูแลอนุมัติ</span>';
-    return '<a class="joinbtn" href="join.html?p=' + encodeURIComponent(page) + '">🤝 ร่วมโครงการ</a>';
+    return '<a class="joinbtn" href="join.html?p=' + encodeURIComponent(k) + '">🤝 ร่วมโครงการ</a>';
   }
 
   function renderCards() {
     $('cards').innerHTML = CAMPAIGNS.slice(1).map(function (c) {
-      var m = mine[c.page], o = ovBy[c.page], js = JOINABLE[c.page] ? cardAction(c.page) : '';
+      var k = c.key || c.page, m = mine[k], o = ovBy[k], js = JOINABLE[k] ? cardAction(k, c.page) : '';
       var prog = o && o.progress != null ? Math.max(0, Math.min(100, o.progress)) : null;
-      return '<div class="pc rv in" role="button" tabindex="0" style="--c:' + c.c + '" data-page="' + c.page + '">' +
-        '<div class="top"><span class="e">' + c.e + '</span>' + (m ? '<span class="joined">✓ ร่วมแล้ว ' + num(m.count) + ' ครั้ง</span>' : badge(o && o.status)) + '</div>' +
-        '<h3 class="disp">' + c.t + '</h3><p>' + c.d + '</p>' +
-        '<div class="stat">' + esc(statFor(c.page)) + '</div>' +
+      return '<div class="pc rv in" role="button" tabindex="0" style="--c:' + esc(c.c) + '" data-page="' + esc(c.page) + '">' +
+        '<div class="top"><span class="e">' + esc(c.e) + '</span>' + (m ? '<span class="joined">✓ ร่วมแล้ว ' + num(m.count) + ' ครั้ง</span>' : (c.kind === 'activity' && !o ? '<span class="sbadge sb-prog">✨ โครงการใหม่</span>' : badge(o && o.status))) + '</div>' +
+        '<h3 class="disp">' + esc(c.t) + '</h3><p>' + esc(c.d) + '</p>' +
+        '<div class="stat">' + esc(c.stat || statFor(c.page)) + '</div>' +
         (prog != null ? '<div class="pbar" title="ความคืบหน้า ' + prog + '%"><i style="width:' + prog + '%"></i></div><div class="meta"><span>ความคืบหน้า ' + prog + '%</span><span>' + (o.members ? '👥 สมาชิก ' + num(o.members) + ' คน' : '') + '</span></div>' : '') +
         '<span class="cta">ดูรายละเอียด <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>' +
         js + '</div>';
     }).join('');
   }
   $('cards').addEventListener('click', function (e) {
-    var act = e.target.closest('[data-act]'); if (act) { e.stopPropagation(); return openApp(act.dataset.act, ACTIONS[act.dataset.act]); }
+    var act = e.target.closest('[data-act]'); if (act) { e.stopPropagation(); return openApp(act.dataset.act, ACTIONS[act.dataset.k]); }
     if (e.target.closest('.joinbtn')) { e.stopPropagation(); return; }   // ลิงก์ไปหน้าร่วมโครงการ / ป้ายสถานะ
     var b = e.target.closest('.pc'); if (b) openApp(b.dataset.page);
   });
@@ -928,8 +948,11 @@ body{font-size:16px}
   /* ---------------- app view ---------------- */
   var frame = $('app'), stage = $('stage'), slowTimer, tipTimer, tipIdx = Math.floor(Math.random() * TIPS.length);
   var current = { page: '', action: '' };
-  $('chips').innerHTML = '<button class="back" id="backBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>หน้าหลัก</button><span class="sep"></span>' +
-    CAMPAIGNS.map(function (c) { return '<button class="chip" style="--c:' + c.c + '" data-page="' + c.page + '"><span class="e">' + c.e + '</span>' + c.t + '</button>'; }).join('');
+  function buildChips() {
+    $('chips').innerHTML = '<button class="back" id="backBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>หน้าหลัก</button><span class="sep"></span>' +
+      CAMPAIGNS.map(function (c) { return '<button class="chip' + (c.page === current.page ? ' on' : '') + '" style="--c:' + esc(c.c) + '" data-page="' + esc(c.page) + '"><span class="e">' + esc(c.e) + '</span>' + esc(c.t) + '</button>'; }).join('');
+  }
+  buildChips();
   $('chips').addEventListener('click', function (e) {
     if (e.target.closest('#backBtn')) return goHome();
     var b = e.target.closest('.chip'); if (b) openApp(b.dataset.page);
@@ -989,6 +1012,7 @@ body{font-size:16px}
   renderCards();
   loadImpact();
   loadOverview();
+  loadCatalog();
   if (deepPage) openApp(deepPage, deepAction);
   introPromise.then(function () {
     if (sess) { applyUser(); checkin(); }
