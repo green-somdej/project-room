@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="th" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ร่วมโครงการสิ่งแวดล้อม</title>
+<meta name="description" content="เลือกโครงการสิ่งแวดล้อมที่ท่านร่วมได้ — เจ้าหน้าที่ หน่วยงาน ประชาชนทั่วไป และบริษัท สมัครได้หลายโครงการในครั้งเดียว">
+<meta name="theme-color" content="#065f46">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@500;600;700&family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script>try { document.documentElement.dataset.theme = localStorage.getItem('shellTheme') || 'light'; } catch (e) {}</script>
+<script src="config.js"></script>
+<style>
+:root{
+  --bg:#f3faf6; --ink:#0b1f16; --ink-2:#3f5248; --ink-3:#6b7d73; --line:#d6e9dd; --card:#fff; --soft:#e8f6ee;
+  --brand:#047857; --brand-2:#0d9488; --warn:#b45309; --bad:#b91c1c; --ok:#15803d;
+  --shadow:0 1px 3px rgba(6,78,59,.06),0 10px 28px rgba(6,78,59,.10);
+  --r:18px;
+}
+[data-theme="dark"]{
+  --bg:#05130d; --ink:#e7f6ed; --ink-2:#a9c1b3; --ink-3:#7d968a; --line:#1a3a2d; --card:#0b2018; --soft:#10291f;
+  --brand:#34d399; --brand-2:#2dd4bf; --warn:#fbbf24; --bad:#f87171; --ok:#4ade80;
+  --shadow:0 1px 3px rgba(0,0,0,.4),0 10px 28px rgba(0,0,0,.45);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Sarabun',system-ui,sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;line-height:1.5}
+a{color:inherit}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+.disp{font-family:'Prompt','Sarabun',sans-serif;letter-spacing:-.01em}
+.hidden{display:none!important}
+.wrap{max-width:1180px;margin:0 auto;padding:0 16px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+
+/* ---------- bar ---------- */
+.bar{position:sticky;top:0;z-index:40;color:#fff;background:linear-gradient(110deg,#064e3b,#047857 40%,#0d9488 75%,#0369a1);box-shadow:0 4px 18px rgba(4,120,87,.25)}
+.bar .wrap{display:flex;align-items:center;gap:10px;height:60px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;min-width:0}
+.brand .logo{width:36px;height:36px;border-radius:11px;background:rgba(255,255,255,.18);display:grid;place-items:center;font-size:20px;flex:none}
+.brand b{display:block;font-size:16px;line-height:1.1}
+.brand small{display:block;font-size:12px;opacity:.85;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sp{flex:1}
+.tb{height:38px;border-radius:12px;border:1px solid rgba(255,255,255,.28);background:rgba(255,255,255,.12);color:#fff;padding:0 12px;display:inline-flex;align-items:center;gap:6px;font-weight:600;font-size:14px;white-space:nowrap}
+.tb:hover{background:rgba(255,255,255,.22)}
+.tb.icon{width:38px;padding:0;justify-content:center}
+@media (max-width:560px){.tb .lbl{display:none}.tb{padding:0 10px}.brand small{max-width:150px}}
+
+.demo{background:#fef3c7;color:#78350f;font-size:13.5px;text-align:center;padding:7px 12px;border-bottom:1px solid #fde68a}
+[data-theme="dark"] .demo{background:#422006;color:#fde68a;border-color:#713f12}
+
+/* ---------- hero ---------- */
+.hero{padding:28px 0 8px}
+.hero h1{font-size:clamp(26px,4.6vw,40px);line-height:1.15;font-weight:700}
+.hero h1 em{font-style:normal;background:linear-gradient(90deg,var(--brand),var(--brand-2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p.lead{color:var(--ink-2);font-size:16.5px;margin-top:8px;max-width:720px}
+.steps{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.steps span{display:inline-flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:5px 12px 5px 6px;font-size:14px;color:var(--ink-2)}
+.steps i{font-style:normal;width:22px;height:22px;border-radius:50%;background:var(--brand);color:#fff;display:grid;place-items:center;font-size:12.5px;font-weight:700}
+
+.who{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:20px}
+@media (max-width:760px){.who{grid-template-columns:repeat(2,1fr)}}
+.who button{background:var(--card);border:2px solid var(--line);border-radius:var(--r);padding:14px 14px 12px;text-align:left;display:flex;flex-direction:column;gap:2px;box-shadow:var(--shadow);transition:transform .15s,border-color .15s}
+.who button:hover{transform:translateY(-2px)}
+.who button .e{font-size:28px;line-height:1}
+.who button b{font-size:17px;margin-top:6px}
+.who button small{color:var(--ink-3);font-size:13.5px}
+.who button[aria-pressed="true"]{border-color:var(--brand);background:linear-gradient(180deg,var(--soft),var(--card))}
+.who button[aria-pressed="true"] b{color:var(--brand)}
+
+/* ---------- period + kpi ---------- */
+.panel{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:16px}
+.period{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;margin-top:18px}
+.seg{display:inline-flex;background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:3px}
+.seg button{border:0;background:transparent;border-radius:9px;padding:6px 12px;font-weight:600;font-size:14px;color:var(--ink-2)}
+.seg button[aria-pressed="true"]{background:var(--card);color:var(--brand);box-shadow:0 1px 4px rgba(0,0,0,.12)}
+.ysel{height:38px;border-radius:11px;border:1px solid var(--line);background:var(--card);padding:0 10px;font-weight:600}
+.prange{color:var(--ink-3);font-size:13.5px}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:12px}
+@media (max-width:640px){.kpis{grid-template-columns:1fr 1fr}.kpis>div:first-child{grid-column:1/-1}}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 16px}
+.kpi b{display:block;font-family:'Prompt',sans-serif;font-size:28px;line-height:1.15;font-variant-numeric:tabular-nums}
+.kpi span{color:var(--ink-3);font-size:13.5px}
+.kpi.main{background:linear-gradient(135deg,#065f46,#0d9488);color:#fff;border:0}
+.kpi.main span{color:rgba(255,255,255,.85)}
+
+/* ---------- cards ---------- */
+.sec-h{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:6px;margin:30px 0 12px}
+.sec-h h2{font-size:22px}
+.sec-h span{color:var(--ink-3);font-size:14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px}
+.pc{--c:#16a34a;position:relative;background:var(--card);border:2px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:16px;display:flex;flex-direction:column;gap:8px;transition:border-color .15s,opacity .2s}
+.pc.sel{border-color:var(--c);box-shadow:0 0 0 3px color-mix(in srgb,var(--c) 22%,transparent),var(--shadow)}
+.pc.off{opacity:.62}
+.pc .top{display:flex;align-items:flex-start;gap:10px}
+.pc .em{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;font-size:25px;flex:none;background:color-mix(in srgb,var(--c) 15%,var(--card))}
+.pc h3{font-size:17.5px;line-height:1.25}
+.pc .tg{color:var(--ink-2);font-size:14.5px}
+.pc .aud{display:flex;align-items:center;gap:4px;margin-top:3px}
+.pc .aud small{font-size:12px;color:var(--ink-3);margin-right:2px}
+.pc .aud span{font-size:15px;line-height:1;width:26px;height:24px;display:grid;place-items:center;border-radius:8px;opacity:.28;filter:grayscale(1)}
+.pc .aud span.on{opacity:1;filter:none;background:color-mix(in srgb,var(--c) 13%,transparent)}
+.pc .num{display:flex;align-items:baseline;gap:6px;flex-wrap:wrap;margin-top:2px}
+.pc .num b{font-family:'Prompt',sans-serif;font-size:24px;color:var(--c);font-variant-numeric:tabular-nums}
+.pc .num small{color:var(--ink-3);font-size:13px}
+.pc .meta{color:var(--ink-3);font-size:13px}
+.pc .st{position:absolute;top:12px;right:12px;font-size:12px;font-weight:700;border-radius:999px;padding:3px 9px}
+.st.ok{background:#dcfce7;color:#166534}.st.wait{background:#fef3c7;color:#92400e}.st.no{background:#fee2e2;color:#991b1b}
+[data-theme="dark"] .st.ok{background:#14532d;color:#bbf7d0}[data-theme="dark"] .st.wait{background:#713f12;color:#fde68a}[data-theme="dark"] .st.no{background:#7f1d1d;color:#fecaca}
+.pc .acts{display:flex;gap:8px;margin-top:auto;padding-top:6px;flex-wrap:wrap}
+.btn{height:40px;border-radius:12px;border:1px solid var(--line);background:var(--card);padding:0 14px;font-weight:600;font-size:14.5px;display:inline-flex;align-items:center;justify-content:center;gap:6px;text-decoration:none;white-space:nowrap}
+.btn:hover{border-color:var(--ink-3)}
+.btn.pri{background:var(--brand);border-color:var(--brand);color:#fff}
+[data-theme="dark"] .btn.pri{color:#022c22}
+.btn.pri:hover{filter:brightness(1.08)}
+.btn.danger{color:var(--bad);border-color:color-mix(in srgb,var(--bad) 40%,transparent)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn.sm{height:32px;padding:0 10px;font-size:13.5px;border-radius:10px}
+.pick{flex:1;min-width:120px}
+.pick[aria-pressed="true"]{background:var(--c);border-color:var(--c);color:#fff}
+.pick .box{width:18px;height:18px;border-radius:6px;border:2px solid currentColor;display:inline-grid;place-items:center;font-size:12px;line-height:1}
+.skel{height:220px;border-radius:var(--r);background:linear-gradient(90deg,var(--soft),var(--card),var(--soft));background-size:200% 100%;animation:sh 1.2s infinite}
+@keyframes sh{to{background-position:-200% 0}}
+
+/* ---------- basket ---------- */
+.basket{position:fixed;left:50%;bottom:16px;transform:translate(-50%,140%);transition:transform .25s;z-index:35;width:min(680px,calc(100% - 24px));background:#052e22;color:#fff;border-radius:18px;box-shadow:0 14px 40px rgba(0,0,0,.35);display:flex;align-items:center;gap:12px;padding:10px 10px 10px 16px}
+.basket.show{transform:translate(-50%,0)}
+.modal .basket{transform:translate(-50%,140%)}
+.modal{overflow:hidden}
+.basket .t{flex:1;min-width:0}
+.basket .t b{display:block;font-size:15.5px}
+.basket .t span{font-size:20px;letter-spacing:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+.basket .btn.pri{background:#34d399;border-color:#34d399;color:#022c22;height:46px;font-size:16px}
+.basket .clr{background:transparent;border:0;color:rgba(255,255,255,.75);font-size:13.5px;text-decoration:underline}
+
+/* ---------- dept matrix ---------- */
+.mx-tools{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.inp{height:42px;border-radius:12px;border:1px solid var(--line);background:var(--card);padding:0 12px;width:100%}
+.inp:focus,.ysel:focus{outline:2px solid var(--brand);outline-offset:1px}
+textarea.inp{height:auto;padding:10px 12px;min-height:70px;resize:vertical}
+.mx-tools .inp{max-width:340px}
+.tbl-wrap{overflow:auto;border:1px solid var(--line);border-radius:14px;background:var(--card);max-height:460px}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:center;white-space:nowrap}
+th{position:sticky;top:0;background:var(--soft);font-weight:600;z-index:1}
+td:first-child,th:first-child{text-align:left;position:sticky;left:0;background:var(--card);z-index:2}
+th:first-child{background:var(--soft);z-index:3}
+td.y{color:var(--ok);font-weight:700}
+td.n{color:var(--line)}
+.empty{padding:22px;text-align:center;color:var(--ink-3)}
+
+/* ---------- dialogs ---------- */
+.dlg{position:fixed;inset:0;z-index:60;background:rgba(2,20,13,.55);display:flex;align-items:flex-end;justify-content:center;padding:0}
+@media (min-width:700px){.dlg{align-items:center;padding:20px}}
+.dlg .box{background:var(--card);width:min(560px,100%);max-height:92vh;overflow:auto;border-radius:22px 22px 0 0;padding:20px 18px 18px;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+@media (min-width:700px){.dlg .box{border-radius:22px}}
+.dlg.wide .box{width:min(980px,100%)}
+.dlg h2{font-size:21px;margin-bottom:4px;padding-right:36px}
+.dlg .x{position:sticky;top:0;float:right;width:36px;height:36px;border-radius:50%;border:1px solid var(--line);background:var(--card);font-size:18px;margin:-6px -4px 0 0}
+.dlg .sub{color:var(--ink-2);font-size:14.5px;margin-bottom:12px}
+.fld{display:block;margin-top:10px}
+.fld>span{display:block;font-weight:600;font-size:14px;margin-bottom:4px}
+.fld>small{display:block;color:var(--ink-3);font-size:12.5px;margin-top:3px}
+.chk{display:flex;gap:8px;align-items:flex-start;margin-top:12px;font-size:14px;color:var(--ink-2)}
+.chk input{margin-top:4px;width:17px;height:17px;flex:none;accent-color:var(--brand)}
+.err{margin-top:10px;background:#fee2e2;color:#991b1b;border-radius:12px;padding:9px 12px;font-size:14px}
+[data-theme="dark"] .err{background:#450a0a;color:#fecaca}
+.note{margin-top:10px;background:var(--soft);border-radius:12px;padding:9px 12px;font-size:13.5px;color:var(--ink-2)}
+.row{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;margin-top:16px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 4px}
+.chips span{background:var(--soft);border:1px solid var(--line);border-radius:999px;padding:3px 10px;font-size:13.5px}
+.tabs{display:flex;gap:6px;border-bottom:1px solid var(--line);margin:10px 0 12px;overflow-x:auto}
+.tabs button{border:0;background:none;padding:8px 12px;font-weight:600;color:var(--ink-3);border-bottom:3px solid transparent;white-space:nowrap}
+.tabs button[aria-selected="true"]{color:var(--brand);border-bottom-color:var(--brand)}
+.mcard{border-radius:18px;padding:18px;color:#fff;background:linear-gradient(135deg,#065f46,#0d9488 60%,#0369a1);margin-top:6px}
+.mcard small{opacity:.85}
+.mcard .id{font-family:'Prompt',sans-serif;font-size:32px;letter-spacing:3px;margin:4px 0}
+.jl{list-style:none;margin-top:8px}
+.jl li{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line)}
+.jl li .e{font-size:22px}
+.jl li .t{flex:1;min-width:0}
+.jl li small{color:var(--ink-3);display:block}
+
+/* ---------- stats drawer ---------- */
+.chart{display:grid;grid-template-columns:repeat(12,1fr);gap:6px;align-items:end;height:170px;margin:14px 0 6px;padding:0 2px}
+.chart .c{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:4px;min-width:0}
+.chart .c i{display:block;width:100%;max-width:34px;border-radius:7px 7px 3px 3px;background:var(--c,#16a34a);min-height:2px;transition:height .4s}
+.chart .c.z i{background:var(--line)}
+.chart .c small{font-size:11px;color:var(--ink-3)}
+.chart .c em{font-style:normal;font-size:10.5px;color:var(--ink-2);font-variant-numeric:tabular-nums;white-space:nowrap}
+@media (max-width:520px){.chart .c em{display:none}}
+.mini{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;margin-top:12px}
+.mini div{background:var(--soft);border-radius:12px;padding:9px 11px}
+.mini b{display:block;font-family:'Prompt',sans-serif;font-size:18px;font-variant-numeric:tabular-nums}
+.mini span{font-size:12.5px;color:var(--ink-3)}
+
+/* admin */
+.adm-tbl td,.adm-tbl th{font-size:13.5px;padding:7px 8px}
+.adm-tbl input[type=checkbox]{width:18px;height:18px;accent-color:var(--brand)}
+.adm-tbl input.inp{height:34px;min-width:200px;font-size:13.5px}
+.ri{border:1px solid var(--line);border-radius:14px;padding:11px 12px;margin-top:8px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.ri .t{flex:1;min-width:200px}
+.ri small{display:block;color:var(--ink-3)}
+.pill{font-size:12px;border-radius:999px;padding:1px 8px;background:var(--soft);border:1px solid var(--line);margin-left:4px}
+.toast{position:fixed;left:50%;top:72px;transform:translateX(-50%);z-index:80;background:#052e22;color:#fff;border-radius:14px;padding:10px 16px;box-shadow:0 10px 30px rgba(0,0,0,.3);max-width:calc(100% - 24px);font-size:14.5px}
+footer{color:var(--ink-3);font-size:13px;text-align:center;padding:36px 0 110px}
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <div class="wrap">
+    <a class="brand" href="index.html" title="กลับหน้าหลักของระบบ"><span class="logo">🌱</span><span><b class="disp" id="org">Green Somdej</b><small>ร่วมโครงการสิ่งแวดล้อม</small></span></a>
+    <span class="sp"></span>
+    <button class="tb" id="meBtn" type="button"><span aria-hidden="true">👤</span><span class="lbl" id="meLbl">การร่วมของฉัน</span></button>
+    <button class="tb" id="admBtn" type="button" title="สำหรับผู้ดูแลระบบ"><span aria-hidden="true">🛠️</span><span class="lbl">ผู้ดูแล</span></button>
+    <button class="tb icon" id="themeBtn" type="button" title="สลับธีมสว่าง/มืด" aria-label="สลับธีม">🌓</button>
+  </div>
+</header>
+<div class="demo hidden" id="demoBar" role="status"></div>
+
+<main class="wrap">
+  <section class="hero">
+    <h1 class="disp">ร่วมกันดูแลสิ่งแวดล้อม <em>เริ่มได้ในคลิกเดียว</em></h1>
+    <p class="lead">เลือกว่าคุณคือใคร ระบบจะแสดงโครงการที่คุณร่วมได้ — ติ๊กได้หลายโครงการ แล้วกดสมัครครั้งเดียว</p>
+    <div class="steps" aria-label="ขั้นตอน"><span><i>1</i>เลือกว่าคุณคือใคร</span><span><i>2</i>ติ๊กโครงการที่สนใจ</span><span><i>3</i>กดสมัครครั้งเดียว</span></div>
+    <div class="who" id="who" role="group" aria-label="เลือกกลุ่มผู้เข้าร่วม"></div>
+  </section>
+
+  <section aria-label="ผลลัพธ์ตามช่วงเวลา">
+    <div class="period">
+      <div class="seg" role="group" aria-label="ฐานของปี">
+        <button type="button" data-basis="calendar">ปี พ.ศ.</button>
+        <button type="button" data-basis="fiscal">ปีงบประมาณ</button>
+      </div>
+      <label class="sr" for="year">เลือกปี</label>
+      <select class="ysel" id="year"></select>
+      <span class="prange" id="prange"></span>
+    </div>
+    <div class="kpis">
+      <div class="kpi main"><b id="kCo2">–</b><span id="kCo2L">CO₂ ที่ลดได้</span></div>
+      <div class="kpi"><b id="kOpen">–</b><span id="kOpenL">โครงการที่เปิดรับ</span></div>
+      <div class="kpi"><b id="kMem">–</b><span>สมาชิกและหน่วยงานที่ร่วม</span></div>
+    </div>
+  </section>
+
+  <div class="sec-h"><h2 class="disp" id="gridTitle">โครงการทั้งหมด</h2><span id="gridNote"></span></div>
+  <div class="grid" id="grid"><div class="skel"></div><div class="skel"></div><div class="skel"></div></div>
+
+  <div class="sec-h"><h2 class="disp">🏢 หน่วยงานไหน ร่วมโครงการอะไร</h2><span>ข้อมูลเฉพาะชื่อหน่วยงาน · หน่วยงานของท่านยังไม่มี? เลือก "หน่วยงาน" ด้านบนแล้วสมัครได้เลย</span></div>
+  <div class="mx-tools"><input class="inp" id="mxQ" type="search" placeholder="🔎 ค้นหาชื่อหน่วยงาน" aria-label="ค้นหาชื่อหน่วยงาน"></div>
+  <div class="tbl-wrap" id="mx"><div class="empty">กำลังโหลด…</div></div>
+
+  <footer>© <span id="yr"></span> <span id="org2">Green Somdej</span> · ตัวเลขจาก Google Sheets ของโครงการ · ค่า CO₂ เป็นค่าประมาณ · <a href="#" data-notice>ประกาศความเป็นส่วนตัว</a></footer>
+</main>
+
+<div class="basket" id="basket" aria-live="polite">
+  <div class="t"><b id="bkT">เลือกแล้ว 0 โครงการ</b><span id="bkE"></span></div>
+  <button class="clr" id="bkClr" type="button">ล้าง</button>
+  <button class="btn pri" id="bkGo" type="button">สมัครเข้าร่วม →</button>
+</div>
+
+<!-- dialogs -->
+<div class="dlg hidden" id="dlg" role="dialog" aria-modal="true" aria-labelledby="dlgT">
+  <div class="box"><button class="x" type="button" data-close aria-label="ปิด">✕</button><div id="dlgBody"></div></div>
+</div>
+<div class="dlg hidden" id="ntDlg" role="dialog" aria-modal="true" style="z-index:70"><div class="box" id="ntBody"></div></div>
+<div class="toast hidden" id="toast" role="status"></div>
+
+<script>
+(function () {
+  'use strict';
+  var CFG = window.ECO_CONFIG || {};
+  var APP_URL = String(CFG.APP_URL || '').trim();
+  var qs = new URLSearchParams(location.search);
+  var HAS_APP = /^https:\/\/script\.google(usercontent)?\.com\//.test(APP_URL) && qs.get('demo') !== '1';
+  var DEMO = !HAS_APP;
+  var PRIV = CFG.PRIVACY || {};
+  var NOTICE_VER = String(PRIV.VERSION || 'v1');
+  var $ = function (id) { return document.getElementById(id); };
+  var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
+  var num = function (n, d) { return (Number(n) || 0).toLocaleString('th-TH', { maximumFractionDigits: d == null ? 0 : d }); };
+  var store = function (k, v, session) { try { var s = session ? sessionStorage : localStorage; v == null ? (localStorage.removeItem(k), sessionStorage.removeItem(k)) : s.setItem(k, v); } catch (e) {} };
+  var load = function (k) { try { return localStorage.getItem(k) || sessionStorage.getItem(k); } catch (e) { return null; } };
+  var jload = function (k) { try { return JSON.parse(load(k) || 'null'); } catch (e) { return null; } };
+
+  var ORG = CFG.ORG_NAME || 'Green Somdej';
+  $('org').textContent = ORG; $('org2').textContent = ORG; $('yr').textContent = new Date().getFullYear() + 543;
+
+  var AUD = [
+    { k: 'staff',   e: '🩺', t: 'เจ้าหน้าที่',     d: 'บุคลากรของโรงพยาบาล' },
+    { k: 'dept',    e: '🏢', t: 'หน่วยงาน',       d: 'สมัครในนามหน่วยงาน' },
+    { k: 'public',  e: '🙋', t: 'ประชาชนทั่วไป',  d: 'ผู้ป่วย ญาติ ชุมชน' },
+    { k: 'company', e: '🏭', t: 'บริษัท/องค์กร',   d: 'ภาคเอกชน หน่วยงานภายนอก' }
+  ];
+  var AUD_BY = {}; AUD.forEach(function (a) { AUD_BY[a.k] = a; });
+  /* ฟอร์มที่คนนอกใช้ได้เอง (ไม่ต้องเป็นสมาชิกเจ้าหน้าที่) */
+  var OUTSIDER_ACTION = { calendar: 1, em: 1, compost: 1 };
+  var TH_MON = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
+
+  /* โหมดตัวอย่างใช้คีย์แยก — ไม่ให้ session ปลอมไปปนกับหน้าหลัก (index.html ใช้ ecoSess ร่วมกัน) */
+  var K = { sess: DEMO ? 'demoEcoSess' : 'ecoSess', mem: DEMO ? 'demoEcoMember' : 'ecoMember' };
+  var S = {
+    aud: load('hubAud') || 'staff', basis: load('hubBasis') || 'calendar', year: null,
+    home: null, pick: {}, matrix: null,
+    sess: jload(K.sess),               // บัญชีเจ้าหน้าที่ (ใช้ร่วมกับหน้าหลัก index.html)
+    member: jload(K.mem),              // สมาชิกภายนอก {memberId, phone, type, nameMasked}
+    staffJoins: {}, deptReqs: [], memberJoins: {}, admin: null
+  };
+  if (!AUD_BY[S.aud]) S.aud = 'staff';
+  if (S.sess && (!S.sess.token || !S.sess.user)) S.sess = null;
+
+  /* ======================= API ======================= */
+  function api(params) {
+    if (DEMO) return Promise.resolve(Mock.get(params));
+    var q = Object.keys(params).map(function (k) { return k + '=' + encodeURIComponent(params[k]); }).join('&');
+    return fetch(APP_URL + (APP_URL.indexOf('?') === -1 ? '?' : '&') + q, { redirect: 'follow' }).then(function (r) { return r.json(); });
+  }
+  function post(body) {
+    if (DEMO) return new Promise(function (res) { setTimeout(function () { res(Mock.post(body)); }, 250); });
+    return fetch(APP_URL, { method: 'POST', body: JSON.stringify(body), redirect: 'follow' }).then(function (r) { return r.json(); });
+  }
+  function goDemo(why) {
+    if (!DEMO && typeof S !== 'undefined') { K.sess = 'demoEcoSess'; K.mem = 'demoEcoMember'; S.sess = jload(K.sess); S.member = jload(K.mem); paintMe(); }
+    DEMO = true;
+    $('demoBar').textContent = '🧪 โหมดตัวอย่าง — ' + why + ' · ข้อมูลที่กรอกจะไม่ถูกบันทึกจริง';
+    $('demoBar').classList.remove('hidden');
+  }
+  if (DEMO) goDemo(qs.get('demo') === '1' ? 'เปิดด้วย ?demo=1' : 'ยังไม่ได้ตั้งค่า APP_URL ใน config.js');
+
+  var toastT;
+  function toast(m) { var t = $('toast'); t.textContent = m; t.classList.remove('hidden'); clearTimeout(toastT); toastT = setTimeout(function () { t.classList.add('hidden'); }, 4800); }
+
+  /* ======================= ปี / ฐานของปี ======================= */
+  function curYear(basis) { var d = new Date(); return basis === 'fiscal' && d.getMonth() >= 9 ? d.getFullYear() + 1 : d.getFullYear(); }
+  function yLabel(y, basis) { return (basis === 'fiscal' ? 'ปีงบประมาณ ' : 'ปี พ.ศ. ') + (y + 543); }
+  function yShort(y, basis) { return (basis === 'fiscal' ? 'ปีงบ ' : 'ปี ') + (y + 543); }
+  function yRange(y, basis) {
+    var be = y + 543;
+    return basis === 'fiscal' ? '1 ต.ค. ' + String(be - 1).slice(-2) + ' – 30 ก.ย. ' + String(be).slice(-2) : '1 ม.ค. – 31 ธ.ค. ' + be;
+  }
+  function paintPeriod() {
+    document.querySelectorAll('[data-basis]').forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.basis === S.basis)); });
+    var ys = (S.home && S.home.years) || [curYear(S.basis)];
+    $('year').innerHTML = ys.map(function (y) { return '<option value="' + y + '"' + (y === S.year ? ' selected' : '') + '>' + yLabel(y, S.basis) + '</option>'; }).join('');
+    $('prange').textContent = S.year ? '(' + yRange(S.year, S.basis) + ')' : '';
+  }
+  document.querySelectorAll('[data-basis]').forEach(function (b) {
+    b.onclick = function () { if (S.basis === b.dataset.basis) return; S.basis = b.dataset.basis; store('hubBasis', S.basis); S.year = curYear(S.basis); loadHome(); };
+  });
+  $('year').onchange = function () { S.year = Number(this.value); loadHome(); };
+
+  /* ======================= กลุ่มผู้เข้าร่วม ======================= */
+  function openFor(p, a) { return p.isOpen && p.audiences && p.audiences[a || S.aud]; }
+  function paintWho() {
+    var list = (S.home && S.home.projects) || [];
+    $('who').innerHTML = AUD.map(function (a) {
+      var n = list.filter(function (p) { return openFor(p, a.k); }).length;
+      return '<button type="button" data-aud="' + a.k + '" aria-pressed="' + (S.aud === a.k) + '"><span class="e">' + a.e + '</span><b class="disp">' + a.t + '</b><small>' +
+        (S.home ? 'ร่วมได้ ' + n + ' โครงการ' : a.d) + '</small></button>';
+    }).join('');
+  }
+  $('who').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-aud]'); if (!b) return;
+    S.aud = b.dataset.aud; store('hubAud', S.aud);
+    Object.keys(S.pick).forEach(function (k) { var p = projBy(k); if (!p || !openFor(p)) delete S.pick[k]; });
+    paintWho(); paintGrid(); paintBasket(); refreshMine();
+  });
+
+  /* ======================= หน้าแรก ======================= */
+  function projBy(k) { return ((S.home && S.home.projects) || []).filter(function (p) { return p.key === k; })[0]; }
+  function loadHome() {
+    paintPeriod();
+    var y = S.year || curYear(S.basis);
+    return api({ api: 'hubHome', basis: S.basis, year: y }).then(function (r) {
+      if (!r || !r.ok) throw new Error((r && r.error) || 'no data');
+      S.home = r; S.year = r.year;
+      paintPeriod(); paintWho(); paintKpis(); paintGrid();
+    }).catch(function (err) {
+      if (!DEMO) { goDemo('ระบบหลังบ้านยังไม่รองรับหน้านี้ (ต้องเพิ่มไฟล์ Hub.gs แล้ว Deploy เวอร์ชันใหม่)'); return loadHome(); }
+      $('grid').innerHTML = '<div class="empty">โหลดข้อมูลไม่สำเร็จ: ' + esc(err.message) + '</div>';
+    });
+  }
+  function paintKpis() {
+    var h = S.home, list = h.projects;
+    var co2 = Number(h.co2Year) || 0;
+    $('kCo2').textContent = co2 >= 1000 ? num(co2 / 1000, 2) + ' ตัน' : num(co2, 1) + ' กก.';
+    $('kCo2L').textContent = 'CO₂ ที่ลดได้ · ' + yShort(h.year, h.basis) + ' (สะสม ' + num((Number(h.co2Total) || 0) / 1000, 2) + ' ตัน)';
+    $('kOpen').textContent = list.filter(function (p) { return openFor(p); }).length + ' / ' + list.length;
+    $('kOpenL').textContent = 'โครงการที่เปิดรับ' + AUD_BY[S.aud].t;
+    var m = 0; list.forEach(function (p) { var c = p.members || {}; m += (c.staff || 0) + (c.dept || 0) + (c.public || 0) + (c.company || 0); });
+    $('kMem').textContent = num(m);
+  }
+
+  function myStatus(p) {
+    if (S.aud === 'staff') return S.sess ? S.staffJoins[p.key] : null;
+    if (S.aud === 'dept') { var r = S.deptReqs.filter(function (x) { return x.projectKey === p.key; }); return r.length ? (r.some(function (x) { return x.status === 'approved'; }) ? 'approved' : r[0].status) : null; }
+    if (S.member && S.member.type === S.aud) return S.memberJoins[p.key];
+    return null;
+  }
+  var ST_TXT = { approved: ['ok', '✓ ร่วมแล้ว'], pending: ['wait', '⏳ รออนุมัติ'], rejected: ['no', 'ไม่อนุมัติ'] };
+
+  function paintGrid() {
+    var list = ((S.home && S.home.projects) || []).slice();
+    list.sort(function (a, b) { return (openFor(b) ? 1 : 0) - (openFor(a) ? 1 : 0) || a.sortOrder - b.sortOrder; });
+    var nOpen = list.filter(function (p) { return openFor(p); }).length;
+    $('gridTitle').textContent = 'โครงการที่' + AUD_BY[S.aud].t + 'ร่วมได้ (' + nOpen + ')';
+    $('gridNote').textContent = S.home ? 'ตัวเลขบนการ์ด = ' + yLabel(S.home.year, S.home.basis) + ' · กด "ดูสถิติ" เพื่อดูรายเดือน' : '';
+    $('grid').innerHTML = list.map(function (p) {
+      var open = openFor(p), st = myStatus(p), sel = !!S.pick[p.key], s = p.stats || {}, mm = s.main;
+      var c = p.members || {};
+      var memTxt = [c.staff ? '🩺 ' + num(c.staff) : '', c.dept ? '🏢 ' + num(c.dept) : '', c.public ? '🙋 ' + num(c.public) : '', c.company ? '🏭 ' + num(c.company) : ''].filter(Boolean).join(' · ');
+      var act = '';
+      if (open && st === 'approved' && p.action && (S.aud === 'staff' || S.aud === 'dept' || OUTSIDER_ACTION[p.key])) act = '<a class="btn" href="' + appLink(p.key, p.action) + '">ร่วมกิจกรรม →</a>';
+      else if (open && p.action && (S.aud === 'public' || S.aud === 'company') && OUTSIDER_ACTION[p.key] && !st) act = '';
+      var pickBtn = !open ? '<span class="meta">' + (p.isOpen ? 'ไม่เปิดรับ' + AUD_BY[S.aud].t : 'ปิดรับสมัครชั่วคราว · ติดตามผลได้') + '</span>'
+        : (st === 'approved' || st === 'pending') ? '' :
+        '<button class="btn pick" type="button" data-pick="' + p.key + '" aria-pressed="' + sel + '"><span class="box">' + (sel ? '✓' : '') + '</span>' + (sel ? 'เลือกแล้ว' : 'เลือกโครงการนี้') + '</button>';
+      return '<article class="pc' + (sel ? ' sel' : '') + (open ? '' : ' off') + '" style="--c:' + esc(p.color) + '">' +
+        (st && ST_TXT[st] ? '<span class="st ' + ST_TXT[st][0] + '">' + ST_TXT[st][1] + '</span>' : '') +
+        '<div class="top"><span class="em" aria-hidden="true">' + esc(p.emoji) + '</span><div><h3 class="disp">' + esc(p.label) + '</h3>' +
+        '<div class="aud" aria-label="เปิดรับ: ' + AUD.filter(function (a) { return p.audiences[a.k]; }).map(function (a) { return a.t; }).join(', ') + '"><small>เปิดรับ</small>' +
+          AUD.map(function (a) { return '<span class="' + (p.audiences[a.k] ? 'on' : '') + '" title="' + (p.audiences[a.k] ? 'เปิดรับ' : 'ไม่เปิดรับ') + a.t + '" aria-hidden="true">' + a.e + '</span>'; }).join('') + '</div></div></div>' +
+        '<p class="tg">' + esc(p.tagline) + '</p>' +
+        (mm ? '<div class="num"><b>' + num(mm.year, mm.dec) + '</b><small>' + esc(mm.unit) + ' · ' + esc(mm.label) + ' ' + yShort(S.home.year, S.home.basis) + '</small></div><div class="meta">สะสมทั้งโครงการ ' + num(mm.total, mm.dec) + ' ' + esc(mm.unit) + (memTxt ? ' · ' + memTxt : '') + '</div>'
+            : '<div class="meta">' + (memTxt || 'ยังไม่มีข้อมูลตัวเลข') + '</div>') +
+        (open && p.howTo ? '<div class="meta">📌 ' + esc(p.howTo) + '</div>' : '') +
+        '<div class="acts">' + pickBtn + act + '<button class="btn" type="button" data-stat="' + p.key + '">📈 ดูสถิติ</button></div></article>';
+    }).join('') || '<div class="empty">ยังไม่มีโครงการ</div>';
+  }
+  $('grid').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-pick]');
+    if (b) { var k = b.dataset.pick; if (S.pick[k]) delete S.pick[k]; else S.pick[k] = 1; paintGrid(); paintBasket(); return; }
+    var s = e.target.closest('[data-stat]'); if (s) openStats(s.dataset.stat);
+  });
+  function appLink(page, action) { return 'index.html?page=' + encodeURIComponent(page) + (action ? '&action=' + encodeURIComponent(action) : ''); }
+
+  /* ======================= ตะกร้าโครงการ ======================= */
+  function picked() { return Object.keys(S.pick).map(projBy).filter(Boolean); }
+  function paintBasket() {
+    var L = picked();
+    $('basket').classList.toggle('show', L.length > 0);
+    $('bkT').textContent = 'เลือกแล้ว ' + L.length + ' โครงการ · สมัครในนาม' + AUD_BY[S.aud].t;
+    $('bkE').textContent = L.map(function (p) { return p.emoji; }).join(' ');
+  }
+  $('bkClr').onclick = function () { S.pick = {}; paintGrid(); paintBasket(); };
+  $('bkGo').onclick = function () { openJoin(); };
+
+  /* ======================= dialog helpers ======================= */
+  var dlg = $('dlg');
+  function openDlg(html, wide) { $('dlgBody').innerHTML = html; dlg.classList.toggle('wide', !!wide); dlg.classList.remove('hidden'); document.body.classList.add('modal'); var f = dlg.querySelector('input,select,textarea'); if (f) setTimeout(function () { f.focus(); }, 60); }
+  function closeDlg() { dlg.classList.add('hidden'); document.body.classList.remove('modal'); $('dlgBody').innerHTML = ''; }
+  dlg.addEventListener('click', function (e) { if (e.target === dlg || e.target.closest('[data-close]')) closeDlg(); });
+  addEventListener('keydown', function (e) { if (e.key === 'Escape' && !dlg.classList.contains('hidden')) closeDlg(); });
+  function showErr(m) { var el = $('fErr'); if (el) { el.textContent = m; el.classList.remove('hidden'); } else toast(m); }
+  function busy(btn, on, txt) { if (!btn) return; btn.disabled = on; if (txt) { if (on) { btn.dataset.t = btn.textContent; btn.textContent = txt; } else if (btn.dataset.t) btn.textContent = btn.dataset.t; } }
+  function chipsOf(L) { return '<div class="chips">' + L.map(function (p) { return '<span>' + esc(p.emoji) + ' ' + esc(p.label) + '</span>'; }).join('') + '</div>'; }
+  function consentHtml() { return '<label class="chk"><input type="checkbox" id="fAck"><span>ข้าพเจ้าอ่านและรับทราบ <a href="#" data-notice>ประกาศความเป็นส่วนตัว</a> และยินยอมให้โรงพยาบาลเก็บข้อมูลเพื่อติดต่อเรื่องโครงการ</span></label>'; }
+  function v(id) { var el = $(id); return el ? String(el.value || '').trim() : ''; }
+
+  /* ======================= สมัครเข้าร่วม ======================= */
+  function openJoin() {
+    var L = picked(); if (!L.length) return;
+    if (S.aud === 'staff') return S.sess ? joinStaffConfirm(L) : staffLogin('สมัครโครงการในนามเจ้าหน้าที่ ต้องเข้าสู่ระบบด้วยรหัสเจ้าหน้าที่ก่อน (ครั้งแรกเท่านั้น)', function () { joinStaffConfirm(picked()); });
+    if (S.aud === 'dept') return S.sess ? joinDeptForm(L) : staffLogin('การสมัครในนามหน่วยงาน ยื่นโดยเจ้าหน้าที่ของหน่วยงาน — กรุณาเข้าสู่ระบบก่อน', function () { joinDeptForm(picked()); });
+    if (S.member && S.member.type === S.aud) return joinMemberConfirm(L);
+    registerForm(L);
+  }
+
+  /* --- เจ้าหน้าที่ --- */
+  function staffLogin(lead, next) {
+    var mode = 'login';
+    function render() {
+      var su = mode === 'signup';
+      openDlg('<h2 class="disp" id="dlgT">' + (su ? 'ใช้งานครั้งแรก (เจ้าหน้าที่)' : 'เข้าสู่ระบบเจ้าหน้าที่') + '</h2><p class="sub">' + esc(lead) + '</p>' +
+        '<div class="tabs" role="tablist"><button type="button" role="tab" aria-selected="' + !su + '" data-m="login">มีบัญชีแล้ว</button><button type="button" role="tab" aria-selected="' + su + '" data-m="signup">ใช้งานครั้งแรก</button></div>' +
+        '<form id="fLogin" novalidate><label class="fld"><span>รหัสเจ้าหน้าที่ 7 หลัก</span><input class="inp" id="fCode" type="password" inputmode="numeric" maxlength="7" autocomplete="off" placeholder="•••••••"></label>' +
+        (su ? '<label class="fld"><span>ชื่อ-นามสกุล</span><input class="inp" id="fName" maxlength="100" autocomplete="off" placeholder="เช่น สมชาย ใจดี"></label>' : '') +
+        '<label class="fld"><span>รหัสผ่าน</span><input class="inp" id="fPw" type="password" maxlength="100" autocomplete="' + (su ? 'new-password' : 'current-password') + '" placeholder="อย่างน้อย 8 ตัวอักษร"></label>' +
+        (su ? consentHtml() + '<div class="note">⏳ ผู้ดูแลระบบตรวจสอบว่าเป็นเจ้าหน้าที่ก่อนอนุมัติบัญชี — <b>โครงการที่เลือกไว้จะถูกบันทึกไว้ให้เลย</b> ไม่ต้องสมัครซ้ำ</div>' : '') +
+        '<label class="chk"><input type="checkbox" id="fRem" checked><span>จดจำบนอุปกรณ์นี้ (เก็บเฉพาะรหัสเข้าใช้ ไม่เก็บรหัสพนักงานและชื่อ)</span></label>' +
+        '<div class="err hidden" id="fErr" role="alert"></div><div class="row"><button class="btn" type="button" data-close>ยกเลิก</button><button class="btn pri" id="fGo" type="submit">' + (su ? 'สมัครและดำเนินการต่อ →' : 'เข้าสู่ระบบ →') + '</button></div></form>');
+      $('dlgBody').querySelectorAll('[data-m]').forEach(function (b) { b.onclick = function () { mode = b.dataset.m; render(); }; });
+      $('fCode').addEventListener('input', function () { this.value = this.value.replace(/\D/g, '').slice(0, 7); });
+      $('fLogin').onsubmit = function (e) {
+        e.preventDefault();
+        var code = v('fCode'), pw = $('fPw').value, name = su ? v('fName').replace(/\s+/g, ' ') : '';
+        if (!/^\d{7}$/.test(code)) return showErr('รหัสเจ้าหน้าที่ต้องเป็นตัวเลข 7 หลัก');
+        if (su && (name.length < 3 || name.indexOf(' ') === -1)) return showErr('กรุณากรอกทั้งชื่อและนามสกุล');
+        if (pw.length < (su ? 8 : 1)) return showErr(su ? 'รหัสผ่านต้องมีอย่างน้อย 8 ตัวอักษร' : 'กรุณากรอกรหัสผ่าน');
+        if (su && !$('fAck').checked) return showErr('กรุณาติ๊กรับทราบประกาศความเป็นส่วนตัว');
+        var btn = $('fGo'); busy(btn, true, 'กำลังตรวจสอบ…');
+        post(su ? { action: 'portalSignup', code: code, name: name, password: pw, ack: true, noticeVersion: NOTICE_VER } : { action: 'portalLogin', code: code, password: pw, noticeVersion: NOTICE_VER })
+          .then(function (r) {
+            busy(btn, false, ' ');
+            if (!r || !r.ok) return showErr((r && r.error) || 'เกิดข้อผิดพลาด');
+            S.sess = { token: r.token, user: r.user };
+            try { localStorage.removeItem(K.sess); sessionStorage.removeItem(K.sess); ($('fRem').checked ? localStorage : sessionStorage).setItem(K.sess, JSON.stringify(S.sess)); } catch (x) {}
+            paintMe(); refreshMine().then(function () { next(); });
+          }).catch(function () { busy(btn, false, ' '); showErr('เชื่อมต่อระบบไม่ได้ กรุณาลองใหม่'); });
+      };
+    }
+    render();
+  }
+  function joinStaffConfirm(L) {
+    if (!L.length) { closeDlg(); toast('ท่านร่วมโครงการที่เลือกไว้ครบแล้ว'); return; }
+    var pend = S.sess.user.status === 'pending';
+    openDlg('<h2 class="disp" id="dlgT">ยืนยันการสมัคร ' + L.length + ' โครงการ</h2><p class="sub">ในนามเจ้าหน้าที่ ' + esc(S.sess.user.nameMasked) + ' (รหัส ' + esc(S.sess.user.codeMasked) + ')</p>' + chipsOf(L) +
+      '<div class="note">' + L.map(function (p) { return esc(p.emoji) + ' ' + esc(p.label) + ': ' + (p.autoApprove ? '<b>เป็นสมาชิกทันที</b>' : 'รอผู้ดูแลอนุมัติ'); }).join('<br>') +
+      (pend ? '<br><br>⏳ บัญชีของท่านรอผู้ดูแลยืนยันว่าเป็นเจ้าหน้าที่ — ใช้ฟอร์มของโครงการได้หลังบัญชีได้รับอนุมัติ' : '') + '</div>' +
+      '<div class="err hidden" id="fErr"></div><div class="row"><button class="btn" type="button" data-close>ยกเลิก</button><button class="btn pri" id="fGo" type="button">ยืนยันสมัคร →</button></div>');
+    $('fGo').onclick = function () {
+      var btn = this; busy(btn, true, 'กำลังบันทึก…');
+      post({ action: 'hubJoinStaff', token: S.sess.token, projectKeys: L.map(function (p) { return p.key; }) }).then(function (r) {
+        busy(btn, false, ' ');
+        if (r && r.code === 'AUTH') { signOutStaff(); return showErr('เซสชันหมดอายุ กรุณาเข้าสู่ระบบอีกครั้ง'); }
+        if (!r || !r.ok) return showErr((r && r.error) || 'สมัครไม่สำเร็จ');
+        S.staffJoins = r.joins || {}; S.pick = {};
+        doneDlg(L, r.result, 'ยินดีต้อนรับสู่โครงการ!', 'staff');
+      }).catch(function () { busy(btn, false, ' '); showErr('เชื่อมต่อระบบไม่ได้'); });
+    };
+  }
+
+  /* --- หน่วยงาน --- */
+  function joinDeptForm(L) {
+    var names = (S.matrix && S.matrix.names) || [];
+    var last = load('hubDept') || '';
+    openDlg('<h2 class="disp" id="dlgT">สมัครในนามหน่วยงาน · ' + L.length + ' โครงการ</h2><p class="sub">ยื่นโดย ' + esc(S.sess.user.nameMasked) + ' — ผู้ดูแลระบบจะตรวจสอบและเพิ่มหน่วยงานเข้าโครงการให้</p>' + chipsOf(L) +
+      '<label class="fld"><span>ชื่อหน่วยงาน</span><input class="inp" id="fDept" list="deptList" maxlength="120" placeholder="พิมพ์หรือเลือกจากรายการ" value="' + esc(last) + '"><small>ถ้าไม่มีในรายการ พิมพ์ชื่อหน่วยงานใหม่ได้เลย</small></label>' +
+      '<datalist id="deptList">' + names.map(function (n) { return '<option value="' + esc(n) + '">'; }).join('') + '</datalist>' +
+      '<label class="fld"><span>ผู้ประสานงาน / หมายเหตุ (ไม่บังคับ)</span><textarea class="inp" id="fNote" maxlength="300" placeholder="เช่น ชื่อผู้ประสานงาน เบอร์ภายใน"></textarea></label>' +
+      '<div class="err hidden" id="fErr"></div><div class="row"><button class="btn" type="button" data-close>ยกเลิก</button><button class="btn pri" id="fGo" type="button">ส่งคำขอ →</button></div>');
+    $('fGo').onclick = function () {
+      var dept = v('fDept').replace(/\s+/g, ' ');
+      if (dept.length < 2) return showErr('กรุณาระบุชื่อหน่วยงาน');
+      var btn = this; busy(btn, true, 'กำลังส่ง…');
+      post({ action: 'hubDeptJoin', token: S.sess.token, deptName: dept, note: v('fNote'), projectKeys: L.map(function (p) { return p.key; }) }).then(function (r) {
+        busy(btn, false, ' ');
+        if (r && r.code === 'AUTH') { signOutStaff(); return showErr('เซสชันหมดอายุ กรุณาเข้าสู่ระบบอีกครั้ง'); }
+        if (!r || !r.ok) return showErr((r && r.error) || 'ส่งคำขอไม่สำเร็จ');
+        store('hubDept', dept); S.pick = {};
+        refreshMine();
+        doneDlg(L, r.result, 'ส่งคำขอของ "' + dept + '" แล้ว', 'dept');
+      }).catch(function () { busy(btn, false, ' '); showErr('เชื่อมต่อระบบไม่ได้'); });
+    };
+  }
+
+  /* --- ประชาชน / บริษัท --- */
+  function registerForm(L) {
+    var co = S.aud === 'company';
+    openDlg('<h2 class="disp" id="dlgT">ลงทะเบียน' + AUD_BY[S.aud].t + ' · ' + L.length + ' โครงการ</h2><p class="sub">ลงทะเบียนครั้งเดียว ไม่ต้องตั้งรหัสผ่าน — ได้ <b>รหัสสมาชิก</b> ไว้ใช้คู่กับเบอร์โทร</p>' + chipsOf(L) +
+      '<form id="fReg" novalidate>' +
+      (co ? '<label class="fld"><span>ชื่อบริษัท/องค์กร</span><input class="inp" id="fOrg" maxlength="150" autocomplete="organization"></label>' : '') +
+      '<label class="fld"><span>' + (co ? 'ชื่อผู้ติดต่อ' : 'ชื่อ-นามสกุล') + '</span><input class="inp" id="fName" maxlength="100" autocomplete="name"></label>' +
+      '<label class="fld"><span>เบอร์โทร</span><input class="inp" id="fPhone" type="tel" inputmode="tel" maxlength="15" autocomplete="tel" placeholder="08x-xxx-xxxx"></label>' +
+      '<label class="fld"><span>อีเมล (แนะนำ — ใช้รับรหัสสมาชิกและกู้รหัส)</span><input class="inp" id="fEmail" type="email" maxlength="120" autocomplete="email"></label>' +
+      consentHtml() +
+      '<label class="chk"><input type="checkbox" id="fRem" checked><span>จดจำรหัสสมาชิกบนอุปกรณ์นี้</span></label>' +
+      '<div class="err hidden" id="fErr" role="alert"></div>' +
+      '<div class="row"><button class="btn" type="button" id="fHave">มีรหัสสมาชิกแล้ว</button><button class="btn pri" id="fGo" type="submit">ลงทะเบียนและสมัคร →</button></div></form>');
+    $('fHave').onclick = function () { memberLogin(function () { joinMemberConfirm(picked()); }); };
+    $('fReg').onsubmit = function (e) {
+      e.preventDefault();
+      var body = { action: 'hubRegister', type: S.aud, name: v('fName'), orgName: co ? v('fOrg') : '', phone: v('fPhone'), email: v('fEmail'), ack: $('fAck').checked, noticeVersion: NOTICE_VER, projectKeys: L.map(function (p) { return p.key; }) };
+      if (co && body.orgName.length < 2) return showErr('กรุณากรอกชื่อบริษัท/องค์กร');
+      if (body.name.length < 2) return showErr('กรุณากรอกชื่อ');
+      if (!/^0\d{8,9}$/.test(body.phone.replace(/\D/g, ''))) return showErr('เบอร์โทรไม่ถูกต้อง (9–10 หลัก ขึ้นต้นด้วย 0)');
+      if (!body.ack) return showErr('กรุณาติ๊กรับทราบประกาศความเป็นส่วนตัว');
+      var btn = $('fGo'); busy(btn, true, 'กำลังลงทะเบียน…');
+      post(body).then(function (r) {
+        busy(btn, false, ' ');
+        if (!r || !r.ok) return showErr((r && r.error) || 'ลงทะเบียนไม่สำเร็จ');
+        saveMember({ memberId: r.member.memberId, phone: body.phone.replace(/\D/g, ''), type: r.member.type, nameMasked: r.member.nameMasked, orgName: r.member.orgName }, $('fRem').checked);
+        S.memberJoins = r.joins || {}; S.pick = {};
+        doneDlg(L, r.result, 'ลงทะเบียนสำเร็จ!', 'member', r.member);
+      }).catch(function () { busy(btn, false, ' '); showErr('เชื่อมต่อระบบไม่ได้'); });
+    };
+  }
+  function saveMember(m, remember) {
+    S.member = m;
+    try { localStorage.removeItem(K.mem); sessionStorage.removeItem(K.mem); if (m) (remember ? localStorage : sessionStorage).setItem(K.mem, JSON.stringify(m)); } catch (e) {}
+    if (!m) S.memberJoins = {};
+    paintMe();
+  }
+  function memberLogin(next) {
+    openDlg('<h2 class="disp" id="dlgT">ใช้รหัสสมาชิกเดิม</h2><p class="sub">กรอกรหัสสมาชิก (เช่น P-7KQ2MX) และเบอร์โทรที่ลงทะเบียนไว้</p>' +
+      '<form id="fMl" novalidate><label class="fld"><span>รหัสสมาชิก</span><input class="inp" id="fMid" maxlength="10" autocomplete="off" style="text-transform:uppercase;letter-spacing:2px"></label>' +
+      '<label class="fld"><span>เบอร์โทร</span><input class="inp" id="fPhone" type="tel" inputmode="tel" maxlength="15" autocomplete="tel"></label>' +
+      '<label class="chk"><input type="checkbox" id="fRem" checked><span>จดจำบนอุปกรณ์นี้</span></label>' +
+      '<div class="err hidden" id="fErr"></div><div class="row"><button class="btn" type="button" id="fLost">ลืมรหัสสมาชิก</button><button class="btn pri" id="fGo" type="submit">ดำเนินการต่อ →</button></div></form>');
+    $('fLost').onclick = recoverForm;
+    $('fMl').onsubmit = function (e) {
+      e.preventDefault();
+      var mid = v('fMid'), ph = v('fPhone').replace(/\D/g, '');
+      var btn = $('fGo'); busy(btn, true, 'กำลังตรวจสอบ…');
+      post({ action: 'hubMemberStatus', memberId: mid, phone: ph }).then(function (r) {
+        busy(btn, false, ' ');
+        if (!r || !r.ok) return showErr((r && r.error) || 'ไม่สำเร็จ');
+        saveMember({ memberId: r.member.memberId, phone: ph, type: r.member.type, nameMasked: r.member.nameMasked, orgName: r.member.orgName }, $('fRem').checked);
+        S.memberJoins = r.joins || {};
+        if (r.member.type !== S.aud) { S.aud = r.member.type; store('hubAud', S.aud); paintWho(); }
+        paintGrid(); next ? next() : closeDlg();
+      }).catch(function () { busy(btn, false, ' '); showErr('เชื่อมต่อระบบไม่ได้'); });
+    };
+  }
+  function recoverForm() {
+    openDlg('<h2 class="disp" id="dlgT">ลืมรหัสสมาชิก</h2><p class="sub">ระบบจะส่งรหัสสมาชิกไปที่อีเมลที่ท่านลงทะเบียนไว้</p>' +
+      '<label class="fld"><span>เบอร์โทร</span><input class="inp" id="fPhone" type="tel" inputmode="tel"></label><label class="fld"><span>อีเมลที่ลงทะเบียน</span><input class="inp" id="fEmail" type="email"></label>' +
+      '<div class="err hidden" id="fErr"></div><div class="row"><button class="btn" type="button" data-close>ปิด</button><button class="btn pri" id="fGo" type="button">ส่งรหัสทางอีเมล</button></div>');
+    $('fGo').onclick = function () {
+      var btn = this; busy(btn, true, 'กำลังส่ง…');
+      post({ action: 'hubRecoverMember', phone: v('fPhone'), email: v('fEmail') }).then(function (r) { busy(btn, false, ' '); closeDlg(); toast((r && r.message) || 'ส่งคำขอแล้ว'); })
+        .catch(function () { busy(btn, false, ' '); showErr('เชื่อมต่อระบบไม่ได้'); });
+    };
+  }
+  function joinMemberConfirm(L) {
+    var m = S.member;
+    if (!L.length) { closeDlg(); return; }
+    openDlg('<h2 class="disp" id="dlgT">สมัครเพิ่ม ' + L.length + ' โครงการ</h2><p class="sub">ในนาม ' + esc(m.orgName || m.nameMasked) + ' · รหัสสมาชิก ' + esc(m.memberId) + '</p>' + chipsOf(L) +
+      '<div class="err hidden" id="fErr"></div><div class="row"><button class="btn" type="button" id="fOther">ไม่ใช่ฉัน</button><button class="btn pri" id="fGo" type="button">ยืนยันสมัคร →</button></div>');
+    $('fOther').onclick = function () { saveMember(null); registerForm(L); };
+    $('fGo').onclick = function () {
+      var btn = this; busy(btn, true, 'กำลังบันทึก…');
+      post({ action: 'hubMemberJoin', memberId: m.memberId, phone: m.phone, projectKeys: L.map(function (p) { return p.key; }) }).then(function (r) {
+        busy(btn, false, ' ');
+        if (!r || !r.ok) return showErr((r && r.error) || 'สมัครไม่สำเร็จ');
+        S.memberJoins = r.joins || {}; S.pick = {};
+        doneDlg(L, r.result, 'สมัครเพิ่มเรียบร้อย!', 'member', r.member);
+      }).catch(function () { busy(btn, false, ' '); showErr('เชื่อมต่อระบบไม่ได้'); });
+    };
+  }
+
+  /* --- หลังสมัครสำเร็จ: บอกขั้นต่อไปชัดๆ --- */
+  function doneDlg(L, result, title, who, member) {
+    result = result || {};
+    var rows = L.map(function (p) {
+      var r = result[p.key], ok = r === 'approved', wait = r === 'pending' || r === 'created';
+      var go = ok && p.action && (who !== 'member' || OUTSIDER_ACTION[p.key]) ? '<a class="btn sm pri" href="' + appLink(p.key, p.action) + '">ร่วมกิจกรรม</a>' : '';
+      return '<li><span class="e">' + esc(p.emoji) + '</span><span class="t"><b>' + esc(p.label) + '</b><small>' + (ok ? '✓ เป็นสมาชิกแล้ว' : wait ? '⏳ รอผู้ดูแลอนุมัติ (ระบบแจ้งผู้ดูแลแล้ว)' : r === 'exists' ? 'ส่งคำขอไว้แล้วก่อนหน้านี้' : '') + '</small></span>' + go + '</li>';
+    }).join('');
+    var card = member ? '<div class="mcard"><small>รหัสสมาชิกของท่าน · ใช้คู่กับเบอร์โทร ' + esc(member.phoneMasked || '') + '</small><div class="id">' + esc(member.memberId) + '</div><small>' + esc(member.orgName || member.nameMasked) + (member.emailMasked ? ' · ส่งรหัสไปที่ ' + esc(member.emailMasked) + ' แล้ว' : ' · กรุณาจดหรือถ่ายภาพหน้าจอเก็บไว้') + '</small></div>' : '';
+    openDlg('<h2 class="disp" id="dlgT">🎉 ' + esc(title) + '</h2>' + card + '<ul class="jl">' + rows + '</ul>' +
+      (who === 'staff' ? '<div class="note">เวลาบันทึกในฟอร์มของโครงการ ให้กรอก "รหัสสมาชิกโครงการ" = รหัสเจ้าหน้าที่ 7 หลักของท่าน</div>' : '') +
+      '<div class="row"><button class="btn pri" type="button" data-close>เสร็จสิ้น</button></div>');
+    paintGrid(); paintBasket(); loadHomeQuiet();
+  }
+  function loadHomeQuiet() { api({ api: 'hubHome', basis: S.basis, year: S.year }).then(function (r) { if (r && r.ok) { S.home = r; paintKpis(); paintGrid(); paintWho(); } }).catch(function () {}); }
+
+  /* ======================= การร่วมของฉัน ======================= */
+  function paintMe() {
+    $('meLbl').textContent = S.sess ? 'คุณ' + (S.sess.user.firstName || '') : S.member ? (S.member.orgName || S.member.nameMasked || 'สมาชิก') : 'การร่วมของฉัน';
+  }
+  function refreshMine() {
+    var jobs = [];
+    if (S.sess) jobs.push(post({ action: 'hubStaffStatus', token: S.sess.token, noticeVersion: NOTICE_VER }).then(function (r) {
+      if (r && r.ok) { S.staffJoins = r.joins || {}; S.deptReqs = r.deptRequests || []; S.staffProjects = r.projects || []; S.sess.user = r.user; }
+      else if (r && r.code === 'AUTH') signOutStaff();
+    }).catch(function () {}));
+    if (S.member) jobs.push(post({ action: 'hubMemberStatus', memberId: S.member.memberId, phone: S.member.phone }).then(function (r) {
+      if (r && r.ok) { S.memberJoins = r.joins || {}; S.memberProjects = r.projects || []; }
+      else if (r && r.code === 'BAD_MEMBER') saveMember(null);
+    }).catch(function () {}));
+    return Promise.all(jobs).then(function () { paintMe(); paintGrid(); });
+  }
+  function signOutStaff() { S.sess = null; S.staffJoins = {}; S.deptReqs = []; store(K.sess, null); paintMe(); paintGrid(); }
+  function joinList(map) {
+    var ks = Object.keys(map || {});
+    if (!ks.length) return '<div class="empty">ยังไม่ได้สมัครโครงการ — เลือกโครงการจากหน้าหลักได้เลย</div>';
+    return '<ul class="jl">' + ks.map(function (k) {
+      var p = projBy(k) || { emoji: '🌿', label: k }, st = map[k];
+      return '<li><span class="e">' + esc(p.emoji) + '</span><span class="t"><b>' + esc(p.label) + '</b><small>' + (ST_TXT[st] ? ST_TXT[st][1] : esc(st)) + '</small></span>' +
+        (S.member && st !== undefined && (S.aud === S.member.type) ? '<button class="btn sm" type="button" data-leave="' + k + '">' + (st === 'approved' ? 'เลิกร่วม' : 'ยกเลิก') + '</button>' : '') + '</li>';
+    }).join('') + '</ul>';
+  }
+  function histList(list) {
+    if (!list || !list.length) return '';
+    return '<h3 class="disp" style="margin-top:14px;font-size:16px">ประวัติการร่วมกิจกรรม</h3><ul class="jl">' + list.map(function (h) {
+      var p = projBy(h.key) || { emoji: '🌿' };
+      return '<li><span class="e">' + esc(p.emoji) + '</span><span class="t"><b>' + esc(h.label) + '</b><small>' + num(h.count) + ' ครั้ง' + (h.amount ? ' · ' + num(h.amount, 2) + ' ' + esc(h.unit) : '') + (h.lastDate ? ' · ล่าสุด ' + new Date(h.lastDate).toLocaleDateString('th-TH', { day: 'numeric', month: 'short', year: '2-digit' }) : '') + '</small></span></li>';
+    }).join('') + '</ul>';
+  }
+  $('meBtn').onclick = function () {
+    if (!S.sess && !S.member) {
+      openDlg('<h2 class="disp" id="dlgT">การร่วมของฉัน</h2><p class="sub">เลือกวิธีดูสถานะของท่าน</p><div class="row" style="justify-content:stretch;flex-direction:column">' +
+        '<button class="btn pri" type="button" id="mStaff">🩺 เจ้าหน้าที่ — เข้าสู่ระบบด้วยรหัสเจ้าหน้าที่</button><button class="btn" type="button" id="mMem">🙋 ประชาชน/บริษัท — ใช้รหัสสมาชิก + เบอร์โทร</button></div>');
+      $('mStaff').onclick = function () { staffLogin('ดูโครงการที่ท่านร่วม และคำขอของหน่วยงาน', function () { $('meBtn').onclick(); }); };
+      $('mMem').onclick = function () { memberLogin(function () { refreshMine().then(function () { $('meBtn').onclick(); }); }); };
+      return;
+    }
+    var html = '<h2 class="disp" id="dlgT">การร่วมของฉัน</h2>';
+    if (S.sess) {
+      var u = S.sess.user;
+      html += '<p class="sub">🩺 ' + esc(u.nameMasked) + ' · รหัส ' + esc(u.codeMasked) + ' · ' + (u.status === 'pending' ? '<span class="st wait">บัญชีรอผู้ดูแลยืนยัน</span>' : '<span class="st ok">บัญชียืนยันแล้ว</span>') + '</p>' +
+        joinList(S.staffJoins) +
+        (S.deptReqs.length ? '<h3 class="disp" style="margin-top:14px;font-size:16px">คำขอของหน่วยงานที่ท่านยื่น</h3><ul class="jl">' + S.deptReqs.map(function (d) { var p = projBy(d.projectKey) || { emoji: '🏢', label: d.projectKey }; return '<li><span class="e">' + esc(p.emoji) + '</span><span class="t"><b>' + esc(d.dept) + ' · ' + esc(p.label) + '</b><small>' + (ST_TXT[d.status] ? ST_TXT[d.status][1] : esc(d.status)) + '</small></span></li>'; }).join('') + '</ul>' : '') +
+        histList(S.staffProjects) +
+        '<div class="row"><a class="btn" href="index.html">บัญชีและความเป็นส่วนตัว</a><button class="btn" type="button" id="mOut">ออกจากระบบ</button></div>';
+    }
+    if (S.member) {
+      var m = S.member;
+      html += (S.sess ? '<hr style="border:0;border-top:1px solid var(--line);margin:16px 0">' : '') +
+        '<div class="mcard"><small>' + (m.type === 'company' ? '🏭 บริษัท/องค์กร' : '🙋 ประชาชนทั่วไป') + '</small><div class="id">' + esc(m.memberId) + '</div><small>' + esc(m.orgName || m.nameMasked) + '</small></div>' +
+        joinList(S.memberJoins) + histList(S.memberProjects) +
+        '<div class="row"><button class="btn danger" type="button" id="mDel">ลบข้อมูลของฉัน</button><button class="btn" type="button" id="mForget">ลืมรหัสบนอุปกรณ์นี้</button></div>';
+    }
+    openDlg(html);
+    if ($('mOut')) $('mOut').onclick = function () { signOutStaff(); closeDlg(); toast('ออกจากระบบแล้ว'); };
+    if ($('mForget')) $('mForget').onclick = function () { saveMember(null); paintGrid(); closeDlg(); };
+    if ($('mDel')) $('mDel').onclick = function () {
+      if (!confirm('ลบข้อมูลสมาชิกและการสมัครทุกโครงการของท่านถาวร ใช่หรือไม่?')) return;
+      post({ action: 'hubMemberDelete', memberId: S.member.memberId, phone: S.member.phone }).then(function (r) {
+        if (r && r.ok) { saveMember(null); closeDlg(); paintGrid(); toast('ลบข้อมูลของท่านแล้ว'); } else toast((r && r.error) || 'ไม่สำเร็จ');
+      });
+    };
+    $('dlgBody').querySelectorAll('[data-leave]').forEach(function (b) {
+      b.onclick = function () {
+        var k = b.dataset.leave; b.disabled = true;
+        post({ action: 'hubMemberLeave', memberId: S.member.memberId, phone: S.member.phone, projectKey: k }).then(function (r) { if (r && r.ok) { S.memberJoins = r.joins || {}; paintGrid(); $('meBtn').onclick(); } });
+      };
+    });
+  };
+
+  /* ======================= สถิติรายโครงการ ======================= */
+  function openStats(key) {
+    var p = projBy(key); if (!p) return;
+    openDlg('<h2 class="disp" id="dlgT">' + esc(p.emoji) + ' ' + esc(p.label) + '</h2><p class="sub">' + yLabel(S.year, S.basis) + ' (' + yRange(S.year, S.basis) + ')</p><div class="empty">กำลังโหลด…</div>', true);
+    api({ api: 'hubProject', key: key, basis: S.basis, year: S.year }).then(function (d) {
+      if (!d || !d.ok) throw new Error((d && d.error) || 'โหลดไม่สำเร็จ');
+      var col = d.columns.filter(function (c) { return c.key === d.mainKey; })[0] || d.columns[0];
+      var max = Math.max.apply(null, d.monthly.map(function (m) { return Number(m[col.key]) || 0; }).concat([0]));
+      var bars = d.monthly.map(function (m) {
+        var val = Number(m[col.key]) || 0, h = max ? Math.max(2, val / max * 100) : 2;
+        return '<div class="c' + (val ? '' : ' z') + '" title="' + TH_MON[m.month - 1] + ' ' + String((m.calYear || d.year) + 543).slice(-2) + ': ' + num(val, col.dec) + ' ' + esc(col.unit) + '"><em>' + (val ? num(val, val >= 1000 ? 0 : col.dec) : '') + '</em><i style="height:' + h + '%"></i><small>' + TH_MON[m.month - 1] + '</small></div>';
+      }).join('');
+      var basisSeg = '<div class="seg" role="group" style="margin-top:6px"><button type="button" data-sb="calendar" aria-pressed="' + (S.basis === 'calendar') + '">ปี พ.ศ.</button><button type="button" data-sb="fiscal" aria-pressed="' + (S.basis === 'fiscal') + '">ปีงบประมาณ</button></div>';
+      var yearRows = d.yearly.map(function (y) { return '<tr><td>' + yShort(y.year, d.basis) + '</td>' + d.columns.map(function (c) { return '<td>' + (Number(y[c.key]) ? num(y[c.key], c.dec) : '–') + '</td>'; }).join('') + '</tr>'; }).join('');
+      $('dlgBody').innerHTML = '<h2 class="disp" id="dlgT">' + esc(p.emoji) + ' ' + esc(p.label) + '</h2>' +
+        '<p class="sub">' + yLabel(d.year, d.basis) + ' · ' + yRange(d.year, d.basis) + '</p>' + basisSeg +
+        '<div style="--c:' + esc(p.color) + '"><div class="chart" role="img" aria-label="' + esc(col.label) + ' รายเดือน">' + bars + '</div></div>' +
+        '<p class="meta" style="color:var(--ink-3);font-size:13px">กราฟ: ' + esc(col.label) + ' (' + esc(col.unit) + ') รายเดือน' + (d.basis === 'fiscal' ? ' เริ่มเดือนตุลาคม' : '') + '</p>' +
+        '<div class="mini">' + d.columns.map(function (c) { return '<div><b>' + num(d.yearTotal[c.key], c.dec) + '</b><span>' + esc(c.label) + ' (' + esc(c.unit) + ')</span></div>'; }).join('') + '</div>' +
+        '<h3 class="disp" style="margin:18px 0 8px;font-size:16px">เทียบราย' + (d.basis === 'fiscal' ? 'ปีงบประมาณ' : 'ปี') + '</h3>' +
+        '<div class="tbl-wrap"><table><thead><tr><th>' + (d.basis === 'fiscal' ? 'ปีงบประมาณ' : 'ปี พ.ศ.') + '</th>' + d.columns.map(function (c) { return '<th>' + esc(c.label) + '<br><small>' + esc(c.unit) + '</small></th>'; }).join('') + '</tr></thead><tbody>' +
+        (yearRows || '<tr><td colspan="' + (d.columns.length + 1) + '">ยังไม่มีข้อมูล</td></tr>') + '</tbody><tfoot><tr><th>สะสม</th>' + d.columns.map(function (c) { return '<th>' + num(d.total[c.key], c.dec) + '</th>'; }).join('') + '</tr></tfoot></table></div>' +
+        '<div class="row"><a class="btn" href="' + appLink(key, '') + '">เปิดรายละเอียดในระบบ</a><button class="btn pri" type="button" data-close>ปิด</button></div>';
+      $('dlgBody').querySelectorAll('[data-sb]').forEach(function (b) { b.onclick = function () { if (S.basis === b.dataset.sb) return; S.basis = b.dataset.sb; store('hubBasis', S.basis); S.year = curYear(S.basis); loadHome().then(function () { openStats(key); }); }; });
+    }).catch(function (err) { $('dlgBody').querySelector('.empty').textContent = 'โหลดไม่สำเร็จ: ' + err.message; });
+  }
+
+  /* ======================= ตารางหน่วยงาน ======================= */
+  function loadMatrix() {
+    return api({ api: 'hubDepartments' }).then(function (r) { if (r && r.ok) { S.matrix = r; paintMatrix(); } }).catch(function () { $('mx').innerHTML = '<div class="empty">โหลดรายชื่อหน่วยงานไม่ได้</div>'; });
+  }
+  function paintMatrix() {
+    var m = S.matrix; if (!m) return;
+    var q = v('mxQ').toLowerCase();
+    var rows = m.departments.filter(function (d) { return !q || d.name.toLowerCase().indexOf(q) !== -1; });
+    if (!m.departments.length) { $('mx').innerHTML = '<div class="empty">ยังไม่มีหน่วยงานที่ร่วมโครงการ</div>'; return; }
+    $('mx').innerHTML = '<table><thead><tr><th>หน่วยงาน (' + rows.length + ')</th>' + m.projects.map(function (p) { return '<th title="' + esc(p.label) + '">' + esc(p.emoji) + '<br><small>' + esc(p.label) + '</small></th>'; }).join('') + '<th>รวม</th></tr></thead><tbody>' +
+      (rows.map(function (d) { return '<tr><td>' + esc(d.name) + '</td>' + m.projects.map(function (p) { var y = d.projects.indexOf(p.key) !== -1; return '<td class="' + (y ? 'y' : 'n') + '">' + (y ? '✓' : '·') + '</td>'; }).join('') + '<td><b>' + d.projects.length + '</b></td></tr>'; }).join('') ||
+       '<tr><td colspan="' + (m.projects.length + 2) + '" class="empty">ไม่พบ "' + esc(q) + '" — หน่วยงานของท่านสมัครได้โดยเลือก "หน่วยงาน" ด้านบน</td></tr>') + '</tbody></table>';
+  }
+  $('mxQ').addEventListener('input', paintMatrix);
+
+  /* ======================= ประกาศความเป็นส่วนตัว ======================= */
+  document.addEventListener('click', function (e) {
+    if (!e.target.closest('[data-notice]')) return;
+    e.preventDefault();
+    var back = dlg.classList.contains('hidden') ? null : $('dlgBody').innerHTML;
+    var html = '<h2 class="disp" id="dlgT">ประกาศความเป็นส่วนตัว</h2><div style="font-size:14.5px;color:var(--ink-2)">' +
+      '<p><b>' + esc(PRIV.CONTROLLER || 'โรงพยาบาล') + '</b> เป็นผู้ควบคุมข้อมูลส่วนบุคคล (เวอร์ชัน ' + esc(NOTICE_VER) + ')</p>' +
+      '<p style="margin-top:8px"><b>ข้อมูลที่เก็บ:</b> เจ้าหน้าที่ — รหัสเจ้าหน้าที่ ชื่อ-นามสกุล รหัสผ่าน (เข้ารหัสแบบย้อนกลับไม่ได้) · ประชาชน/บริษัท — ชื่อ ชื่อองค์กร เบอร์โทร อีเมล · โครงการที่สมัคร</p>' +
+      '<p style="margin-top:8px"><b>วัตถุประสงค์:</b> ยืนยันตัวตน ติดต่อเรื่องโครงการ แสดงสถานะการร่วมของท่าน และจัดทำสถิติภาพรวมที่ไม่ระบุตัวบุคคล</p>' +
+      '<p style="margin-top:8px"><b>การเปิดเผย:</b> หน้าเว็บแสดงเฉพาะตัวเลขรวมและชื่อหน่วยงาน ข้อมูลของท่านแสดงแบบปกปิดบางส่วน เฉพาะผู้ดูแลที่ได้รับสิทธิ์เห็นข้อมูลเต็ม และทุกการเข้าถึงถูกบันทึก</p>' +
+      '<p style="margin-top:8px"><b>สิทธิของท่าน:</b> ขอเข้าถึง แก้ไข ลบ หรือถอนความยินยอมได้ — ประชาชน/บริษัทกด "ลบข้อมูลของฉัน" ในเมนู "การร่วมของฉัน" · ติดต่อ ' + esc(PRIV.CONTACT || '') + '</p></div>' +
+      '<div class="row"><button class="btn pri" type="button" data-ntclose>' + (back ? 'กลับไปกรอกต่อ' : 'ปิด') + '</button></div>';
+    $('ntBody').innerHTML = html; $('ntDlg').classList.remove('hidden');
+  });
+  $('ntDlg').addEventListener('click', function (e) { if (e.target === $('ntDlg') || e.target.closest('[data-ntclose]')) $('ntDlg').classList.add('hidden'); });
+
+  /* ======================= ผู้ดูแลระบบ ======================= */
+  $('admBtn').onclick = function () { S.admin ? adminHome('inbox') : adminLogin(); };
+  function adminLogin() {
+    openDlg('<h2 class="disp" id="dlgT">🛠️ เข้าสู่ระบบผู้ดูแล</h2><p class="sub">ใช้หน่วยงานที่มีสิทธิ์ผู้ดูแล + PIN เดียวกับระบบหลัก (ไม่เก็บ PIN ไว้ในเครื่อง)</p>' +
+      '<form id="fAdm" novalidate><label class="fld"><span>หน่วยงาน</span><select class="inp" id="fAD"><option value="">กำลังโหลด…</option></select></label>' +
+      '<label class="fld"><span>PIN</span><input class="inp" id="fAP" type="password" inputmode="numeric" maxlength="12" autocomplete="off"></label>' +
+      '<div class="err hidden" id="fErr"></div><div class="row"><button class="btn" type="button" data-close>ยกเลิก</button><button class="btn pri" id="fGo" type="submit">เข้าสู่ระบบ →</button></div></form>');
+    api({ api: 'hubAdminDepts' }).then(function (r) {
+      $('fAD').innerHTML = (r && r.departments || []).map(function (d) { return '<option value="' + esc(d.id) + '">' + esc(d.name) + '</option>'; }).join('') || '<option value="">ไม่พบหน่วยงาน</option>';
+      var last = load('hubAdmDept'); if (last) $('fAD').value = last;
+    });
+    $('fAdm').onsubmit = function (e) {
+      e.preventDefault();
+      var cred = { departmentId: $('fAD').value, pin: $('fAP').value };
+      var btn = $('fGo'); busy(btn, true, 'กำลังตรวจสอบ…');
+      post(Object.assign({ action: 'hubAdmin', op: 'login' }, cred)).then(function (r) {
+        busy(btn, false, ' ');
+        if (!r || !r.ok) return showErr((r && r.error) || 'ไม่สำเร็จ');
+        S.admin = Object.assign({ name: r.admin }, cred); store('hubAdmDept', cred.departmentId);
+        adminHome('inbox');
+      }).catch(function () { busy(btn, false, ' '); showErr('เชื่อมต่อระบบไม่ได้'); });
+    };
+  }
+  function adm(op, extra) { return post(Object.assign({ action: 'hubAdmin', op: op, departmentId: S.admin.departmentId, pin: S.admin.pin }, extra || {})); }
+  function adminHome(tab) {
+    var T = [['inbox', '📥 รออนุมัติ'], ['catalog', '⚙️ ตั้งค่าโครงการ'], ['members', '👥 สมาชิกภายนอก']];
+    openDlg('<h2 class="disp" id="dlgT">🛠️ ผู้ดูแล · ' + esc(S.admin.name) + '</h2><div class="tabs" role="tablist">' + T.map(function (t) { return '<button type="button" role="tab" aria-selected="' + (t[0] === tab) + '" data-at="' + t[0] + '">' + t[1] + '</button>'; }).join('') +
+      '<span class="sp"></span><button type="button" id="aOut" style="color:var(--bad)">ออก</button></div><div id="aBody"><div class="empty">กำลังโหลด…</div></div>', true);
+    $('dlgBody').querySelectorAll('[data-at]').forEach(function (b) { b.onclick = function () { adminHome(b.dataset.at); }; });
+    $('aOut').onclick = function () { S.admin = null; closeDlg(); toast('ออกจากระบบผู้ดูแลแล้ว'); };
+    if (tab === 'inbox') adm('inbox').then(paintInbox).catch(admFail);
+    if (tab === 'catalog') adm('catalog').then(paintCatalog).catch(admFail);
+    if (tab === 'members') adm('members').then(paintMembers).catch(admFail);
+  }
+  function admFail() { var b = $('aBody'); if (b) b.innerHTML = '<div class="empty">เชื่อมต่อระบบไม่ได้</div>'; }
+  function admGuard(r) {
+    if (r && r.ok) return true;
+    if (r && (r.code === 'ADMIN_AUTH' || r.code === 'LOCKED')) { S.admin = null; adminLogin(); toast(r.error); return false; }
+    toast((r && r.error) || 'ไม่สำเร็จ'); return false;
+  }
+  function paintInbox(r) {
+    if (!admGuard(r)) return;
+    var b = $('aBody'); if (!b) return;
+    var A = r.accounts || [], J = r.staffJoins || [], H = r.hubJoins || [];
+    var typeLbl = { dept: '🏢 หน่วยงาน', public: '🙋 ประชาชน', company: '🏭 บริษัท' };
+    var sec = function (t, n, body) { return '<h3 class="disp" style="font-size:16px;margin-top:14px">' + t + ' <span class="pill">' + n + '</span></h3>' + (n ? body : '<div class="empty" style="padding:10px">ไม่มีรายการ</div>'); };
+    b.innerHTML =
+      sec('บัญชีเจ้าหน้าที่ใหม่', A.length, A.map(function (u) { return '<div class="ri"><span class="t"><b>' + esc(u.staffCode) + ' · ' + esc(u.name) + '</b><small>สมัคร ' + esc(u.createdAt) + (u.previousRecords ? ' · เคยมีบันทึก ' + u.previousRecords + ' รายการ' + (u.nameMismatch ? ' <b style="color:var(--bad)">⚠ ชื่อไม่ตรงกับที่เคยลง (' + esc(u.previousName) + ')</b>' : '') : '') + '</small></span><button class="btn sm" data-ra="' + esc(u.staffCode) + '" data-ok="0">ไม่อนุมัติ</button><button class="btn sm pri" data-ra="' + esc(u.staffCode) + '" data-ok="1">อนุมัติ</button></div>'; }).join('')) +
+      sec('เจ้าหน้าที่ขอเข้าร่วมโครงการ', J.length, J.map(function (j) { return '<div class="ri"><span class="t"><b>' + esc(j.staffCode) + ' · ' + esc(j.name) + '</b><small>' + esc(j.projectLabel) + ' · ' + esc(j.createdAt) + '</small></span><button class="btn sm" data-rj="' + esc(j.requestId) + '" data-ok="0">ไม่อนุมัติ</button><button class="btn sm pri" data-rj="' + esc(j.requestId) + '" data-ok="1">อนุมัติ</button></div>'; }).join('')) +
+      sec('หน่วยงาน / ประชาชน / บริษัท', H.length, H.map(function (h) {
+        return '<div class="ri"><span class="t"><b>' + (typeLbl[h.type] || '') + ' · ' + esc(h.orgName ? h.orgName + ' (' + h.name + ')' : h.name) + '</b><small>' + esc(h.projectLabel) + ' · ' + esc(h.createdAt) +
+          (h.phone ? ' · ☎ ' + esc(h.phone) : '') + (h.email ? ' · ' + esc(h.email) : '') + (h.requestedBy ? ' · ยื่นโดย ' + esc(h.requestedBy) : '') + (h.note ? '<br>📝 ' + esc(h.note) : '') + '</small></span>' +
+          (h.needsPin ? '<input class="inp" style="width:120px;height:32px" id="pin_' + esc(h.joinId) + '" inputmode="numeric" maxlength="8" placeholder="PIN 4–8 หลัก" aria-label="PIN ของหน่วยงานสำหรับ Paperless">' : '') +
+          '<button class="btn sm" data-rh="' + esc(h.joinId) + '" data-ok="0">ไม่อนุมัติ</button><button class="btn sm pri" data-rh="' + esc(h.joinId) + '" data-ok="1">อนุมัติ</button></div>';
+      }).join('')) +
+      '<p class="note">อนุมัติคำขอหน่วยงานของ Paperless / ตลับหมึก / คัดแยก แบ่งปัน → ระบบเพิ่มชื่อหน่วยงานในรายชื่อของโครงการนั้นให้อัตโนมัติ (Paperless ต้องตั้ง PIN ให้หน่วยงานใช้บันทึกยอด)</p>';
+    b.querySelectorAll('[data-ra],[data-rj],[data-rh]').forEach(function (x) {
+      x.onclick = function () {
+        var ok = x.dataset.ok === '1', p;
+        if (!ok && !confirm('ยืนยัน "ไม่อนุมัติ" รายการนี้?')) return;
+        x.disabled = true;
+        if (x.dataset.ra) p = adm('reviewAccount', { staffCode: x.dataset.ra, approve: ok });
+        else if (x.dataset.rj) p = adm('reviewStaffJoin', { requestId: x.dataset.rj, approve: ok });
+        else { var pinEl = $('pin_' + x.dataset.rh); p = adm('reviewHubJoin', { joinId: x.dataset.rh, approve: ok, deptPin: pinEl ? pinEl.value : '' }); }
+        p.then(function (res) { if (admGuard(res)) { paintInbox(res); toast(ok ? 'อนุมัติแล้ว' : 'ไม่อนุมัติแล้ว'); loadHomeQuiet(); loadMatrix(); } else x.disabled = false; });
+      };
+    });
+  }
+  function paintCatalog(r) {
+    if (!admGuard(r)) return;
+    var b = $('aBody'); if (!b) return;
+    var cols = [['forStaff', '🩺 เจ้าหน้าที่'], ['forDept', '🏢 หน่วยงาน'], ['forPublic', '🙋 ประชาชน'], ['forCompany', '🏭 บริษัท'], ['isOpen', 'เปิดรับสมัคร'], ['autoApprove', 'อนุมัติอัตโนมัติ']];
+    var val = function (p, k) { return k === 'forStaff' ? p.audiences.staff : k === 'forDept' ? p.audiences.dept : k === 'forPublic' ? p.audiences.public : k === 'forCompany' ? p.audiences.company : p[k]; };
+    b.innerHTML = '<p class="sub">กำหนดว่าแต่ละโครงการ <b>เปิดให้ใครร่วม</b> · "อนุมัติอัตโนมัติ" = สมัครแล้วเป็นสมาชิกทันที (คำขอของหน่วยงานรอผู้ดูแลเสมอ)</p>' +
+      '<div class="tbl-wrap" style="max-height:none"><table class="adm-tbl"><thead><tr><th>โครงการ</th>' + cols.map(function (c) { return '<th>' + c[1] + '</th>'; }).join('') + '<th>ลำดับ</th><th style="text-align:left">ข้อความเชิญชวน</th></tr></thead><tbody>' +
+      r.projects.map(function (p) {
+        return '<tr data-k="' + esc(p.key) + '"><td>' + esc(p.emoji) + ' ' + esc(p.label) + '</td>' + cols.map(function (c) { return '<td><input type="checkbox" data-f="' + c[0] + '"' + (val(p, c[0]) ? ' checked' : '') + ' aria-label="' + esc(p.label + ' ' + c[1]) + '"></td>'; }).join('') +
+          '<td><input class="inp" style="min-width:56px;width:56px" type="number" min="1" max="99" data-f="sortOrder" value="' + p.sortOrder + '"></td>' +
+          '<td style="text-align:left"><input class="inp" data-f="tagline" maxlength="200" value="' + esc(p.tagline) + '"><input class="inp" style="margin-top:4px" data-f="howTo" maxlength="300" placeholder="วิธีร่วม" value="' + esc(p.howTo) + '"></td></tr>';
+      }).join('') + '</tbody></table></div><div class="row"><button class="btn pri" id="aSave" type="button">💾 บันทึกการตั้งค่า</button></div>';
+    $('aSave').onclick = function () {
+      var items = Array.prototype.map.call(b.querySelectorAll('tr[data-k]'), function (tr) {
+        var o = { key: tr.dataset.k, label: (r.projects.filter(function (p) { return p.key === tr.dataset.k; })[0] || {}).label };
+        tr.querySelectorAll('[data-f]').forEach(function (el) { o[el.dataset.f] = el.type === 'checkbox' ? el.checked : el.value; });
+        return o;
+      });
+      var btn = this; busy(btn, true, 'กำลังบันทึก…');
+      adm('saveCatalog', { items: items }).then(function (res) { busy(btn, false, ' '); if (admGuard(res)) { toast('บันทึกแล้ว ' + res.saved + ' โครงการ'); paintCatalog(res); loadHomeQuiet(); } });
+    };
+  }
+  function paintMembers(r) {
+    if (!admGuard(r)) return;
+    var b = $('aBody'); if (!b) return;
+    var M = r.members || [];
+    b.innerHTML = '<p class="sub">ประชาชนและบริษัทที่ลงทะเบียน ' + M.length + ' ราย (ข้อมูลส่วนบุคคล — การเปิดดูถูกบันทึก)</p>' +
+      (M.length ? '<div class="tbl-wrap"><table class="adm-tbl"><thead><tr><th>รหัส</th><th>ประเภท</th><th>ชื่อ / องค์กร</th><th>ติดต่อ</th><th>โครงการ</th><th>ลงทะเบียน</th></tr></thead><tbody>' +
+      M.map(function (m) { return '<tr><td>' + esc(m.memberId) + '</td><td>' + (m.type === 'company' ? '🏭 บริษัท' : '🙋 ประชาชน') + '</td><td style="text-align:left">' + esc(m.name) + (m.orgName ? '<br><small>' + esc(m.orgName) + '</small>' : '') + '</td><td style="text-align:left">' + esc(m.phone) + (m.email ? '<br><small>' + esc(m.email) + '</small>' : '') + '</td><td style="text-align:left;white-space:normal">' + m.joins.map(function (j) { var a = j.split(':'), p = projBy(a[0]) || { emoji: '' }; return esc(p.emoji) + (a[1] === 'approved' ? '' : '⏳'); }).join(' ') + '</td><td>' + esc(m.createdAt) + '</td></tr>'; }).join('') +
+      '</tbody></table></div>' : '<div class="empty">ยังไม่มีสมาชิกภายนอก</div>');
+  }
+
+  /* ======================= ธีม / เริ่มต้น ======================= */
+  $('themeBtn').onclick = function () { var r = document.documentElement, t = r.dataset.theme === 'dark' ? 'light' : 'dark'; r.dataset.theme = t; store('shellTheme', t); };
+
+  /* ======================= โหมดตัวอย่าง (ไม่มี backend) ======================= */
+  var Mock = (function () {
+    var P = [
+      ['frytofly', 'ทอดไม่ทิ้ง', '🛢️', '#d97706', 'นำน้ำมันพืชใช้แล้วจากบ้านมาบริจาค สะสมแต้ม ลุ้นระดับสมาชิก', 'เทน้ำมันใส่แกลลอน นำมาส่งจุดรับ แล้วบันทึกด้วยรหัสสมาชิก', [1, 0, 0, 0], 1, 1, 'form', ['liters', 'น้ำมันที่รับบริจาค', 'ลิตร', 1, 38]],
+      ['paperless', 'Paperless', '📄', '#2563eb', 'เปลี่ยนงานเอกสารของหน่วยงานเป็นอิเล็กทรอนิกส์ ลดการพิมพ์กระดาษ', 'หน่วยงานรายงานจำนวนเรื่อง/แผ่นที่ลดได้ทุกเดือน', [0, 1, 0, 0], 1, 0, '', ['sheets', 'กระดาษที่ลดได้', 'แผ่น', 0, 5200]],
+      ['cartridge', 'ตลับหมึกเก่าเราขอ', '🖨️', '#7c3aed', 'รวบรวมตลับหมึกใช้แล้วของหน่วยงาน ส่งจำหน่าย ลดขยะอันตราย', 'หน่วยงานรวบรวมตลับหมึก แล้วบันทึกส่งเข้าโครงการ', [0, 1, 0, 0], 1, 0, 'form', ['contributed', 'ส่งเข้าโครงการ', 'ตลับ', 0, 46]],
+      ['kitchen', 'จากครัวสู่ท้องฟ้า', '🍳', '#ea580c', 'น้ำมันทอดจากครัวโรงพยาบาล ส่งต่อเป็นเชื้อเพลิงอากาศยานยั่งยืน', 'ดำเนินการโดยฝ่ายโภชนาการ — ทุกคนติดตามผลได้', [0, 1, 0, 0], 0, 0, '', ['liters', 'ปริมาณน้ำมัน', 'ลิตร', 1, 160]],
+      ['calendar', 'ปฏิทินเก่าเราขอ', '📅', '#0891b2', 'บริจาคปฏิทินตั้งโต๊ะเก่า เพื่อทำสื่ออักษรเบรลล์ให้ผู้พิการทางสายตา', 'นำปฏิทินเก่ามาส่งที่จุดรับ หรือแจ้งส่งผ่านฟอร์ม', [1, 1, 1, 1], 1, 1, 'form', ['kg', 'น้ำหนักปฏิทินเก่า', 'กก.', 1, 22]],
+      ['share', 'คัดแยก แบ่งปัน', '♻️', '#059669', 'แบ่งปันวัสดุสำนักงานที่เกินจำเป็น ให้หน่วยงานอื่นเบิกใช้แทนการซื้อใหม่', 'แจ้งของที่จะแบ่งปันผ่านฟอร์ม แล้วนำมาส่งคลังแบ่งปัน', [1, 1, 0, 0], 1, 1, 'form', ['value', 'มูลค่าที่ประหยัดงบ', 'บาท', 0, 3400]],
+      ['em', 'น้ำยา EM', '🧪', '#0d9488', 'เศษอาหารกลายเป็นน้ำยา EM — ลงทะเบียนขอรับไปใช้ดับกลิ่น รดต้นไม้', 'กรอกคำขอรับน้ำยา EM แล้วรับของตามนัด', [1, 1, 1, 1], 1, 1, 'request', ['emLiters', 'น้ำยา EM ที่ผลิตได้', 'ลิตร', 1, 120]],
+      ['compost', 'ปุ๋ยหมักใบไม้', '🪴', '#65a30d', 'ใบไม้และเศษหญ้าในโรงพยาบาลกลายเป็นปุ๋ยหมัก — ลงทะเบียนขอรับได้', 'กรอกคำขอรับปุ๋ยหมัก แล้วรับของตามนัด', [1, 1, 1, 1], 1, 1, 'request', ['cpKg', 'ปุ๋ยหมักที่ผลิตได้', 'กก.', 1, 90]]
+    ];
+    var AUDK = ['staff', 'dept', 'public', 'company'];
+    var cat = P.map(function (x, i) { var a = {}; AUDK.forEach(function (k, j) { a[k] = !!x[6][j]; }); return { key: x[0], label: x[1], emoji: x[2], color: x[3], tagline: x[4], howTo: x[5], audiences: a, isOpen: !!x[7], autoApprove: !!x[8], action: x[9], sortOrder: i + 1 }; });
+    var depts = [['งานเวชระเบียน', ['paperless', 'cartridge', 'share']], ['งานการเงิน', ['paperless', 'cartridge']], ['หอผู้ป่วยอายุรกรรม 1', ['cartridge', 'share', 'em']], ['ฝ่ายโภชนาการ', ['kitchen', 'em', 'compost']], ['งานพัสดุ', ['share', 'cartridge']], ['ห้องฉุกเฉิน', ['paperless']]];
+    var joins = { staff: {}, member: {}, dept: [] }, members = {}, sess = null, pend = [];
+    function seed(key, y, m, basis) { var s = 0; for (var i = 0; i < key.length; i++) s += key.charCodeAt(i); var calY = basis === 'fiscal' && m >= 10 ? y - 1 : y; var x = Math.sin(s * 7 + calY * 13 + m * 3.1) * 0.5 + 0.8; var now = new Date(); if (calY > now.getFullYear() || (calY === now.getFullYear() && m > now.getMonth() + 1)) return 0; return x; }
+    function series(x, y, basis) {
+      var base = x[10][4], order = basis === 'fiscal' ? [10, 11, 12, 1, 2, 3, 4, 5, 6, 7, 8, 9] : [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+      return order.map(function (m) { var val = seed(x[0], y, m, basis) * base; return { month: m, calYear: basis === 'fiscal' && m >= 10 ? y - 1 : y, v: Math.round(val * (x[10][3] ? 10 : 1)) / (x[10][3] ? 10 : 1) }; });
+    }
+    function counts(k) { var c = { staff: 0, dept: 0, public: 0, company: 0 }; c.staff = { frytofly: 86, calendar: 41, share: 23, em: 57, compost: 33 }[k] || 0; depts.forEach(function (d) { if (d[1].indexOf(k) !== -1) c.dept++; }); c.public = { calendar: 18, em: 29, compost: 24 }[k] || 0; c.company = { calendar: 3, em: 2, compost: 4 }[k] || 0; return c; }
+    function home(basis, year) {
+      basis = basis === 'fiscal' ? 'fiscal' : 'calendar'; var now = new Date(), cy = basis === 'fiscal' && now.getMonth() >= 9 ? now.getFullYear() + 1 : now.getFullYear(); var y = Number(year) || cy;
+      var co2 = 0, co2t = 0;
+      var projects = cat.map(function (p, i) {
+        var x = P[i], s = series(x, y, basis), tot = s.reduce(function (a, b) { return a + b.v; }, 0);
+        var all = 0; [cy - 2, cy - 1, cy].forEach(function (yy) { all += series(x, yy, basis).reduce(function (a, b) { return a + b.v; }, 0); });
+        co2 += tot * 0.9; co2t += all * 0.9;
+        return Object.assign({}, p, { members: counts(p.key), stats: { hasData: true, main: { key: x[10][0], label: x[10][1], unit: x[10][2], dec: x[10][3], year: Math.round(tot * 10) / 10, total: Math.round(all * 10) / 10 } } });
+      });
+      return { ok: true, basis: basis, year: y, years: [cy, cy - 1, cy - 2], co2Year: Math.round(co2), co2Total: Math.round(co2t), projects: projects };
+    }
+    function project(key, basis, year) {
+      var i = cat.map(function (p) { return p.key; }).indexOf(key), x = P[i]; basis = basis === 'fiscal' ? 'fiscal' : 'calendar';
+      var now = new Date(), cy = basis === 'fiscal' && now.getMonth() >= 9 ? now.getFullYear() + 1 : now.getFullYear(), y = Number(year) || cy;
+      var col = { key: x[10][0], label: x[10][1], unit: x[10][2], dec: x[10][3] }, co = { key: 'co2', label: 'CO2 ที่ลดได้', unit: 'กก.', dec: 1 };
+      var mk = function (v) { var o = {}; o[col.key] = v; o.co2 = Math.round(v * 9) / 10; return o; };
+      var monthly = series(x, y, basis).map(function (s) { return Object.assign({ month: s.month, calYear: s.calYear }, mk(s.v)); });
+      var yearly = [cy, cy - 1, cy - 2].map(function (yy) { return Object.assign({ year: yy }, mk(Math.round(series(x, yy, basis).reduce(function (a, b) { return a + b.v; }, 0)))); });
+      var sum = function (L) { return L.reduce(function (a, b) { return a + b[col.key]; }, 0); };
+      return { ok: true, projectKey: key, mainKey: col.key, basis: basis, year: y, years: [cy, cy - 1, cy - 2], columns: [col, co], monthly: monthly, yearly: yearly, yearTotal: mk(Math.round(sum(monthly))), total: mk(sum(yearly)), hasData: true };
+    }
+    function jm(type, ref) { var o = {}; joins.dept.forEach(function (d) { if (d.dept === ref) o[d.projectKey] = d.status; }); return o; }
+    function err(m, c) { return { ok: false, error: m, code: c }; }
+    function okKeys(keys, aud) { var bad = keys.filter(function (k) { var p = cat.filter(function (c) { return c.key === k; })[0]; return !p || !p.isOpen || !p.audiences[aud]; }); return bad.length ? err('โครงการต่อไปนี้ไม่เปิดรับกลุ่มนี้: ' + bad.join(', '), 'NOT_OPEN') : null; }
+    function catOf(k) { return cat.filter(function (c) { return c.key === k; })[0]; }
+    return {
+      get: function (p) {
+        if (p.api === 'hubHome') return home(p.basis, p.year);
+        if (p.api === 'hubProject') return project(p.key, p.basis, p.year);
+        if (p.api === 'hubDepartments') return { ok: true, projects: cat.filter(function (c) { return c.audiences.dept; }), departments: depts.map(function (d) { return { name: d[0], projects: d[1] }; }), names: depts.map(function (d) { return d[0]; }).concat(['งานเภสัชกรรม', 'งานรังสีวิทยา']) };
+        if (p.api === 'hubAdminDepts') return { ok: true, departments: [{ id: 'D1', name: 'งานสิ่งแวดล้อม (ตัวอย่าง · PIN 123456)' }] };
+        return err('unknown');
+      },
+      post: function (b) {
+        var a = b.action;
+        if (a === 'portalLogin' || a === 'portalSignup') { if (!/^\d{7}$/.test(b.code)) return err('รหัสเจ้าหน้าที่ต้องเป็นตัวเลข 7 หลัก'); sess = { code: b.code, name: b.name || 'สมชาย ใจดี', status: a === 'portalSignup' ? 'pending' : 'approved' }; return { ok: true, token: 'demo', user: { codeMasked: '•••••' + b.code.slice(-2), nameMasked: (sess.name.split(' ')[0]) + ' ' + (sess.name.split(' ')[1] || '').charAt(0) + '•••', firstName: sess.name.split(' ')[0], status: sess.status } };
+        }
+        if (a === 'hubStaffStatus') return sess ? { ok: true, user: { codeMasked: '•••••' + sess.code.slice(-2), nameMasked: sess.name.split(' ')[0] + ' •••', firstName: sess.name.split(' ')[0], status: sess.status }, joins: joins.staff, deptRequests: joins.dept, projects: [{ key: 'frytofly', label: 'ทอดไม่ทิ้ง', count: 4, amount: 12.5, unit: 'แกลลอน', lastDate: '2026-11-02' }] } : err('กรุณาเข้าสู่ระบบใหม่อีกครั้ง', 'AUTH');
+        if (a === 'hubJoinStaff') { var e1 = okKeys(b.projectKeys, 'staff'); if (e1) return e1; var r1 = {}; b.projectKeys.forEach(function (k) { var st = catOf(k).autoApprove ? 'approved' : 'pending'; joins.staff[k] = joins.staff[k] === 'approved' ? 'approved' : st; r1[k] = joins.staff[k]; if (st === 'pending') pend.push({ t: 'staff', k: k }); }); return { ok: true, result: r1, joins: joins.staff, accountPending: sess && sess.status === 'pending' }; }
+        if (a === 'hubDeptJoin') { var e2 = okKeys(b.projectKeys, 'dept'); if (e2) return e2; var r2 = {}; b.projectKeys.forEach(function (k) { joins.dept.push({ dept: b.deptName, projectKey: k, status: 'pending' }); r2[k] = 'created'; pend.push({ t: 'dept', k: k, n: b.deptName, note: b.note }); }); return { ok: true, dept: b.deptName, result: r2, joins: jm('dept', b.deptName) }; }
+        if (a === 'hubRegister') {
+          var e3 = okKeys(b.projectKeys, b.type); if (e3) return e3;
+          var id = (b.type === 'company' ? 'C-' : 'P-') + Math.random().toString(36).slice(2, 8).toUpperCase().replace(/[01OIL]/g, 'X');
+          var mj = {}; b.projectKeys.forEach(function (k) { mj[k] = catOf(k).autoApprove ? 'approved' : 'pending'; });
+          members[id] = { phone: b.phone.replace(/\D/g, ''), name: b.name, org: b.orgName, type: b.type, joins: mj, email: b.email };
+          var ph = members[id].phone;
+          return { ok: true, member: { memberId: id, type: b.type, nameMasked: b.name.split(' ')[0] + ' •••', orgName: b.orgName, phoneMasked: ph.slice(0, 2) + '••••••' + ph.slice(-2), emailMasked: b.email ? b.email.charAt(0) + '•••' + b.email.slice(b.email.indexOf('@')) : '' }, result: mj, joins: mj };
+        }
+        if (a === 'hubMemberStatus' || a === 'hubMemberJoin' || a === 'hubMemberLeave' || a === 'hubMemberDelete') {
+          var mid = String(b.memberId || '').toUpperCase().replace(/[^A-Z0-9]/g, '').replace(/^([PC])/, '$1-'), m = members[mid];
+          if (!m || m.phone !== String(b.phone || '').replace(/\D/g, '')) return err('รหัสสมาชิกหรือเบอร์โทรไม่ถูกต้อง', 'BAD_MEMBER');
+          var pub = { memberId: mid, type: m.type, nameMasked: m.name.split(' ')[0] + ' •••', orgName: m.org };
+          if (a === 'hubMemberJoin') { var e4 = okKeys(b.projectKeys, m.type); if (e4) return e4; var r4 = {}; b.projectKeys.forEach(function (k) { m.joins[k] = catOf(k).autoApprove ? 'approved' : 'pending'; r4[k] = m.joins[k]; }); return { ok: true, member: pub, result: r4, joins: m.joins }; }
+          if (a === 'hubMemberLeave') { delete m.joins[b.projectKey]; return { ok: true, joins: m.joins }; }
+          if (a === 'hubMemberDelete') { delete members[mid]; return { ok: true, deleted: true }; }
+          return { ok: true, member: pub, joins: m.joins, projects: [] };
+        }
+        if (a === 'hubRecoverMember') return { ok: true, message: 'ถ้าข้อมูลตรงกับที่ลงทะเบียนไว้ ระบบจะส่งรหัสสมาชิกไปที่อีเมลนั้นภายในไม่กี่นาที (โหมดตัวอย่าง: ไม่ได้ส่งจริง)' };
+        if (a === 'hubAdmin') {
+          if (b.pin !== '123456') return err('PIN ไม่ถูกต้อง', 'ADMIN_AUTH');
+          var inbox = function () { return { ok: true, accounts: sess && sess.status === 'pending' ? [{ staffCode: sess.code, name: sess.name, createdAt: '2026-11-27 09:12', previousRecords: 0 }] : [], staffJoins: pend.filter(function (x) { return x.t === 'staff'; }).map(function (x, i) { return { requestId: 'S' + i, staffCode: sess ? sess.code : '1234567', name: sess ? sess.name : '', projectKey: x.k, projectLabel: catOf(x.k).label, createdAt: '2026-11-27 09:30' }; }), hubJoins: pend.filter(function (x) { return x.t === 'dept'; }).map(function (x, i) { return { joinId: 'H' + i, type: 'dept', name: x.n, projectKey: x.k, projectLabel: catOf(x.k).label, createdAt: '2026-11-27 09:40', requestedBy: '•••••67', note: x.note || '', needsPin: x.k === 'paperless' }; }) }; };
+          if (b.op === 'login') return { ok: true, admin: 'งานสิ่งแวดล้อม (ตัวอย่าง)' };
+          if (b.op === 'inbox') return inbox();
+          if (b.op === 'reviewAccount') { if (sess) sess.status = b.approve ? 'approved' : 'pending'; return inbox(); }
+          if (b.op === 'reviewStaffJoin') { var sj = pend.filter(function (x) { return x.t === 'staff'; })[Number(b.requestId.slice(1))]; if (sj) { joins.staff[sj.k] = b.approve ? 'approved' : 'rejected'; pend.splice(pend.indexOf(sj), 1); } return inbox(); }
+          if (b.op === 'reviewHubJoin') { var hj = pend.filter(function (x) { return x.t === 'dept'; })[Number(b.joinId.slice(1))]; if (hj) { if (b.approve && hj.k === 'paperless' && !/^\d{4,8}$/.test(b.deptPin || '')) return err('หน่วยงาน Paperless ต้องตั้ง PIN เป็นตัวเลข 4–8 หลัก'); joins.dept.forEach(function (d) { if (d.dept === hj.n && d.projectKey === hj.k) d.status = b.approve ? 'approved' : 'rejected'; }); if (b.approve) { var row = depts.filter(function (d) { return d[0] === hj.n; })[0]; if (!row) depts.push(row = [hj.n, []]); row[1].push(hj.k); } pend.splice(pend.indexOf(hj), 1); } return inbox(); }
+          if (b.op === 'catalog') return { ok: true, projects: cat };
+          if (b.op === 'saveCatalog') { b.items.forEach(function (it) { var c = catOf(it.key); if (!c) return; c.audiences = { staff: it.forStaff, dept: it.forDept, public: it.forPublic, company: it.forCompany }; c.isOpen = it.isOpen; c.autoApprove = it.autoApprove; c.tagline = it.tagline; c.howTo = it.howTo; c.sortOrder = Number(it.sortOrder) || c.sortOrder; }); cat.sort(function (x, y) { return x.sortOrder - y.sortOrder; }); return { ok: true, saved: b.items.length, projects: cat }; }
+          if (b.op === 'members') return { ok: true, members: Object.keys(members).map(function (id) { var m = members[id]; return { memberId: id, type: m.type, name: m.name, orgName: m.org, phone: m.phone, email: m.email, createdAt: '2026-11-27', joins: Object.keys(m.joins).map(function (k) { return k + ':' + m.joins[k]; }) }; }) };
+        }
+        return err('ไม่รู้จักคำสั่ง');
+      }
+    };
+  })();
+
+  paintWho(); paintPeriod(); paintMe(); paintBasket();
+  S.year = curYear(S.basis);
+  loadHome().then(function () { loadMatrix(); refreshMine(); });
+})();
+</script>
+</body>
+</html>
